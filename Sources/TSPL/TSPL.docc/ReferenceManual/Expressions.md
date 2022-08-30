@@ -1302,7 +1302,7 @@ see <doc:AutomaticReferenceCounting#Resolving-Strong-Reference-Cycles-for-Closur
 ```
 Grammar of a closure expression
 
-closure-expression --> ``{`` attributes-OPT closure-signature-OPT statements-OPT ``}``
+closure-expression --> ``{`` attributes-OPT closure-signature-OPT items-OPT ``}``
 
 closure-signature --> capture-list-OPT closure-parameter-clause ``async``-OPT ``throws``-OPT function-result-OPT ``in``
 closure-signature --> capture-list ``in``
