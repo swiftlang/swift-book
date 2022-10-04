@@ -20,7 +20,7 @@ Para facilitar o processo de revisão e diminuir as inconsistências entre tradu
 
 ## Criação de Branches
 
-A tradução deverá ser feita através de Forks, com branches nomeadas por sessão e tópico, com letras minúsculas, seguindo o seguinte padrão:
+A tradução deverá ser feita através de **Forks**, com branches nomeadas por sessão e tópico, com letras minúsculas, seguindo o seguinte padrão:
 
 `nome-da-sessao/nome-do-topico`
 
@@ -32,7 +32,7 @@ Caso não existam tópicos para determinada sessão, a branch deve ter somente o
 
 ## Pull Requests
 
-Os Pull Requests devem ser feitos diretamente para a branch `main`, e utilizar o template do repositório específico para PRs. Após terminar uma tradução, lembre-se de marcá-la como traduzida no README. A revisão será feita avaliando a tradução em si, a coerência do texto da tradução, e a coerência com as traduções anteriores.
+Os Pull Requests devem ser feitos diretamente para a branch `main`, e utilizar o template do repositório específico para PRs. Lembre-se de referenciar a respectiva issue no PR. A revisão será feita avaliando a tradução em si, a coerência do texto da tradução, e a coerência com as traduções anteriores.
 
 ## Motivação
 
