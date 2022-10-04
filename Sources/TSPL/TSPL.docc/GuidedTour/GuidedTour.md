@@ -49,7 +49,7 @@ is explained in detail in the rest of this book.
 ## Valores Simples
 
 Use `let` para criar uma constante e `var` para criar uma variável.
-O valor de uma constante não precisa ser sabido no momento do código ser compilado. mas você deve atribuí-la um valor somente uma vez. Isso significa que você pode usar constantes para nomear um valor que você determinou uma vez, mas utiliza em em muitos lugares.
+O valor de uma constante não precisa ser sabido no momento do código ser compilado. mas você deve atribuí-la um valor somente uma vez. Isso significa que você pode usar constantes para nomear um valor que você determinou uma vez, mas utiliza em muitos lugares.
 
 ```swift
 var myVariable = 42
@@ -69,7 +69,7 @@ let myConstant = 42
 }
 
 A constante ou variável deve ser do mesmo tipo do valor que você quer atribuir a ela.  Entretanto, você nem sempre precisa atribuir o tipo de forma explícita. 
-Dar um valor à constante ou variável no momento de sua criação faz com que o compilador infira qual o seu tipo.  No exemplo acima, o compilador irá inferir que a `myVariable` é um inteiro, pois o seu valor inicial é um inteiro.   Se o valor inicial não entrega informação suficiente (ou se não foi atribuído nenhum valor inicial), especifique o tipo o escrevendo logo depois da variável, separado por dois pontos. 
+Dar um valor à constante ou variável no momento de sua criação faz com que o compilador infira qual o seu tipo.  No exemplo acima, o compilador irá inferir que a `myVariable` é um inteiro, pois o seu valor inicial é um inteiro.   Se o valor inicial não entrega informação suficiente (ou se não foi atribuído nenhum valor inicial), especifique o tipo escrevendo-o logo depois da variável, separado por dois pontos. 
 
 ```swift
 let implicitInteger = 70
