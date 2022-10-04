@@ -46,14 +46,10 @@ Don’t worry if you don’t understand something ---
 everything introduced in this tour
 is explained in detail in the rest of this book.
 
-## Simple Values
+## Valores Simples
 
-Use `let` to make a constant and `var` to make a variable.
-The value of a constant
-doesn't need to be known at compile time,
-but you must assign it a value exactly once.
-This means you can use constants to name a value
-that you determine once but use in many places.
+Use `let` para criar uma constante e `var` para criar uma variável.
+O valor de uma constante não precisa ser sabido no momento do código ser compilado. mas você deve atribuí-la um valor somente uma vez. Isso significa que você pode usar constantes para nomear um valor que você determinou uma vez, mas utiliza em muitos lugares.
 
 ```swift
 var myVariable = 42
@@ -72,19 +68,8 @@ let myConstant = 42
   ```
 }
 
-A constant or variable must have the same type
-as the value you want to assign to it.
-However, you don't always have to write the type explicitly.
-Providing a value when you create a constant or variable
-lets the compiler infer its type.
-In the example above,
-the compiler infers that `myVariable` is an integer
-because its initial value is an integer.
-
-If the initial value doesn't provide enough information
-(or if there isn't an initial value),
-specify the type by writing it after the variable,
-separated by a colon.
+A constante ou variável deve ser do mesmo tipo do valor que você quer atribuir a ela.  Entretanto, você nem sempre precisa atribuir o tipo de forma explícita. 
+Dar um valor à constante ou variável no momento de sua criação faz com que o compilador infira qual o seu tipo.  No exemplo acima, o compilador irá inferir que a `myVariable` é um inteiro, pois o seu valor inicial é um inteiro.   Se o valor inicial não entrega informação suficiente (ou se não foi atribuído nenhum valor inicial), especifique o tipo escrevendo-o logo depois da variável, separado por dois pontos. 
 
 ```swift
 let implicitInteger = 70
@@ -103,12 +88,9 @@ let explicitDouble: Double = 70
   ```
 }
 
-> Experiment: Create a constant with
-> an explicit type of `Float` and a value of `4`.
+> Experimente: Crie uma constante com o tipo `Float` explícito e de valor `4`.
 
-Values are never implicitly converted to another type.
-If you need to convert a value to a different type,
-explicitly make an instance of the desired type.
+Valores nunca são implicitamente convertidos para outro tipo. Se você precisar converter um valor para um tipo diferente, faça uma instância explicitamente do tipo desejado. 
 
 ```swift
 let label = "The width is "
@@ -129,8 +111,8 @@ let widthLabel = label + String(width)
   ```
 }
 
-> Experiment: Try removing the conversion to `String` from the last line.
-> What error do you get?
+> Experimente: Tente remover a conversão para `String` da última linha
+> Que tipo de erro dá?
 
 @Comment {
   TODO: Discuss with Core Writers ---
@@ -138,10 +120,7 @@ let widthLabel = label + String(width)
   helping you learn something?
 }
 
-There's an even simpler way to include values in strings:
-Write the value in parentheses,
-and write a backslash (`\`) before the parentheses.
-For example:
+Existe uma forma ainda mais simples de incluir valores em uma string: escreva o valor em parênteses com uma barra invertida (`\`) antes do primeiro parêntese. Por exemplo:
 
 ```swift
 let apples = 3
@@ -166,15 +145,10 @@ let fruitSummary = "I have \(apples + oranges) pieces of fruit."
   ```
 }
 
-> Experiment: Use `\()` to
-> include a floating-point calculation in a string
-> and to include someone’s name in a greeting.
+> Experimente: Use `\()` para incluir um cálculo de floating-point em uma string e para incluir o nome de alguém em uma saudação.
 
-Use three double quotation marks (`"""`) for strings
-that take up multiple lines.
-Indentation at the start of each quoted line is removed,
-as long as it matches the indentation of the closing quotation marks.
-For example:
+Use três aspas duplas para strings que pegam múltiplas linhas.  A indentação no começo de cada linha de texto será removida, caso seja a mesma das aspas fechando. 
+Por exemplo:
 
 ```swift
 let quotation = """
@@ -200,10 +174,7 @@ And then I said "I have \(apples + oranges) pieces of fruit."
   <rdar://problem/49129068> Swift code formatting damages indentation
 }
 
-Create arrays and dictionaries using brackets (`[]`),
-and access their elements by writing
-the index or key in brackets.
-A comma is allowed after the last element.
+Crie arrays e dicionários usando colchetes (`[]`), e acesse seus elementos escrevendo o índex ou chave também entre colchetes. A vírgula após o último elemento é permitida. 
 
 @Comment {
   REFERENCE
@@ -272,7 +243,7 @@ occupations["Jayne"] = "Public Relations"
   ```
 }
 
-Arrays automatically grow as you add elements.
+Os Arrays crescem automaticamente quando você adiciona elementos a eles. 
 
 ```swift
 fruits.append("blueberries")
@@ -290,9 +261,7 @@ print(fruits)
   ```
 }
 
-To create an empty array or dictionary,
-use the initializer syntax.
-
+Para criar um array ou dicionário vazio, use a sintaxe de inicialização.  
 ```swift
 let emptyArray: [String] = []
 let emptyDictionary: [String: Float] = [:]
@@ -308,11 +277,8 @@ let emptyDictionary: [String: Float] = [:]
   ```
 }
 
-If type information can be inferred,
-you can write an empty array as `[]`
-and an empty dictionary as `[:]` ---
-for example, when you set a new value for a variable
-or pass an argument to a function.
+Se o tipo da informação pode ser inferido, você pode escrever um array vazio com `[]` e um dicionário vazio com `[:]`. Por exemplo, quando você configura um novo valor para uma variável ou passa um argumento para uma função.
+
 
 @Comment {
   iBooks Store screenshot begins here.
