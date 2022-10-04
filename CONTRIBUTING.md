@@ -1,40 +1,80 @@
-# Contributing to *The Swift Programming Language* book
+# Contribuindo
 
-By submitting a pull request,
-you represent that you have the right to license your contribution
-to Apple and the community,
-and agree by submitting the patch
-that your contributions are licensed under
-the [Swift license](https://swift.org/LICENSE.txt).
+Esse projeto tem como objetivo traduzir e disponibilizar gratuitamente em português o livro _The Swift Programming Language_.
 
-For now,
-we’re expecting most pull requests to be enhancements and bug fixes
-to support the Swift-DocC publication,
-with only minor content changes.
+Cada tópico do livro tem uma **issue**. Antes de iniciar a tradução de um tópico verifique na respectiva **issue** se alguém já não está traduzindo. Quando alguém pegar uma dessas `sessao/topico` para traduzir, terá o nome atribuído a Issue.
 
-For small changes,
-like typo fixes and changes to a few paragraphs,
-fork this repository and make a pull request.
+## Convenções
 
-A formal contribution process for this document is still in development.
-In the meantime,
-start a thread in the [Swift forums][forum] for larger changes
-to discuss your approach and identify possible issues
-before you invest a lot of time in writing.
+Para facilitar o processo de revisão e diminuir as inconsistências entre traduções, quem contribuir deverá seguir algumas convenções:
 
-Content in this book follows [Apple Style Guide][asg]
-and [this book’s style guide][tspl-style].
+- Não traduzir palavras reservadas.
+- Na dúvida entre traduzir ou não determinado termo, deixar o termo em inglês.
+- Criar Branches no padrão `sessao/topico` e traduzir por _Sessão_ e _Tópico_ (textos mais internos dentro da _Sessão_).
+- _Pull Requests_ devem ser feitos para `master`, marcando a Issue que resolvem.
 
-[asg]: https://help.apple.com/applestyleguide/
-[forum]: https://forums.swift.org/c/development/swift-docc/80
-[tspl-style]: /Style.md
+## Criação de Branches
 
-## Submitting a pull request
+A tradução deverá ser feita através de Forks, com branches nomeadas por sessão e tópico, com letras minúsculas, seguindo o seguinte padrão:
 
-Use the following steps when creating a new pull request:
+`nome-da-sessao/nome-do-topico`
 
-1. Create a local fork of this repository with your changes.
-2. Test that your changes build locally by running `swift package plugin generate-documentation --target TSPL --transform-for-static-hosting`.
-3. Create a pull request in this repository.
-4. Add @amartini51 and @krilnon as reviewers.
-5. Confirm that your changes build in CI by commenting `@swift-ci please test` on your pull request.
+Exemplo:
+`a-swift-tour/control-flow`
+
+Caso não existam tópicos para determinada sessão, a branch deve ter somente o nome da sessão:
+`nome-da-sessao`
+
+## Pull Requests
+
+Os Pull Requests devem ser feitos diretamente para a branch `master`, e utilizar o template do repositório específico para PRs. Após terminar uma tradução, lembre-se de marcá-la como traduzida no README. A revisão será feita avaliando a tradução em si, a coerência do texto da tradução, e a coerência com as traduções anteriores.
+
+## Motivação
+
+Existe pouco ou nenhum material gratuito em português de Swift. Contribuindo com a tradução desse livro, você pode estar ajudando alguém sem dinheiro para comprar material a estudar. Além disso, você mesmo estará estudando, revisando, e aprendendo recursos da linguagem que você talvez não conheça.
+
+Com esforço coletivo, conseguiremos finalizar a tradução e facilitar o aprendizado de Swift para quem não sabe inglês.
+
+
+## Guia de Tradução
+
+Na tabela abaixo estão listadas algumas palavras importantes que aparecem com recorrência no livro e suas respectivas traduções para manter consistência. Se você encontrar uma palavra que acredite que deve ser incluída na tabela, submeta um _pull request_ com a adição.
+
+| Original | Tradução |
+| ---------| ---------|
+| Tuple | Tupla |
+| Array | _Array_ |
+| Set | _Set_ |
+| Dictionary | Dicionário |
+| Class | Classe |
+| Struct | Estrutura |
+| Enumeration | Enumeração |
+| Closure | - |
+| Getter | - |
+| Setter | - |
+| Lazy Properties | Propriedades _Lazy_ |
+| In-Out Parameters | Parâmetros _In-Out_ |
+
+
+**Importante**: Palavras que não são traduzidas devem ser marcadas no texto em _itálico_.
+
+```diff
+- Closures are self-contained blocks of functionality that can be passed around and used in your code. Closures in Swift are similar to blocks in C and Objective-C and to lambdas in other programming languages.
++ _Closures_ são blocos autocontidos de funcionalidade que podem ser passados e usados em seu código. _Closures_ em Swift são semelhantes a blocos em C e Objective-C e _lambdas_ em outras linguagens de programação.
+```
+
+### Blocos de Código
+
+Nos blocos de código somente os **comentários** devem ser traduzidos. Menções a palavras do código, como tipos, variáveis, e funções, devem ser marcadas com aspas simples.
+
+```diff
+let string1 = "hello"
+let string2 = " there"
+var welcome = string1 + string2
+- // welcome now equals "hello there"
++ // 'welcome' agora é igual a "hello there"
+```
+
+### Projeto de Tradução Antigo
+
+Há um [repositório arquivado](https://github.com/AcademyIFCE/swift-book-markdown) com um projeto de tradução antigo que está incompleto e foi descontinuado em favor desse projeto novo que é um _fork_ do [repositório oficial](https://github.com/apple/swift-book) com suporte ao [DocC](https://developer.apple.com/documentation/docc). O projeto antigo pode ser utilizado como base para a tradução mas é importante que o texto seja revisado porque pode haver diferenças no conteúdo ou a tradução pode não estar adequada às regras definidas nesse guia.
