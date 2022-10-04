@@ -700,20 +700,19 @@ print(total)
 Use `..<` to make a range that omits its upper value,
 and use `...` to make a range that includes both values.
 
-## Functions and Closures
+## Funções e *Closures*
 
-Use `func` to declare a function.
-Call a function by following its name
-with a list of arguments in parentheses.
-Use `->` to separate the parameter names and types
-from the function's return type.
+Use `func` para declarar uma função.
+Crie uma função seguindo seu nome
+com uma lista de argumentos entre parênteses.
+Use `->` para separar os nomes e tipos de parâmetros do tipo de retorno da função.
 
 @Comment {
-  REFERENCE
-  Bob is used as just a generic name,
-  but also a callout to Alex's dad.
-  Tuesday is used on the assumption that lots of folks would be reading
-  on the Tuesday after the WWDC keynote.
+  REFERÊNCIA
+  Bob é usado apenas como um nome genérico,
+  mas também uma chamada para o pai de Alex.
+  Terça-feira foi usado na suposição de que muitas pessoas estariam lendo
+  na terça-feira após a palestra da WWDC.
 }
 
 ```swift
@@ -738,14 +737,15 @@ greet(person: "Bob", day: "Tuesday")
   ```
 }
 
-> Experiment: Remove the `day` parameter.
-> Add a parameter to include today’s lunch special in the greeting.
+> Experimente: tente remover o parâmetro `day`.
+> Adicione um parâmetro que inclua o almoço especial de hoje na saudação.
 
-By default,
-functions use their parameter names
-as labels for their arguments.
-Write a custom argument label before the parameter name,
-or write `_` to use no argument label.
+Por padrão,
+funções usam seus nomes de parâmetros
+como rótulos para seus argumentos.
+Escreva um rótulo de argumento personalizado antes do nome do parâmetro,
+ou escreva `_` para não usar nenhum rótulo de argumento.
+
 
 ```swift
 func greet(_ person: String, on day: String) -> String {
@@ -769,17 +769,19 @@ greet("John", on: "Wednesday")
   ```
 }
 
-Use a tuple to make a compound value ---
-for example, to return multiple values from a function.
-The elements of a tuple can be referred to
-either by name or by number.
+
+Use uma tupla para fazer um valor composto ---
+por exemplo, para retornar vários valores de uma função.
+Os elementos de uma tupla podem ser referenciados pelo
+nome ou pelo número.
+
 
 @Comment {
-  REFERENCE
-  Min, max, and sum are convenient for this example
-  because they're all simple operations
-  that are performed on the same kind of data.
-  This gives the function a reason to return a tuple.
+  REFERÊNCIA
+  Mínimo (min), máximo (max) e soma (*sum*) são convenientes para este exemplo
+  porque são todas operações simples
+  que são executados com o mesmo tipo de dado.
+  Isso dá à função um motivo para retornar uma tupla.
 }
 
 ```swift
@@ -801,9 +803,9 @@ func calculateStatistics(scores: [Int]) -> (min: Int, max: Int, sum: Int) {
 }
 let statistics = calculateStatistics(scores: [5, 3, 100, 3, 9])
 print(statistics.sum)
-// Prints "120"
+// Imprime "120"
 print(statistics.2)
-// Prints "120"
+// Imprime "120"
 ```
 
 
@@ -837,12 +839,11 @@ print(statistics.2)
   ```
 }
 
-Functions can be nested.
-Nested functions have access to variables
-that were declared in the outer function.
-You can use nested functions
-to organize the code in a function
-that's long or complex.
+Funções podem ser aninhadas.
+Funções aninhadas têm acesso a variáveis
+que foram declaradas na função externa.
+Você pode usá-las para organizar o código em funções
+que são longas ou complexas.
 
 ```swift
 func returnFifteen() -> Int {
@@ -876,8 +877,8 @@ returnFifteen()
   ```
 }
 
-Functions are a first-class type.
-This means that a function can return another function as its value.
+
+As funções são um tipo de primeira classe, o que significa que podem ter outra função como seu valor de retorno.
 
 ```swift
 func makeIncrementer() -> ((Int) -> Int) {
@@ -909,7 +910,7 @@ increment(7)
   ```
 }
 
-A function can take another function as one of its arguments.
+Uma função pode ter outra função como um de seus argumentos.
 
 ```swift
 func hasAnyMatches(list: [Int], condition: (Int) -> Bool) -> Bool {
@@ -951,15 +952,11 @@ hasAnyMatches(list: numbers, condition: lessThanTen)
   ```
 }
 
-Functions are actually a special case of closures:
-blocks of code that can be called later.
-The code in a closure has access to things like variables and functions
-that were available in the scope where the closure was created,
-even if the closure is in a different scope when it's executed ---
-you saw an example of this already with nested functions.
-You can write a closure without a name
-by surrounding code with braces (`{}`).
-Use `in` to separate the arguments and return type from the body.
+As funções são, na verdade, um caso especial de closures:
+blocos de código que podem ser chamados posteriormente.
+O código em uma *closure* tem acesso a coisas como variáveis e funções que estavam disponíveis no escopo de sua criação, ainda que a *clusore* esteja em um escopo diferente quando for executada, --- você viu um exemplo disso já com funções aninhadas.
+Você pode escrever uma *closure* sem um nome, envolvendo o código com chaves (`{}`).
+Use `in` para separar os argumentos e o tipo de retorno do corpo da *closure*.
 
 ```swift
 numbers.map({ (number: Int) -> Int in
@@ -983,20 +980,20 @@ numbers.map({ (number: Int) -> Int in
   ```
 }
 
-> Experiment: Rewrite the closure to return zero for all odd numbers.
+> Experimente: Reescreva essa *closure* para retornar zero para todos os números ímpares.
 
-You have several options for writing closures more concisely.
-When a closure's type is already known,
-such as the callback for a delegate,
-you can omit the type of its parameters,
-its return type, or both.
-Single statement closures implicitly return the value
-of their only statement.
+Você tem várias opções para escrever *closures* de forma mais concisa.
+Quando o seu tipo já é conhecido,
+como o retorno de uma chamada para um *delegate*,
+você pode omitir o tipo de seus parâmetros,
+seu tipo de retorno, ou ambos.
+*Closures* de instrução única retornam implicitamente o valor
+de sua única instrução.
 
 ```swift
 let mappedNumbers = numbers.map({ number in 3 * number })
 print(mappedNumbers)
-// Prints "[60, 57, 21, 36]"
+// Imprime "[60, 57, 21, 36]"
 ```
 
 
@@ -1010,17 +1007,17 @@ print(mappedNumbers)
   ```
 }
 
-You can refer to parameters by number instead of by name ---
-this approach is especially useful in very short closures.
-A closure passed as the last argument to a function
-can appear immediately after the parentheses.
-When a closure is the only argument to a function,
-you can omit the parentheses entirely.
+Você pode se referir a parâmetros por número em vez de por nome ---
+essa abordagem é especialmente útil em *closures* muito curtas.
+Uma *closure* passada como o último argumento para uma função
+pode aparecer logo após os parênteses.
+Quando uma *closure* é o único argumento para uma função,
+você pode omitir os parênteses.
 
 ```swift
 let sortedNumbers = numbers.sorted { $0 > $1 }
 print(sortedNumbers)
-// Prints "[20, 19, 12, 7]"
+// Imprime "[20, 19, 12, 7]"
 ```
 
 
@@ -1035,15 +1032,15 @@ print(sortedNumbers)
 }
 
 @Comment {
-  Called sorted() on a variable rather than a literal to work around an issue in Xcode.  See <rdar://17540974>.
+  Chamamos sorted() em uma variável em vez de um literal para solucionar um problema no Xcode. Consulte <rdar://17540974>.
 }
 
 @Comment {
-  Omitted sort(foo, <) because it often causes a spurious warning in Xcode.  See <rdar://17047529>.
+  Sort(foo, <) omitido porque geralmente causa um aviso falso no Xcode. Consulte <rdar://17047529>.
 }
 
 @Comment {
-  Omitted custom operators as "advanced" topics.
+  Operadores personalizados omitidos como tópicos "avançados".
 }
 
 ## Objects and Classes
