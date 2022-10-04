@@ -335,14 +335,16 @@ occupations = [:]
 
 ## Control Flow
 
-Use `if` and `switch` to make conditionals,
-and use `for`-`in`, `while`, and `repeat`-`while`
-to make loops.
-Parentheses around the condition or loop variable are optional.
-Braces around the body are required.
+`## Control Flow
+
+Use `if` e `switch` para fazer condicionais,
+e use `for`-`in`, `while`, e `repeat`-`while`
+para criar loops.
+É opcional inserir as condicionais ou variáveis de loop entre parênteses. 
+É obrigatório inserir o texto _body_ entre chaves.
 
 ```swift
-let individualScores = [75, 43, 103, 87, 12]
+ individualScores = [75, 43, 103, 87, 12]
 var teamScore = 0
 for score in individualScores {
     if score > 50 {
@@ -375,40 +377,39 @@ print(teamScore)
 }
 
 @Comment {
-  REFERENCE
-  Jelly babies are a candy/sweet that was closely associated
-  with past incarnations of the Doctor in Dr. Who.
+  REFERÊNCIA
+  Gomas de mascar ou _JellyBabies_ são doces frequentemente associados com as regenerações passadas dos doutores na série britânica _Doctor Who_.
 }
 
 @Comment {
   -> let haveJellyBabies = true
   -> if haveJellyBabies {
      }
-  << Would you like a jelly baby?
+  << Você aceita _JellyBabies_?
 }
 
-In an `if` statement,
-the conditional must be a Boolean expression ---
-this means that code such as `if score { ... }` is an error,
-not an implicit comparison to zero.
+Em uma declaração `if`,
+a condicional deve ser uma Boolean expression ---
+isso significa que o código como `if score { ... }` é um erro,
+não é uma comparação implicita à zero.
 
-You can use `if` and `let` together
-to work with values that might be missing.
-These values are represented as optionals.
-An optional value either contains a value
-or contains `nil` to indicate that a value is missing.
-Write a question mark (`?`) after the type of a value
-to mark the value as optional.
+Você pode usar ‘if’ e ‘let’ juntos
+para trabalhar com valores que podem estar ausentes.
+Esses valores são representados como opcionais.
+Um valor opcional também um valor
+ou contém `nil`para indicar um valor ausente.
+Insira um ponto de interrogação, em seguida, digite um valor
+para marcá-lo como opcional.
 
 @Comment {
-  iBooks Store screenshot ends here.
+ Captura de tela da iBooks Store finaliza aqui.
 }
 
 @Comment {
-  REFERENCE
-  John Appleseed is a stock Apple fake name,
-  going back at least to the contacts database
-  that ships with the SDK in the simulator.
+  REFERÊNCIA
+  John Appleseed é um nome falso da Apple para uso demonstrativo,
+  voltando para, pelo menos, a _database_ de contatos
+  que vem contida no simulador SDK.
 }
 
 ```swift
@@ -442,22 +443,22 @@ if let name = optionalName {
   ```
 }
 
-> Experiment: Change `optionalName` to `nil`.
-> What greeting do you get?
-> Add an `else` clause that sets a different greeting
-> if `optionalName` is `nil`.
+> Experimente: Altere `optionalName` para `nil`.
+> Qual saudação você recebe?
+> Insira `else` para definir uma saudação diferente
+> Se `optionalName` é `nil`.
 
-If the optional value is `nil`,
-the conditional is `false` and the code in braces is skipped.
-Otherwise, the optional value is unwrapped and assigned
-to the constant after `let`,
-which makes the unwrapped value available
-inside the block of code.
+Se o valor opcional é `nil`,
+a condicional é ‘false’ e o código nas chaves são pulados
+Por outro lado, o valor opcional é descoberto e inscrito,
+para a constant edepois de ‘let’
+o que faz o valor descoberto ficar disponível
+dentro do bloco de código.
 
-Another way to handle optional values
-is to provide a default value using the `??` operator.
-If the optional value is missing,
-the default value is used instead.
+Outra maneira de lidar com os valores opcionais
+é provendo um valor padrão usando o operador ‘??’.
+Se o valor opcional está ausente,
+o valor padrão é usado como substituto. 
 
 ```swift
 let nickname: String? = nil
@@ -498,17 +499,17 @@ if let nickname {
   ```
 }
 
-Switches support any kind of data
-and a wide variety of comparison operations ---
-they aren't limited to integers
-and tests for equality.
+Switches suporta todos os tipos de dados
+e uma grane variedade de _comparison operations_ (operações de comparação) —
+sem limitação de inteiros
+e testes para igualdade.
 
 @Comment {
-  REFERENCE
-  The vegetables and foods made from vegetables
-  were just a convenient choice for a switch statement.
-  They have various properties
-  and fit with the apples & oranges used in an earlier example.
+  REFERÊNCIA
+  Os vegetais e comidas feitas para vegetarianos
+são uma escolha conveniente para uma declaração swift.
+Eles tem várias propriedades
+e se encaixam com o exemplo anterior de maçãs e laranjas.
 }
 
 ```swift
@@ -546,37 +547,33 @@ switch vegetable {
   ```
 }
 
-> Experiment: Try removing the default case.
-> What error do you get?
+> Experimente: tente remover a  _default case_
+> Qual o erro que foi percebido?
 
-Notice how `let` can be used in a pattern
-to assign the value that matched the pattern
-to a constant.
+Perceba como ‘let’ pode ser usado em um padrão
+para determinar o valor que combina o padrão
+com a constante.
 
-After executing the code inside the switch case that matched,
-the program exits from the switch statement.
-Execution doesn't continue to the next case,
-so you don't need to explicitly break out of the switch
-at the end of each case’s code.
+Depois de executar o código dentro do ’switch case’
 
 @Comment {
-  Omitting mention of "fallthrough" keyword.
-  It's in the guide/reference if you need it.
+Omitir a menção “fallthrough".
+  Está no guia/referência, caso seja necessário.
 }
 
-You use `for`-`in` to iterate over items in a dictionary
-by providing a pair of names to use
-for each key-value pair.
-Dictionaries are an unordered collection,
-so their keys and values are iterated over
-in an arbitrary order.
+Você usa `for`-`in`para integrar os itens em um dicionário
+provendo um par names para usar
+para cada par de key-value.
+Dictionaries são uma collection não-ordenada
+então, suas keys e valores são integrados
+em uma ordem arbritária
 
 @Comment {
-  REFERENCE
-  Prime, square, and Fibonacci numbers
-  are just convenient sets of numbers
-  that many developers are already familiar with
-  that we can use for some simple math.
+  REFERÊNCIA
+  Números primos, quadrados e de Fibonacci
+  são só números convenientes
+  que muitos desenvolvedores são familiarizados
+  e que podemos usar para cálculos simples.
 }
 
 ```swift
@@ -620,15 +617,15 @@ print(largest)
   ```
 }
 
-> Experiment: Replace the `_` with a variable name,
-> and keep track of which kind of number was the largest.
+> Experimente: Substitua `_` com o nome de uma variável,
+> e acmpanhe qual tipo de número foi maior.
 
-Use `while` to repeat a block of code until a condition changes.
-The condition of a loop can be at the end instead,
-ensuring that the loop is run at least once.
+Use `while` para repetir um bloco de código até a condição mudar.
+As condições de um loop podem estar no final
+assegurando que o loop será executado pelo menos uma vez.
 
 @Comment {
-  REFERENCE
+  REEFERÊNCIA
   This example is rather skeletal -- m and n are pretty boring.
   I couldn't come up with anything suitably interesting at the time though,
   so I just went ahead and used this.
@@ -671,8 +668,8 @@ print(m)
   ```
 }
 
-You can keep an index in a loop
-by using `..<` to make a range of indexes.
+Você pode manter um _index_ em loop
+usando `..<` para criar uma série de _indexes_.
 
 ```swift
 var total = 0
@@ -697,8 +694,8 @@ print(total)
   ```
 }
 
-Use `..<` to make a range that omits its upper value,
-and use `...` to make a range that includes both values.
+Use `..<` para criar uma série que omite seu maior valor,
+e use `...` para usar uma série que inclui ambos valores.
 
 ## Functions and Closures
 
