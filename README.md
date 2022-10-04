@@ -1,51 +1,15 @@
-# The Swift Programming Language
+# The Swift Programming Language em Português
 
-This repository contains a version of *The Swift Programming Language*
-that you can build using Swift-DocC.
+Esse repositório é um fork contendo uma versão traduzida pela comunidade do livro *The Swift Programming Language* que pode ser compilada e visualizada usando Swift-DocC.
 
-The version of *The Swift Programming Language* published on [docs.swift.org](https://docs.swift.org/swift-book/)
-is currently built using a legacy toolchain,
-not from this repository or its content.
-The goal is to replace that version with a version built from this repository,
-working with the community to extend Swift-DocC where needed.
+## Contribuindo com a Tradução
 
-## Contributing
+Você pode ajudar contribuindo com a tradução dos conteúdos dos arquivos markdown (.md) seguindo o as instruções contidas no arquivo [CONTRIBUING.md](./CONTRIBUTING.md).
 
-For now,
-we’re expecting most pull requests to be enhancements and bug fixes
-to support the Swift-DocC publication,
-with only minor content changes.
+## Compilando e Visualizando a Documentação
 
-For small changes,
-like typo fixes and changes to a few paragraphs,
-fork this repository and make a pull request.
+1. Clone esse repositório
+2. Entre no diretório raiz desse repositório via terminal
+3. Execute `swift package --disable-sandbox preview-documentation --target TSPL`
 
-A formal contribution process for this document is still in development.
-In the meantime,
-start a thread in the [Swift forums][forum] for larger changes
-to discuss your approach and identify possible issues
-before you invest a lot of time in writing.
-
-Content in this book follows [Apple Style Guide][asg]
-and [this book’s style guide][tspl-style].
-
-File bugs about the content using the [issues page][bugs] on Github.
-
-Discussions and contributions follow the [Swift Code of Conduct][conduct].
-
-For more information, see [Contributing to The Swift Programming Language][contributing].
-
-[asg]: https://help.apple.com/applestyleguide/
-[bugs]: https://github.com/apple/swift-book/issues
-[conduct]: https://www.swift.org/code-of-conduct
-[contributing]: /CONTRIBUTING.md
-[forum]: https://forums.swift.org/c/development/swift-docc/80
-[tspl-style]: /Style.md
-
-## Building
-
-Run `swift package --disable-sandbox preview-documentation --target TSPL`
-in this repository's root directory.
-
-After running DocC, open the link that `docc` outputs
-to display a local preview in your browser.
+Depois disso, abra o link que tiver sido exibido como saída desse comando para visualizar o DocC gerado no seu browser.
