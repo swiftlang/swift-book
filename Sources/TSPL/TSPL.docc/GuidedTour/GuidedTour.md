@@ -344,7 +344,7 @@ para criar loops.
 É obrigatório inserir o texto _body_ entre chaves.
 
 ```swift
- individualScores = [75, 43, 103, 87, 12]
+let individualScores = [75, 43, 103, 87, 12]
 var teamScore = 0
 for score in individualScores {
     if score > 50 {
