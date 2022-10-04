@@ -2,7 +2,12 @@
 
 Esse projeto tem como objetivo traduzir e disponibilizar gratuitamente em português o livro _The Swift Programming Language_.
 
-Cada tópico do livro tem uma **issue**. Antes de iniciar a tradução de um tópico verifique na respectiva **issue** se alguém já não está traduzindo. Quando alguém pegar uma dessas `sessao/topico` para traduzir, terá o nome atribuído a Issue.
+Cada tópico do livro tem uma **issue**. Para iniciar a tradução de um tópico:
+1. Abra a aba issues desse repositório.
+2. Ordene as issues pelas mais antigas.
+3. Abra a **issue** do tópico que você deseja traduzir.
+4. Verifique na respectiva **issue** se alguém já não está traduzindo. Quando alguém pegar uma dessas `sessao/topico` para traduzir, terá o nome atribuído a **issue**.
+5. Se ninguém estiver traduzindo, comente na **issue** avisando que irá traduzí-la e você terá seu nome atribuído a ela.
 
 ## Convenções
 
@@ -11,7 +16,7 @@ Para facilitar o processo de revisão e diminuir as inconsistências entre tradu
 - Não traduzir palavras reservadas.
 - Na dúvida entre traduzir ou não determinado termo, deixar o termo em inglês.
 - Criar Branches no padrão `sessao/topico` e traduzir por _Sessão_ e _Tópico_ (textos mais internos dentro da _Sessão_).
-- _Pull Requests_ devem ser feitos para `master`, marcando a Issue que resolvem.
+- _Pull Requests_ devem ser feitos para `main`, marcando a Issue que resolvem.
 
 ## Criação de Branches
 
@@ -27,7 +32,7 @@ Caso não existam tópicos para determinada sessão, a branch deve ter somente o
 
 ## Pull Requests
 
-Os Pull Requests devem ser feitos diretamente para a branch `master`, e utilizar o template do repositório específico para PRs. Após terminar uma tradução, lembre-se de marcá-la como traduzida no README. A revisão será feita avaliando a tradução em si, a coerência do texto da tradução, e a coerência com as traduções anteriores.
+Os Pull Requests devem ser feitos diretamente para a branch `main`, e utilizar o template do repositório específico para PRs. Após terminar uma tradução, lembre-se de marcá-la como traduzida no README. A revisão será feita avaliando a tradução em si, a coerência do texto da tradução, e a coerência com as traduções anteriores.
 
 ## Motivação
 
