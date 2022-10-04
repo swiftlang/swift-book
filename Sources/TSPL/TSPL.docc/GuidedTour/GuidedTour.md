@@ -333,9 +333,9 @@ occupations = [:]
   ```
 }
 
-## Control Flow
+## Controle de Fluxo
 
-`## Control Flow
+`## Controle de Fluxo
 
 Use `if` e `switch` para fazer condicionais,
 e use `for`-`in`, `while`, e `repeat`-`while`
@@ -389,14 +389,14 @@ print(teamScore)
 }
 
 Em uma declaração `if`,
-a condicional deve ser uma Boolean expression ---
+a condicional deve ser uma expressão booleana ---
 isso significa que o código como `if score { ... }` é um erro,
 não é uma comparação implicita à zero.
 
 Você pode usar ‘if’ e ‘let’ juntos
 para trabalhar com valores que podem estar ausentes.
 Esses valores são representados como opcionais.
-Um valor opcional também um valor
+Um valor opcional contém um valor
 ou contém `nil`para indicar um valor ausente.
 Insira um ponto de interrogação, em seguida, digite um valor
 para marcá-lo como opcional.
@@ -450,9 +450,9 @@ if let name = optionalName {
 
 Se o valor opcional é `nil`,
 a condicional é ‘false’ e o código nas chaves são pulados
-Por outro lado, o valor opcional é descoberto e inscrito,
+Caso contrário, o valor opcional é desempacotado e atribuído,
 para a constant edepois de ‘let’
-o que faz o valor descoberto ficar disponível
+o que faz o valor desempacotado ficar disponível
 dentro do bloco de código.
 
 Outra maneira de lidar com os valores opcionais
@@ -500,7 +500,7 @@ if let nickname {
 }
 
 Switches suporta todos os tipos de dados
-e uma grane variedade de _comparison operations_ (operações de comparação) —
+e uma grande variedade de operações de comparação —
 sem limitação de inteiros
 e testes para igualdade.
 
@@ -563,9 +563,9 @@ Omitir a menção “fallthrough".
 
 Você usa `for`-`in`para integrar os itens em um dicionário
 provendo um par names para usar
-para cada par de key-value.
-Dictionaries são uma collection não-ordenada
-então, suas keys e valores são integrados
+para cada par de chave de valor.
+Dicionários são uma coleção não-ordenada
+então, suas chaves e valores são integrados
 em uma ordem arbritária
 
 @Comment {
@@ -618,7 +618,7 @@ print(largest)
 }
 
 > Experimente: Substitua `_` com o nome de uma variável,
-> e acmpanhe qual tipo de número foi maior.
+> e acompanhe qual tipo de número foi maior.
 
 Use `while` para repetir um bloco de código até a condição mudar.
 As condições de um loop podem estar no final
@@ -694,8 +694,8 @@ print(total)
   ```
 }
 
-Use `..<` para criar uma série que omite seu maior valor,
-e use `...` para usar uma série que inclui ambos valores.
+Use `..<` para criar um intervalo que omite seu maior valor,
+e use `...` para usar um intervalo que inclui ambos valores.
 
 ## Functions and Closures
 
