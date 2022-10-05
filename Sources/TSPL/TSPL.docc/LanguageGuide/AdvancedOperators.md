@@ -52,7 +52,7 @@ sem nenhum espaço em branco:
 
 ```swift
 let initialBits: UInt8 = 0b00001111
-let invertedBits = ~initialBits  // equals 11110000
+let invertedBits = ~initialBits  // igual a 11110000
 ```
 
 
@@ -62,7 +62,7 @@ let invertedBits = ~initialBits  // equals 11110000
   ```swifttest
   -> let initialBits: UInt8 = 0b00001111
   >> assert(initialBits == 15)
-  -> let invertedBits = ~initialBits  // equals 11110000
+  -> let invertedBits = ~initialBits  // igual a 11110000
   >> assert(invertedBits == 240)
   ```
 }
