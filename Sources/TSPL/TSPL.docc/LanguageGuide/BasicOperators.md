@@ -346,10 +346,10 @@ Although the unary plus operator doesn't actually do anything,
 you can use it to provide symmetry in your code for positive numbers
 when also using the unary minus operator for negative numbers.
 
-## Compound Assignment Operators
+## Operadores de Atribuição Compostos
 
-Like C, Swift provides *compound assignment operators* that combine assignment (`=`) with another operation.
-One example is the *addition assignment operator* (`+=`):
+Assim como C, Swift fornece *operadores de atribuição compostos* que combinam atribuição (`=`) com outra operação.
+Um exemplo é o *operador de atribuição de adição* (`+=`):
 
 ```swift
 var a = 1
@@ -369,15 +369,15 @@ a += 2
   ```
 }
 
-The expression `a += 2` is shorthand for `a = a + 2`.
-Effectively, the addition and the assignment are combined into one operator
-that performs both tasks at the same time.
+A expressão `a += 2` é um atalho para `a = a + 2`.
+Efetivamente, a adição e a atribuição são combinadas em um operador
+que executa as duas tarefas ao mesmo tempo.
 
-> Note: The compound assignment operators don't return a value.
-> For example, you can't write `let b = a += 2`.
+> Nota: Os operadores de atribuição compostos não retornam um valor.
+> Por exemplo, você não pode escrever `let b = a += 2`.
 
-For information about the operators provided by the Swift standard library,
-see [Operator Declarations](https://developer.apple.com/documentation/swift/operator_declarations).
+Para obter informações sobre os operadores fornecidos pela biblioteca padrão Swift,
+veja [Operator Declarations](https://developer.apple.com/documentation/swift/operator_declarations).
 
 ## Comparison Operators
 
