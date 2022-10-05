@@ -39,16 +39,16 @@ such as encoding and decoding data for communication over a custom protocol.
 
 Swift supports all of the bitwise operators found in C, as described below.
 
-### Bitwise NOT Operator
+### Operador _Bitwise NOT_
 
-The *bitwise NOT operator* (`~`) inverts all bits in a number:
+O *operador _bitwise NOT_* (`~`) inverte todos os bits em um número:
 
 ![](bitwiseNOT)
 
 
-The bitwise NOT operator is a prefix operator,
-and appears immediately before the value it operates on,
-without any white space:
+O operador _bitwise NOT_ é um operador de pré-fixo 
+e aparece imediatamente antes do valor a qual opera,
+sem nenhum espaço em branco:
 
 ```swift
 let initialBits: UInt8 = 0b00001111
@@ -67,23 +67,23 @@ let invertedBits = ~initialBits  // equals 11110000
   ```
 }
 
-`UInt8` integers have eight bits
-and can store any value between `0` and `255`.
-This example initializes a `UInt8` integer with the binary value `00001111`,
-which has its first four bits set to `0`,
-and its second four bits set to `1`.
-This is equivalent to a decimal value of `15`.
+O inteiro `UInt8` tem oito bits
+e cada um pode armazenar qualquer valor entre `0` e `255`.
+Este exemplo inicializa um inteiro `UInt8` com o valor binário `00001111`
+que tem `0` nos primeiros quatro bits,
+e `1` nos seu segundo conjunto de quatro bits.
+Isso equivale ao decimal de valor `15`.
 
 @Comment {
   iBooks Store screenshot begins here.
 }
 
-The bitwise NOT operator is then used to create a new constant called `invertedBits`,
-which is equal to `initialBits`,
-but with all of the bits inverted.
-Zeros become ones, and ones become zeros.
-The value of `invertedBits` is `11110000`,
-which is equal to an unsigned decimal value of `240`.
+O operador _bitwise NOT_ é então usado para criar uma nova constante chamada `invertedBits`,
+que é igual ao `initialBits`,
+mas com todos os bits invertidos.
+Zeros viram uns e uns viram zeros.
+O valor de `invertedBits` é `11110000`,
+que equivale a um decimal não atribuido de valor `240`.
 
 ### Bitwise AND Operator
 
