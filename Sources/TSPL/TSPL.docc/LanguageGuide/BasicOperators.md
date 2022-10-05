@@ -1,35 +1,31 @@
 
 
-# Basic Operators
+# Operadores básicos
 
-An *operator* is a special symbol or phrase that you use to
-check, change, or combine values.
-For example, the addition operator (`+`) adds two numbers,
-as in `let i = 1 + 2`,
-and the logical AND operator (`&&`) combines two Boolean values,
-as in `if enteredDoorCode && passedRetinaScan`.
+Um operador é um símbolo ou frase que você pode usar para verificar, mudar ou combinar valores.
+Por exemplo, o operador de adição (`+`) soma dois números,
+como em `let i = 1 + 2`,
+e o operador lógico E (*AND* - `&&`) combina dois valores booleanos,
+como em `if enteredDoorCode && passedRetinaScan`.
 
-Swift supports the operators you may already know from languages like C,
-and improves several capabilities to eliminate common coding errors.
-The assignment operator (`=`) doesn't return a value,
-to prevent it from being mistakenly used when
-the equal to operator (`==`) is intended.
-Arithmetic operators (`+`, `-`, `*`, `/`, `%` and so forth)
-detect and disallow value overflow,
-to avoid unexpected results when working with numbers that become larger or smaller
-than the allowed value range of the type that stores them.
-You can opt in to value overflow behavior
-by using Swift's overflow operators,
-as described in <doc:AdvancedOperators#Overflow-Operators>.
+Swift suporta os operadores que você já conhece de linguagens como C,
+e melhora vários recursos para eliminar erros comuns de codificação.
+O operador de atribuição (`=`) não retorna um valor,
+para evitar que seja usado erroneamente quando
+o operador igual a (`==`) é pretendido.
+Operadores aritméticos (`+`, `-`, `*`, `/`, `%` e assim por diante)
+detectam e desabilitam estouros de valor,
+para evitar resultados inesperados quando estamos trabalhando com números que se tornam muito maiores ou muito menores do que o intervalo permitido nos tipos que os armazenam.
+Você pode ativar o comportamento de estouro de valor
+usando os operadores de estouro do Swift,
+conforme descrito em <doc:OperadoresAvançados#Operadores-de-estouro>.
 
-Swift also provides range operators that aren't found in C,
-such as `a..<b` and `a...b`,
-as a shortcut for expressing a range of values.
-
-This chapter describes the common operators in Swift.
-<doc:AdvancedOperators> covers Swift's advanced operators,
-and describes how to define your own custom operators
-and implement the standard operators for your own custom types.
+Swift também fornece operadores de intervalo que não são encontrados em C,
+como `a..<b` e `a...b`, como um atalho para expressar um intervalo de valores.
+Este capítulo descreve os operadores comuns em Swift.
+<doc:OperadoresAvançados> abrange os operadores avançados do Swift,
+e descreve como definir seus próprios operadores personalizados
+e implementar os operadores padrão para seus próprios tipos personalizados.
 
 ## Terminology
 
