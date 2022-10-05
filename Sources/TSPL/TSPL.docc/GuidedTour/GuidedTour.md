@@ -663,13 +663,12 @@ print(total)
 Use `..<` para criar um intervalo que omite seu maior valor,
 e use `...` para usar um intervalo que inclui ambos valores.
 
-## Functions and Closures
+## Funções e *Closures*
 
-Use `func` to declare a function.
-Call a function by following its name
-with a list of arguments in parentheses.
-Use `->` to separate the parameter names and types
-from the function's return type.
+Use `func` para declarar uma função.
+Crie uma função seguindo seu nome
+com uma lista de argumentos entre parênteses.
+Use `->` para separar os nomes e tipos de parâmetros do tipo de retorno da função.
 
 @Comment {
   REFERENCE
@@ -701,14 +700,15 @@ greet(person: "Bob", day: "Tuesday")
   ```
 }
 
-> Experiment: Remove the `day` parameter.
-> Add a parameter to include today’s lunch special in the greeting.
+> Experimente: tente remover o parâmetro `day`.
+> Adicione um parâmetro que inclua o almoço especial de hoje na saudação.
 
-By default,
-functions use their parameter names
-as labels for their arguments.
-Write a custom argument label before the parameter name,
-or write `_` to use no argument label.
+Por padrão,
+funções usam seus nomes de parâmetros
+como rótulos para seus argumentos.
+Escreva um rótulo de argumento personalizado antes do nome do parâmetro,
+ou escreva `_` para não usar nenhum rótulo de argumento.
+
 
 ```swift
 func greet(_ person: String, on day: String) -> String {
@@ -732,10 +732,12 @@ greet("John", on: "Wednesday")
   ```
 }
 
-Use a tuple to make a compound value ---
-for example, to return multiple values from a function.
-The elements of a tuple can be referred to
-either by name or by number.
+
+Use uma tupla para fazer um valor composto ---
+por exemplo, para retornar vários valores de uma função.
+Os elementos de uma tupla podem ser referenciados pelo
+nome ou pelo número.
+
 
 @Comment {
   REFERENCE
@@ -764,9 +766,9 @@ func calculateStatistics(scores: [Int]) -> (min: Int, max: Int, sum: Int) {
 }
 let statistics = calculateStatistics(scores: [5, 3, 100, 3, 9])
 print(statistics.sum)
-// Prints "120"
+// Imprime "120"
 print(statistics.2)
-// Prints "120"
+// Imprime "120"
 ```
 
 
@@ -800,12 +802,11 @@ print(statistics.2)
   ```
 }
 
-Functions can be nested.
-Nested functions have access to variables
-that were declared in the outer function.
-You can use nested functions
-to organize the code in a function
-that's long or complex.
+Funções podem ser aninhadas.
+Funções aninhadas têm acesso a variáveis
+que foram declaradas na função externa.
+Você pode usá-las para organizar o código em funções
+que são longas ou complexas.
 
 ```swift
 func returnFifteen() -> Int {
@@ -839,8 +840,8 @@ returnFifteen()
   ```
 }
 
-Functions are a first-class type.
-This means that a function can return another function as its value.
+
+As funções são um tipo de primeira classe, o que significa que podem ter outra função como seu valor de retorno.
 
 ```swift
 func makeIncrementer() -> ((Int) -> Int) {
@@ -872,7 +873,7 @@ increment(7)
   ```
 }
 
-A function can take another function as one of its arguments.
+Uma função pode ter outra função como um de seus argumentos.
 
 ```swift
 func hasAnyMatches(list: [Int], condition: (Int) -> Bool) -> Bool {
@@ -914,15 +915,11 @@ hasAnyMatches(list: numbers, condition: lessThanTen)
   ```
 }
 
-Functions are actually a special case of closures:
-blocks of code that can be called later.
-The code in a closure has access to things like variables and functions
-that were available in the scope where the closure was created,
-even if the closure is in a different scope when it's executed ---
-you saw an example of this already with nested functions.
-You can write a closure without a name
-by surrounding code with braces (`{}`).
-Use `in` to separate the arguments and return type from the body.
+As funções são, na verdade, um caso especial de closures:
+blocos de código que podem ser chamados posteriormente.
+O código em uma *closure* tem acesso a coisas como variáveis e funções que estavam disponíveis no escopo de sua criação, ainda que a *clusore* esteja em um escopo diferente quando for executada, --- você viu um exemplo disso já com funções aninhadas.
+Você pode escrever uma *closure* sem um nome, envolvendo o código com chaves (`{}`).
+Use `in` para separar os argumentos e o tipo de retorno do corpo da *closure*.
 
 ```swift
 numbers.map({ (number: Int) -> Int in
@@ -946,20 +943,20 @@ numbers.map({ (number: Int) -> Int in
   ```
 }
 
-> Experiment: Rewrite the closure to return zero for all odd numbers.
+> Experimente: Reescreva essa *closure* para retornar zero para todos os números ímpares.
 
-You have several options for writing closures more concisely.
-When a closure's type is already known,
-such as the callback for a delegate,
-you can omit the type of its parameters,
-its return type, or both.
-Single statement closures implicitly return the value
-of their only statement.
+Você tem várias opções para escrever *closures* de forma mais concisa.
+Quando o seu tipo já é conhecido,
+como o retorno de uma chamada para um *delegate*,
+você pode omitir o tipo de seus parâmetros,
+seu tipo de retorno, ou ambos.
+*Closures* de instrução única retornam implicitamente o valor
+de sua única instrução.
 
 ```swift
 let mappedNumbers = numbers.map({ number in 3 * number })
 print(mappedNumbers)
-// Prints "[60, 57, 21, 36]"
+// Imprime "[60, 57, 21, 36]"
 ```
 
 
@@ -973,17 +970,17 @@ print(mappedNumbers)
   ```
 }
 
-You can refer to parameters by number instead of by name ---
-this approach is especially useful in very short closures.
-A closure passed as the last argument to a function
-can appear immediately after the parentheses.
-When a closure is the only argument to a function,
-you can omit the parentheses entirely.
+Você pode se referir a parâmetros por número em vez de por nome ---
+essa abordagem é especialmente útil em *closures* muito curtas.
+Uma *closure* passada como o último argumento para uma função
+pode aparecer logo após os parênteses.
+Quando uma *closure* é o único argumento para uma função,
+você pode omitir os parênteses.
 
 ```swift
 let sortedNumbers = numbers.sorted { $0 > $1 }
 print(sortedNumbers)
-// Prints "[20, 19, 12, 7]"
+// Imprime "[20, 19, 12, 7]"
 ```
 
 
@@ -2253,16 +2250,17 @@ print(fridgeIsOpen)
   ```
 }
 
-## Generics
+## Genéricos
 
-Write a name inside angle brackets
-to make a generic function or type.
+
+Escreva o nome dentro de "<" e ">"
+para fazer uma função ou tipo genérico.
 
 @Comment {
-  REFERENCE
-  The four knocks is a reference to Dr Who series 4,
-  in which knocking four times is a running aspect
-  of the season's plot.
+  REFERENCIA
+  Os 4 quatros _knocks_ é uma referência a Dr Who na quarta temporada
+  Onde bater quatro vezes é um aspecto importante
+  da história da temporada.
 }
 
 ```swift
@@ -2295,8 +2293,8 @@ makeArray(repeating: "knock", numberOfTimes: 4)
   ```
 }
 
-You can make generic forms of functions and methods,
-as well as classes, enumerations, and structures.
+Você pode fazer formas genéricas de métodos e funções,
+assim como classes, enumerações e estruturas.
 
 ```swift
 // Reimplement the Swift standard library's optional type
@@ -2323,12 +2321,13 @@ possibleInteger = .some(100)
   ```
 }
 
-Use `where` right before the body
-to specify a list of requirements ---
-for example,
-to require the type to implement a protocol,
-to require two types to be the same,
-or to require a class to have a particular superclass.
+Use _where_ logo antes do corpo da função
+para especificar uma lista de requisitos ---
+por exemplo,
+para requisitar o tipo que implementa um protocolo,
+para requisitar que dois tipos sejam os mesmos
+ou para requerir que uma classe tenha uma superclasse específica.
+
 
 ```swift
 func anyCommonElements<T: Sequence, U: Sequence>(_ lhs: T, _ rhs: U) -> Bool
@@ -2370,16 +2369,17 @@ anyCommonElements([1, 2, 3], [3])
   ```
 }
 
-> Experiment: Modify the `anyCommonElements(_:_:)` function
-> to make a function that returns an array
-> of the elements that any two sequences have in common.
+> Experimento: Modifique a função `anyCommonElements(_:_:)`
+> para fazer uma função que retorna um _array_
+> dos elementos que tenham duas sequências em comum.
 
-Writing `<T: Equatable>`
-is the same as writing `<T> ... where T: Equatable`.
+
+Escrever `<T: Equatable>`
+é a mesma coisa que escrever `<T> ... where T: Equatable`.
 
 
 @Comment {
-This source file is part of the Swift.org open source project
+Esse arquivo é parte do projeto open source Swift.org
 
 Copyright (c) 2014 - 2022 Apple Inc. and the Swift project authors
 Licensed under Apache License v2.0 with Runtime Library Exception
