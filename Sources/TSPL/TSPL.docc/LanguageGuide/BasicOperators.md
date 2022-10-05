@@ -321,10 +321,10 @@ let plusThree = -minusThree   // plusThree equals 3, or "minus minus three"
 The unary minus operator (`-`) is prepended directly before the value it operates on,
 without any white space.
 
-### Unary Plus Operator
+### Operador unário de mais
 
-The *unary plus operator* (`+`) simply returns
-the value it operates on, without any change:
+O *operador unário de mais* (`+`) simplesmente retorna
+o valor em que opera, sem qualquer alteração:
 
 ```swift
 let minusSix = -6
@@ -342,9 +342,9 @@ let alsoMinusSix = +minusSix  // alsoMinusSix equals -6
   ```
 }
 
-Although the unary plus operator doesn't actually do anything,
-you can use it to provide symmetry in your code for positive numbers
-when also using the unary minus operator for negative numbers.
+Embora o operador unário de mais (`+`) não faça nada,
+você pode usá-lo para fornecer simetria em seu código para números positivos
+ao usar também o operador unário de menos (`-`) para números negativos.
 
 ## Compound Assignment Operators
 
