@@ -55,9 +55,8 @@ type --> ``(`` type ``)``
 
 ## Type Annotation
 
-A *type annotation* explicitly specifies the type of a variable or expression.
-Type annotations begin with a colon (`:`) and end with a type,
-as the following examples show:
+Uma *anotação de tipo* especifica explicitamente o tipo de uma variável ou expressão.
+Anotações de tipo começam com dois pontos (`:`) e terminam com um tipo, como mostram os exemplos a seguir:
 
 ```swift
 let someTuple: (Double, Double) = (3.14159, 2.71828)
@@ -74,15 +73,12 @@ func someFunction(a: Int) { /* ... */ }
   ```
 }
 
-In the first example,
-the expression `someTuple` is specified to have the tuple type `(Double, Double)`.
-In the second example,
-the parameter `a` to the function `someFunction` is specified to have the type `Int`.
-
-Type annotations can contain an optional list of type attributes before the type.
+No primeiro exemplo, a expressão `someTuple` é especificada para ter o tipo de tupla `(Double, Double)`.
+No segundo exemplo, o parâmetro `a` na função `someFunction` é especificado para ter o tipo `Int`.
+Anotações de tipo podem conter uma lista opcional de atributos de tipos antes do tipo.
 
 ```
-Grammar of a type annotation
+Gramática de uma anotação de tipo
 
 type-annotation --> ``:`` attributes-OPT ``inout``-OPT type
 ```
