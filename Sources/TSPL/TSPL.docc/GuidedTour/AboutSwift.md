@@ -9,7 +9,7 @@ com conhecimentos da ampla _Apple Engineering Culture_
 e as diversas contribuições da sua comunidade open-source.
 O compilador é otimizado para performance
 e a linguagem é otimizada para desenvolvimento
-sem comprometer nenhum.
+sem um comprometer o outro.
 
 A Swift é receptiva para novos programadores.
 É uma linguagem de programação com qualidade industrial
