@@ -671,11 +671,11 @@ com uma lista de argumentos entre parênteses.
 Use `->` para separar os nomes e tipos de parâmetros do tipo de retorno da função.
 
 @Comment {
-  REFERÊNCIA
-  Bob é usado apenas como um nome genérico,
-  mas também uma chamada para o pai de Alex.
-  Terça-feira foi usado na suposição de que muitas pessoas estariam lendo
-  na terça-feira após a palestra da WWDC.
+  REFERENCE
+  Bob is used as just a generic name,
+  but also a callout to Alex's dad.
+  Tuesday is used on the assumption that lots of folks would be reading
+  on the Tuesday after the WWDC keynote.
 }
 
 ```swift
@@ -740,11 +740,11 @@ nome ou pelo número.
 
 
 @Comment {
-  REFERÊNCIA
-  Mínimo (min), máximo (max) e soma (*sum*) são convenientes para este exemplo
-  porque são todas operações simples
-  que são executados com o mesmo tipo de dado.
-  Isso dá à função um motivo para retornar uma tupla.
+  REFERENCE
+  Min, max, and sum are convenient for this example
+  because they're all simple operations
+  that are performed on the same kind of data.
+  This gives the function a reason to return a tuple.
 }
 
 ```swift
@@ -995,15 +995,15 @@ print(sortedNumbers)
 }
 
 @Comment {
-  Chamamos sorted() em uma variável em vez de um literal para solucionar um problema no Xcode. Consulte <rdar://17540974>.
+  Called sorted() on a variable rather than a literal to work around an issue in Xcode.  See <rdar://17540974>.
 }
 
 @Comment {
-  Sort(foo, <) omitido porque geralmente causa um aviso falso no Xcode. Consulte <rdar://17047529>.
+  Omitted sort(foo, <) because it often causes a spurious warning in Xcode.  See <rdar://17047529>.
 }
 
 @Comment {
-  Operadores personalizados omitidos como tópicos "avançados".
+  Omitted custom operators as "advanced" topics.
 }
 
 ## Objects and Classes
