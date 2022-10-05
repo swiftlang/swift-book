@@ -1049,7 +1049,7 @@ Swift supports the three standard logical operators found in C-based languages:
 - Logical OR (`a || b`)
 
 ### Logical NOT Operator
-O *operador lógico NOT* (`!a`) iverte o valor booleano para que `verdadeiro` vire `falso`e `falso` vire `verdadeiro`. 
+O *operador lógico NOT* (`!a`) iverte o valor booleano para que `verdadeiro`  vire `falso`e `falso` vire `verdadeiro`. 
 
 O operador lógico NOT é um operador prefixo,
 e aparece imediatamente antes do valor em que opera,
