@@ -296,10 +296,10 @@ giving a remainder value of `-1`.
 The sign of `b` is ignored for negative values of `b`.
 This means that `a % b` and `a % -b` always give the same answer.
 
-### Unary Minus Operator
+### Operador Unário de Menos
 
-The sign of a numeric value can be toggled using a prefixed `-`,
-known as the *unary minus operator*:
+O sinal de um valor numérico pode ser alternado usando um prefixo `-`,
+conhecido como o *operador unário de menos* (`-`):
 
 ```swift
 let three = 3
@@ -318,8 +318,8 @@ let plusThree = -minusThree   // plusThree equals 3, or "minus minus three"
   ```
 }
 
-The unary minus operator (`-`) is prepended directly before the value it operates on,
-without any white space.
+O operador unário de menos (`-`) é prefixado diretamente antes do valor em que opera,
+sem nenhum espaço em branco.
 
 ### Unary Plus Operator
 
