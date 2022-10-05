@@ -1,52 +1,48 @@
-
-
 # About Swift
 
-Swift is a fantastic way to write software,
-whether it’s for phones, desktops, servers,
-or anything else that runs code.
-It's a safe, fast, and interactive programming language
-that combines the best in modern language thinking
-with wisdom from the wider Apple engineering culture
-and the diverse contributions from its open-source community.
-The compiler is optimized for performance
-and the language is optimized for development,
-without compromising on either.
+A Swift é uma maneira fantástica de desenvolver _softwares_
+seja para _mobile_, _desktops_, servidores
+ou qualquer outro dispositivo que use código.
+É uma linguagem de programação segura, rápida e interativa
+que combina o melhor do raciocínio da linguagem moderna 
+com conhecimentos da ampla _Apple Engineering Culture_
+e as diversas contribuições da sua comunidade open-source.
+O compilador é otimizado para performance
+e a linguagem é otimizada para desenvolvimento
+sem um comprometer o outro.
 
-Swift is friendly to new programmers.
-It's an industrial-quality programming language
-that's as expressive and enjoyable as a scripting language.
-Writing Swift code in a playground
-lets you experiment with code and see the results immediately,
-without the overhead of building and running an app.
+A Swift é receptiva para novos programadores.
+É uma linguagem de programação com qualidade industrial
+Escrever em Swift em um _playground_
+faz você experimentar com código e ver seus resultados imediatamente.
 
-Swift defines away large classes of common programming errors
-by adopting modern programming patterns:
+A Swift define grandes classes de erros de programações comuns
+adotando padrões modernos de programação: 
 
-- Variables are always initialized before use.
-- Array indices are checked for out-of-bounds errors.
-- Integers are checked for overflow.
-- Optionals ensure that `nil` values are handled explicitly.
-- Memory is managed automatically.
-- Error handling allows controlled recovery from unexpected failures.
+- Variáveis sempre são iniciadas antes do uso.
+- Índices _Array_ são verificados por erros _out-of-bounds_.
+- Inteiros são verificados por _overflow_.
+- Opcionais garante que valores  ‘nil’ são manipulados explicitamente.
+- Memória é gerenciada automaticamente;
+- _Error handling_ permite recuperações controladas em caso de falhas inesperadas.
 
-Swift code is compiled and optimized to get the most out of modern hardware.
-The syntax and standard library have been designed
-based on the guiding principle that
-the obvious way to write your code should also perform the best.
-Its combination of safety and speed make Swift an excellent choice for
-everything from "Hello, world!" to an entire operating system.
+A linguagem Swift é copilada e otimizada para funcionar na maioria dos _hardwares_ modernos.
+A sintaxe e a biblioteca padrão foram desenhadas
+baseado no princípio-guia que
+a maneira mais direta de escrever seu código também deve fazê-lo ter o melhor desempenho.
+É uma combinação de segurança com velocidade que faz da Swift uma excelente escolha para
+todos, desde “Hello, word!” até a operação total do sistema.
 
-Swift combines powerful type inference and pattern matching with
-a modern, lightweight syntax,
-allowing complex ideas to be expressed in a clear and concise manner.
-As a result, code is not just easier to write,
-but easier to read and maintain as well.
+A Swift mistura poderosas inferências de tipo e padrões combinados com
+uma sintaxe moderna e leve
+permitindo ideias complexas serem expressas em uma maneira clara e concisa.
+Como resultado, o código não é somente fácil de escrever,
+mas de ler e manter também.
 
-Swift has been years in the making,
-and it continues to evolve with new features and capabilities.
-Our goals for Swift are ambitious.
-We can’t wait to see what you create with it.
+A Swift foi construida em anos de trabalho,
+e continua a evoluir om novos recursos e capacidades.
+Nossa meta para a Swift é ambiciosa.
+Mal podemos esperar para ver o que você pode criar com ela.
 
 
 @Comment {
