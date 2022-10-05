@@ -1046,14 +1046,13 @@ Swift supports the three standard logical operators found in C-based languages:
 - Logical OR (`a || b`)
 
 ### Logical NOT Operator
+O *operador lógico NOT* (`!a`) iverte o valor booleano para que `verdadeiro` vire `falso` e `falso` vire `verdadeiro`. 
 
-The *logical NOT operator* (`!a`) inverts a Boolean value so that `true` becomes `false`,
-and `false` becomes `true`.
+O operador lógico NOT é um operador prefixo,
+e aparece imediatamente antes do valor em que opera,
+sem nenhum espaço em branco.
 
-The logical NOT operator is a prefix operator,
-and appears immediately before the value it operates on,
-without any white space.
-It can be read as “not `a`”, as seen in the following example:
+Ele pode ser lido como "not `a`", como no exemplo a seguir:
 
 ```swift
 let allowedEntry = false
@@ -1076,14 +1075,14 @@ if !allowedEntry {
   ```
 }
 
-The phrase `if !allowedEntry` can be read as “if not allowed entry.”
-The subsequent line is only executed if “not allowed entry” is true;
-that is, if `allowedEntry` is `false`.
+A frase `if !entradaPermitida` pode ser lida como "if entrada não permitida."
+A linha só é executada se "entrada não permitida" for verdadeira;
+isto é, if `entradaPermitida` é `falsa`.
 
-As in this example,
-careful choice of Boolean constant and variable names
-can help to keep code readable and concise,
-while avoiding double negatives or confusing logic statements.
+Como neste exemplo,
+escolha cuidadosa de nomes de constantes e variáveis booleanas
+pode ajudar a manter o código legível e conciso,
+evitando duplas negativas ou declarações lógicas confusas.
 
 ### Logical AND Operator
 
