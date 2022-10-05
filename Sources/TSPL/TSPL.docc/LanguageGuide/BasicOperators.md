@@ -204,17 +204,17 @@ The addition operator is also supported for `String` concatenation:
   ```
 }
 
-### Remainder Operator
+### Operador de resto divisional
 
-The *remainder operator* (`a % b`)
-works out how many multiples of `b` will fit inside `a`
-and returns the value that's left over
-(known as the *remainder*).
+O *Operador de resto divisional* (`a % b`)
+calcula quantos múltiplos de `b` caberão dentro de `a`
+e retornará a sobra
+(Conhecido como *resto*).
 
-> Note: The remainder operator (`%`) is also known as
-> a *modulo operator* in other languages.
-> However, its behavior in Swift for negative numbers means that,
-> strictly speaking, it's a remainder rather than a modulo operation.
+> Note: O operador de resto divisonal (`%`) também é conhecido como 
+> *operador módulo* em outras linguagens.
+> No entanto, seu comportamento em Swift para números negativos torna-o,
+> estritamente falando, em um resto em vez de uma operação de módulo.
 
 @Comment {
   - test: `percentOperatorIsRemainderNotModulo`
@@ -232,15 +232,15 @@ and returns the value that's left over
   ```
 }
 
-Here's how the remainder operator works.
-To calculate `9 % 4`, you first work out how many `4`s will fit inside `9`:
+Aqui, veja como o operador de resto funciona
+Para calcular `9 % 4`, você primeiro calcula quantos `4`s caberão dentro de `9`:
 
 ![](remainderInteger)
 
 
-You can fit two `4`s inside `9`, and the remainder is `1` (shown in orange).
+Você pode colocar dois `4`s dentro de `9`, e o restante é `1` (mostrado em laranja).
 
-In Swift, this would be written as:
+Em Swift, isso seria escrito como:
 
 ```swift
 9 % 4    // equals 1
@@ -252,28 +252,28 @@ In Swift, this would be written as:
   
   ```swifttest
   >> let r5 =
-  -> 9 % 4    // equals 1
+  -> 9 % 4    // igual 1
   >> assert(r5 == 1)
   ```
 }
 
-To determine the answer for `a % b`,
-the `%` operator calculates the following equation
-and returns `remainder` as its output:
+Para determinar a resposta para `a % b`,
+o operador `%` calcula a seguinte equação
+e retorna `resto` como a saída:
 
-`a` = (`b` x `some multiplier`) + `remainder`
+`a` = (`b` x `algum multiplo`) + `resto`
 
-where `some multiplier` is the largest number of multiples of `b`
-that will fit inside `a`.
+aonde `algum multiplo` é o maior número de múltiplos para `b`
+que caberá dentro de `a`.
 
-Inserting `9` and `4` into this equation yields:
+Colocando `9` e `4` nesta equação, produz:
 
 `9` = (`4` x `2`) + `1`
 
-The same method is applied when calculating the remainder for a negative value of `a`:
+O mesmo método é aplicado ao calcular o restante para um valor negativo de `a`:
 
 ```swift
--9 % 4   // equals -1
+-9 % 4   // igual -1
 ```
 
 
@@ -282,19 +282,19 @@ The same method is applied when calculating the remainder for a negative value o
   
   ```swifttest
   >> let r6 =
-  -> -9 % 4   // equals -1
+  -> -9 % 4   // igual -1
   >> assert(r6 == -1)
   ```
 }
 
-Inserting `-9` and `4` into the equation yields:
+Colocando `-9` e `4` na equação, produz:
 
 `-9` = (`4` x `-2`) + `-1`
 
-giving a remainder value of `-1`.
+dando um valor de resto de `-1`.
 
-The sign of `b` is ignored for negative values of `b`.
-This means that `a % b` and `a % -b` always give the same answer.
+O sinal de `b` é ignorado para valores negativos de `b`.
+Isso significa que `a % b` e `a % -b` sempre dão a mesma resposta.
 
 ### Operador Unário de Menos
 
