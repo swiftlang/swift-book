@@ -926,17 +926,17 @@ For more about arrays, see <doc:CollectionTypes#Arrays>.
 
 ### One-Sided Ranges
 
-The closed range operator
-has an alternative form for ranges that continue
-as far as possible in one direction ---
-for example,
-a range that includes all the elements of an array
-from index 2 to the end of the array.
-In these cases, you can omit the value
-from one side of the range operator.
-This kind of range is called a *one-sided range*
-because the operator has a value on only one side.
-For example:
+O operador de intervalo fechado
+tem uma forma alternativa para intervalos que continua
+o mais longe possível em uma direção ---
+por exemplo,
+um intervalo que inclui todos os elementos de um array
+do index 2 até o fim do array.
+Nesses casos, você pode omitir o valor
+de um lado do operador de intervalo.
+Esse tipo de intervalo é chamado de *intervalo unilateral* (one-sided range)
+porque o operador possui valor em apenas um lado.
+Por exemplo:
 
 ```swift
 for name in names[2...] {

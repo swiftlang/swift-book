@@ -2333,8 +2333,8 @@ makeArray(repeating: "knock", numberOfTimes: 4)
   ```
 }
 
-Você pode fazer formas genericas de métodos e funções,
-asssim como classes, enumerações e estruturas.
+Você pode fazer formas genéricas de métodos e funções,
+assim como classes, enumerações e estruturas.
 
 ```swift
 // Reimplement the Swift standard library's optional type
@@ -2361,12 +2361,12 @@ possibleInteger = .some(100)
   ```
 }
 
-Use `where` logo antes do corpo da função
+Use _where_ logo antes do corpo da função
 para especificar uma lista de requisitos ---
 por exemplo,
 para requisitar o tipo que implementa um protocolo,
 para requisitar que dois tipos sejam os mesmos
-ou para requerir que uma classe tenha um superclasse específica.
+ou para requerir que uma classe tenha uma superclasse específica.
 
 
 ```swift
@@ -2410,12 +2410,12 @@ anyCommonElements([1, 2, 3], [3])
 }
 
 > Experimento: Modifique a função `anyCommonElements(_:_:)`
-> para fazer uma função que retorna um array
+> para fazer uma função que retorna um _array_
 > dos elementos que tenham duas sequências em comum.
 
 
 Escrever `<T: Equatable>`
-É a mesma coisa que escrever `<T> ... where T: Equatable`.
+é a mesma coisa que escrever `<T> ... where T: Equatable`.
 
 
 @Comment {
