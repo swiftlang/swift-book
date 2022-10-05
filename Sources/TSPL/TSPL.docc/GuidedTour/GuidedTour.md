@@ -2290,16 +2290,17 @@ print(fridgeIsOpen)
   ```
 }
 
-## Generics
+## Genéricos
 
-Write a name inside angle brackets
-to make a generic function or type.
+
+Escreva o nome dentro de "<" e ">"
+para fazer uma função ou tipo genérico.
 
 @Comment {
-  REFERENCE
-  The four knocks is a reference to Dr Who series 4,
-  in which knocking four times is a running aspect
-  of the season's plot.
+  REFERENCIA
+  Os 4 quatros _knocks_ é uma referência a Dr Who na quarta temporada
+  Onde bater quatro vezes é um aspecto importante
+  da história da temporada.
 }
 
 ```swift
@@ -2332,8 +2333,8 @@ makeArray(repeating: "knock", numberOfTimes: 4)
   ```
 }
 
-You can make generic forms of functions and methods,
-as well as classes, enumerations, and structures.
+Você pode fazer formas genericas de métodos e funções,
+asssim como classes, enumerações e estruturas.
 
 ```swift
 // Reimplement the Swift standard library's optional type
@@ -2360,12 +2361,13 @@ possibleInteger = .some(100)
   ```
 }
 
-Use `where` right before the body
-to specify a list of requirements ---
-for example,
-to require the type to implement a protocol,
-to require two types to be the same,
-or to require a class to have a particular superclass.
+Use `where` logo antes do corpo da função
+para especificar uma lista de requisitos ---
+por exemplo,
+para requisitar o tipo que implementa um protocolo,
+para requisitar que dois tipos sejam os mesmos
+ou para requerir que uma classe tenha um superclasse específica.
+
 
 ```swift
 func anyCommonElements<T: Sequence, U: Sequence>(_ lhs: T, _ rhs: U) -> Bool
@@ -2407,16 +2409,17 @@ anyCommonElements([1, 2, 3], [3])
   ```
 }
 
-> Experiment: Modify the `anyCommonElements(_:_:)` function
-> to make a function that returns an array
-> of the elements that any two sequences have in common.
+> Experimento: Modifique a função `anyCommonElements(_:_:)`
+> para fazer uma função que retorna um array
+> dos elementos que tenham duas sequências em comum.
 
-Writing `<T: Equatable>`
-is the same as writing `<T> ... where T: Equatable`.
+
+Escrever `<T: Equatable>`
+É a mesma coisa que escrever `<T> ... where T: Equatable`.
 
 
 @Comment {
-This source file is part of the Swift.org open source project
+Esse arquivo é parte do projeto open source Swift.org
 
 Copyright (c) 2014 - 2022 Apple Inc. and the Swift project authors
 Licensed under Apache License v2.0 with Runtime Library Exception
