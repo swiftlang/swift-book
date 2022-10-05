@@ -379,30 +379,30 @@ que executa as duas tarefas ao mesmo tempo.
 Para obter informações sobre os operadores fornecidos pela biblioteca padrão Swift,
 veja [Operator Declarations](https://developer.apple.com/documentation/swift/operator_declarations).
 
-## Comparison Operators
+## Operadores de Comparação
 
-Swift supports the following comparison operators:
+Swift suporta os seguintes operadores de comparação:
 
-- Equal to (`a == b`)
-- Not equal to (`a != b`)
-- Greater than (`a > b`)
-- Less than (`a < b`)
-- Greater than or equal to (`a >= b`)
-- Less than or equal to (`a <= b`)
+- Igual a (`a == b`)
+- Diferente de (`a != b`)
+- Maior que (`a > b`)
+- Menor que (`a < b`)
+- Maior ou igual a (`a >= b`)
+- Menor ou igual a (`a <= b`)
 
-> Note: Swift also provides two *identity operators* (`===` and `!==`),
-> which you use to test whether two object references both refer to the same object instance.
-> For more information, see <doc:ClassesAndStructures#Identity-Operators>.
+> Nota: Swift também fornece dois **operadores de referência** (`===` e `!==`),
+> que você usa para testar se duas referências de objeto se referem à mesma instância de objeto.
+> Para obter mais informações, consulte <doc:ClassesAndStructures#Identity-Operators>.
 
-Each of the comparison operators returns a `Bool` value to indicate whether or not the statement is true:
+Cada um dos operadores de comparação retorna um valor `Bool` para indicar se a declaração é verdadeira ou não:
 
 ```swift
-1 == 1   // true because 1 is equal to 1
-2 != 1   // true because 2 isn't equal to 1
-2 > 1    // true because 2 is greater than 1
-1 < 2    // true because 1 is less than 2
-1 >= 1   // true because 1 is greater than or equal to 1
-2 <= 1   // false because 2 isn't less than or equal to 1
+1 == 1   // true porque 1 é igual a 1
+2 != 1   // true porque 2 não é igual a 1
+2 > 1    // true porque 2 é maior que 1
+1 < 2    // true porque 1 é menor que 2
+1 >= 1   // true porque 1 é maior ou igual a 1
+2 <= 1   // false porque 2 não é menor ou igual a 1
 ```
 
 
@@ -431,8 +431,8 @@ Each of the comparison operators returns a `Bool` value to indicate whether or n
   ```
 }
 
-Comparison operators are often used in conditional statements,
-such as the `if` statement:
+Operadores de comparação são frequentemente usados em declarações condicionais,
+como a instrução `if`:
 
 ```swift
 let name = "world"
@@ -441,7 +441,7 @@ if name == "world" {
 } else {
    print("I'm sorry \(name), but I don't recognize you")
 }
-// Prints "hello, world", because name is indeed equal to "world".
+// Imprime "hello, world", porque 'name' é, de fato, igual a "world".
 ```
 
 
@@ -460,29 +460,29 @@ if name == "world" {
   ```
 }
 
-For more about the `if` statement, see <doc:ControlFlow>.
+Para saber mais sobre a instrução `if`, veja <doc:ControleDeFluxo>.
 
-You can compare
-two tuples if they have the same type and the same number of values.
-Tuples are compared from left to right,
-one value at a time,
-until the comparison finds two values
-that aren't equal.
-Those two values are compared,
-and the result of that comparison
-determines the overall result of the tuple comparison.
-If all the elements are equal,
-then the tuples themselves are equal.
-For example:
+Você pode comparar
+duas tuplas se elas tiverem o mesmo tipo e o mesmo número de valores.
+As tuplas são comparadas da esquerda para a direita,
+um valor de cada vez,
+até que a comparação encontre dois valores
+que não são iguais.
+Esses dois valores são comparados,
+e o resultado dessa comparação
+determina o resultado geral da comparação de tuplas.
+Se todos os elementos forem iguais,
+então as próprias tuplas são iguais. 
+Por exemplo:
 
 ```swift
-(1, "zebra") < (2, "apple")   // true because 1 is less than 2; "zebra" and "apple" aren't compared
-(3, "apple") < (3, "bird")    // true because 3 is equal to 3, and "apple" is less than "bird"
-(4, "dog") == (4, "dog")      // true because 4 is equal to 4, and "dog" is equal to "dog"
+(1, "zebra") < (2, "apple")   // true porque 1 é menor que 2; "zebra" e "apple" não são comparados
+(3, "apple") < (3, "bird")    // true porque 3 é igual a 3 e "apple" é menor que "bird"
+(4, "dog") == (4, "dog")      // true porque 4 é igual a 4 e "dog" é igual a "dog"
 ```
 
 
-@Comment {
+Comment {
   - test: `tuple-comparison-operators`
   
   ```swifttest
@@ -497,31 +497,32 @@ For example:
   ```
 }
 
-In the example above,
-you can see the left-to-right comparison behavior on the first line.
-Because `1` is less than `2`,
-`(1, "zebra")` is considered less than `(2, "apple")`,
-regardless of any other values in the tuples.
-It doesn't matter that `"zebra"` isn't less than `"apple"`,
-because the comparison is already determined by the tuples' first elements.
-However,
-when the tuples' first elements are the same,
-their second elements *are* compared ---
-this is what happens on the second and third line.
+No exemplo acima,
+você pode ver o comportamento de comparação da esquerda para a direita na primeira linha.
+Como `1` é menor que `2`,
+`(1, "zebra")` é considerado menor que `(2, "apple")`,
+independentemente de quaisquer outros valores nas tuplas.
+Não importa que `"zebra"` não seja menor que `"apple"`,
+porque a comparação já é determinada pelos primeiros elementos das tuplas.
+No entanto,
+quando os primeiros elementos das tuplas são os mesmos,
+seus segundos elementos **são** comparados ---
+isso é o que acontece na segunda e terceira linha.
 
-Tuples can be compared with a given operator only if the operator
-can be applied to each value in the respective tuples. For example,
-as demonstrated in the code below, you can compare
-two tuples of type `(String, Int)` because
-both `String` and `Int` values can be compared
-using the `<` operator.  In contrast,
-two tuples of type `(String, Bool)` can't be compared
-with the `<` operator because the `<` operator can't be applied to
-`Bool` values.
+Tuplas podem ser comparadas com um determinado operador somente se o operador
+pode ser aplicado a cada valor nas respectivas tuplas. Por exemplo,
+conforme demonstrado no código abaixo, você pode comparar
+duas tuplas do tipo `(String, Int)` porque
+ambos os valores `String` e `Int` podem ser comparados
+usando o operador `<`. Em contrapartida,
+duas tuplas do tipo `(String, Bool)` não podem ser comparadas
+com o operador `<` porque o operador `<` não pode ser aplicado a
+valores `Bool`.
 
 ```swift
-("blue", -1) < ("purple", 1)        // OK, evaluates to true
-("blue", false) < ("purple", true)  // Error because < can't compare Boolean values
+("blue", -1) < ("purple", 1)        // OK, avalia como true
+("blue", false) < ("purple", true)  // Erro, pois < não pode ser usado para valores Booleanos
+
 ```
 
 
@@ -555,10 +556,10 @@ with the `<` operator because the `<` operator can't be applied to
   ```
 }
 
-> Note: The Swift standard library includes tuple comparison operators
-> for tuples with fewer than seven elements.
-> To compare tuples with seven or more elements,
-> you must implement the comparison operators yourself.
+> Nota: A biblioteca padrão do Swift inclui operadores de comparação de tuplas
+> para tuplas com menos de sete elementos.
+> Para comparar tuplas com sete ou mais elementos,
+> você mesmo deve implementar os operadores de comparação.
 
 @Comment {
   TODO: which types do these operate on by default?
