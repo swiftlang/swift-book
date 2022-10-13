@@ -603,10 +603,10 @@ label-name --> identifier
 
 ## Control Transfer Statements
 
-Control transfer statements can change the order in which code in your program is executed
-by unconditionally transferring program control from one piece of code to another.
-Swift has five control transfer statements: a `break` statement, a `continue` statement,
-a `fallthrough` statement, a `return` statement, and a `throw` statement.
+As instruções de transferência de controle podem alterar a ordem na qual cada código do programa é executado
+transferindo incondicionalmente o controle do programa de um pedaço de código para outro.
+O Swift possui cinco instruções de transferência de controle: `break`, `continue`,
+`fallthrough`,`return` e `throw`.
 
 ```
 Grammar of a control transfer statement
