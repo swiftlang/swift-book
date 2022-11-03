@@ -27,8 +27,6 @@ and is used to separate multiple statements if they appear on the same line.
 ```
 Grammar of a statement
 
-statement --> expression ``;``-OPT
-statement --> declaration ``;``-OPT
 statement --> loop-statement ``;``-OPT
 statement --> branch-statement ``;``-OPT
 statement --> labeled-statement ``;``-OPT
@@ -1264,10 +1262,10 @@ Grammar of a conditional compilation block
 
 conditional-compilation-block --> if-directive-clause elseif-directive-clauses-OPT else-directive-clause-OPT endif-directive
 
-if-directive-clause --> if-directive compilation-condition statements-OPT
+if-directive-clause --> if-directive compilation-condition items-OPT
 elseif-directive-clauses --> elseif-directive-clause elseif-directive-clauses-OPT
-elseif-directive-clause --> elseif-directive compilation-condition statements-OPT
-else-directive-clause --> else-directive statements-OPT
+elseif-directive-clause --> elseif-directive compilation-condition items-OPT
+else-directive-clause --> else-directive items-OPT
 if-directive --> ``#if``
 elseif-directive --> ``#elseif``
 else-directive --> ``#else``

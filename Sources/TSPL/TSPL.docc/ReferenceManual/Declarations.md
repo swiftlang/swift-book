@@ -72,26 +72,35 @@ or a file that contains top-level executable code.
 ```
 Grammar of a top-level declaration
 
-top-level-declaration --> statements-OPT
+top-level-declaration --> items-OPT
 ```
 
 
 ## Code Blocks
 
 A *code block* is used by a variety of declarations and control structures
-to group statements together.
+to group items together.
 It has the following form:
 
 ```swift
 {
-   <#statements#>
+   <#items#>
 }
 ```
 
 
-The *statements* inside a code block include declarations,
+The *items* inside a code block include declarations,
 expressions, and other kinds of statements and are executed in order
 of their appearance in source code.
+
+```
+Grammar of an item
+
+item --> expression ``;``-OPT
+item --> declaration ``;``-OPT
+item --> statement ``;``-OPT
+items --> item items-OPT
+```
 
 @Comment {
   TR: What exactly are the scope rules for Swift?
@@ -104,7 +113,7 @@ of their appearance in source code.
 ```
 Grammar of a code block
 
-code-block --> ``{`` statements-OPT ``}``
+code-block --> ``{`` items-OPT ``}``
 ```
 
 
