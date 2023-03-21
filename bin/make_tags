@@ -4,12 +4,7 @@
 Generates a tags file for navigation in editors by DocC links and within
 the formal grammar.
 
-Output uses the POSIX ctags syntax, but needs a post-processing step to
-sort it.
-
-Run this script as:
-
-    bin/make_tags | sort > TSPL.docc/tags
+Output uses the POSIX ctags syntax.
 
 To use these tags, configure your editor to include a-z, A-Z, pound (#),
 hyphen (-), and colon (:), as valid characters in a tag.
@@ -23,6 +18,7 @@ HEADING_REGEX = re.compile(r'^#+ ')
 GRAMMAR_REGEX = re.compile(r'^> \*[a-z-]*\* → ')
 
 chapter = None
+tags = []
 
 os.chdir('TSPL.docc')
 for root, dirs, files in os.walk('.'):
@@ -40,14 +36,18 @@ for root, dirs, files in os.walk('.'):
                     chapter = line.lstrip('# ').replace(' ', '')
                     tag = 'doc:' + chapter
                     search =  '/^' + line + '/'
-                    print(tag + '\t' + path + '\t' + search)
+                    tags.append(tag + '\t' + path + '\t' + search + '\n')
                 elif HEADING_REGEX.match(line):
                     heading = line.lstrip('# ').replace(' ', '-')
                     tag = 'doc:' + chapter + '#' + heading
                     search =  '/^' + line + '/'
-                    print(tag + '\t' + path + '\t' + search)
+                    tags.append(tag + '\t' + path + '\t' + search + '\n')
                 elif GRAMMAR_REGEX.match(line):
                     tag, _ = line.split('→')
                     tag = tag.lstrip('*> ').rstrip('* ')
                     search = '/*' + tag + '* →/'
-                    print(tag + '\t' + path + '\t' + search)
+                    tags.append(tag + '\t' + path + '\t' + search + '\n')
+
+tags.sort()
+with open('tags', 'w', encoding='utf8') as tags_file:
+    tags_file.writelines(tags)
