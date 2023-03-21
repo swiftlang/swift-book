@@ -35,17 +35,17 @@ for root, dirs, files in os.walk('.'):
                 if CHAPTER_REGEX.match(line):
                     chapter = line.lstrip('# ').replace(' ', '')
                     tag = 'doc:' + chapter
-                    search =  '/^' + line + '/'
+                    search =  '/^' + line.replace('/', '\\/') + '/'
                     tags.append(tag + '\t' + path + '\t' + search + '\n')
                 elif HEADING_REGEX.match(line):
                     heading = line.lstrip('# ').replace(' ', '-')
                     tag = 'doc:' + chapter + '#' + heading
-                    search =  '/^' + line + '/'
+                    search =  '/^' + line.replace('/', '\\/') + '/'
                     tags.append(tag + '\t' + path + '\t' + search + '\n')
                 elif GRAMMAR_REGEX.match(line):
                     tag, _ = line.split('→')
                     tag = tag.lstrip('*> ').rstrip('* ')
-                    search = '/*' + tag + '* →/'
+                    search = '/*' + tag.replace('/', '\\/') + '* →/'
                     tags.append(tag + '\t' + path + '\t' + search + '\n')
 
 tags.sort()
