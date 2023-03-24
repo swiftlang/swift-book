@@ -9,10 +9,9 @@
 # See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 
 """
-Generates a tags file for navigation in editors by DocC links and within
-the formal grammar.
-
-Output uses the POSIX ctags syntax.
+Generates a tags file, using the POSIX ctags syntax, for navigation while
+editing.  The tags file provides "jump to definition" information about DocC
+links to headings and syntactic categories in the formal grammar.
 
 To use these tags, configure your editor to include a-z, A-Z, pound (#),
 hyphen (-), and colon (:), as valid characters in a tag.
