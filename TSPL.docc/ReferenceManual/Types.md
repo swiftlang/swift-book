@@ -54,6 +54,8 @@ and describes the type inference behavior of Swift.
 >
 > *type* → *opaque-type*
 >
+> *type* → *parameter-pack-type*
+>
 > *type* → *metatype-type*
 >
 > *type* → *any-type*
@@ -894,6 +896,20 @@ could return a value of type `T` or `Dictionary<String, T>`.
 > Grammar of an opaque type:
 >
 > *opaque-type* → **`some`** *type*
+
+## Parameter Pack Type
+
+XXX OUTLINE:
+
+- `each T` creates a parameter pack type
+- `repeat T` expands the parameter pack type
+- To expand the values, you use a parameter pack expression (xref)
+
+> Grammar of a parameter pack type:
+>
+> *parameter-pack-type* → **`each`** *type*
+>
+> *parameter-pack-expansion-type* → **`repeat`** *type*
 
 ## Metatype Type
 

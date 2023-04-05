@@ -1523,6 +1523,14 @@ A single expression inside parentheses is a parenthesized expression.
 >
 > *tuple-element* → *expression* | *identifier* **`:`** *expression*
 
+### Parameter Pack Expression
+
+> Grammar of a pack-expansion expression:
+>
+> *parameter-pack-expression* → **`each`** *expression*
+>
+> *parameter-pack-expansion-expression* → **`repeat`** *expression*
+
 ### Wildcard Expression
 
 A *wildcard expression*
