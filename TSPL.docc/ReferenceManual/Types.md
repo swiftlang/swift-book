@@ -902,14 +902,34 @@ could return a value of type `T` or `Dictionary<String, T>`.
 XXX OUTLINE:
 
 - `each T` creates a parameter pack type
+  when it appears in a generic parameter clause,
+  or indicates which pack should be expanded
+  when it appears in a `repeat` expression
+
 - `repeat T` expands the parameter pack type
-- To expand the values, you use a parameter pack expression (xref)
+
+- Packs are never nested; expansion implies flattening
+
+- To expand the values, you use a parameter pack expression;
+  see <doc:Expressions#Parameter-Pack-Expression>
+
+- It's valid for a pack type to contain no elements.
 
 > Grammar of a parameter pack type:
 >
 > *parameter-pack-type* → **`each`** *type*
 >
 > *parameter-pack-expansion-type* → **`repeat`** *type*
+
+<!--
+The grammar above overproduces:
+'each' is allowed only within a generic parameter clause
+or within the expression following 'repeat'.
+However,
+to allow 'each' in types only after 'repeat'
+we either have to allow it in any type context
+or re-implement the entire type grammar for this special case.
+-->
 
 ## Metatype Type
 

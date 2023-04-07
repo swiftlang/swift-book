@@ -1853,6 +1853,117 @@ protocol ComparableContainer: Container where Item: Comparable { }
   }
 -->
 
+## Generic Parameter Packs
+
+XXX OUTLINE:
+
+Why parameter packs?
+
+- Another way that code can be generic
+  is to accept and return a list of values
+  where the length of that list can vary.
+
+- If you want to preserve type information,
+  you could manually provide overloads
+  that take a different number of arguments:
+
+  ```swift
+  func f(_ x1: Int) -> Int { ... }
+  func f(_ x1: Int, _ x2: Int) -> Int { ... }
+  func f(_ x1: Int, _ x2: Int, _ x3: Int) -> Int { ... }
+  ```
+
+  FIXME: This kind of example won't work,
+  because you can't iterate over the elements of a pack
+  to combine them in some way into a single result.
+  Need to frame the examples around "structural" code.
+
+  But that's tedious and repetitive,
+  and still imposes an arbitrary upper limit.
+
+- You could do this with type erasure:
+
+  ```swift
+  func f(xs x: [Any]) -> [Any] { ... }
+  ```
+
+- Parameter packs let have both --
+  a function that can take a variable number of parameters,
+  while still preserving type information.
+
+How do you create a parameter pack?
+
+- In the generic type parameters,
+  write `each` in front of the type that can occur multiple times.
+
+- In the function's parameters,
+  write `repeat` in front of the type for the parameter
+  that can accept a variable number of arguments.
+
+- Inside the pack-expansion type,
+  write `each` in front of every place where the repetition takes place.
+  In the simple case, where only one type repeats,
+  this means you write `repeat each T` or similar.
+
+- Naming convention:
+  Use singular names for parameter packs,
+  and plural names only in argument labels.
+
+What else can you repeat?
+How do you repeat more than one type?
+
+- For collections or other generic types,
+  the pack expansion can happen inside,
+  like `repeat Array<each T>` expands to multiple array types.
+
+- A more complex type can include `each` multiple times,
+  like `repeat Dictionary<each Key, each Value>`.
+  All of the expansions have to be the same size ---
+  in this example,
+  the list of types that `Key` expands to must be the same length
+  as the list that `Value` expands to.
+
+How do you access the values of a parameter pack?
+
+- Inside the function body, you use `repeat`
+  to make the places where code must be expanded.
+
+- When you use `repeat` at the start of a line (as a statement),
+  the whole line is duplicated once for each type.
+  When you use `repeat` in the middle of a line (as an expression),
+  it expands to make a tuple
+  with one tuple element for each type.
+
+- After `repeat`, you write `each` in front of the type being expanded.
+  You can expand multiple packs in the same repeat expression,
+  as long as all of the packs have the same length.
+
+  ```swift
+  repeat print(each t)
+  return (Pair(each first, each second))
+  ```
+
+- Tripping hazard:
+  You don't always write `repeat each` one after the other.
+  The part to repeat is marked `repeat`
+  and the location of the element from the pack is marked `each`.
+
+  For example,
+  `repeat (each T, Int)` is different from `(repeat each T, Int)`.
+  The former makes multiple tuple `(T1, Int) ... (Tn, Int)`,
+  expanding `T` and adding `Int` to each tuple.
+  The latter makes one tuple, `(T1, ..., Tn, Int)`.
+  Other code can come between `repeat` and `each` ---
+  both of those are different from `repeat (Int, each T)`
+
+- You can expand a parameter pack's values
+  only inside a tuple or a function call.
+  (TR: Also inside arguments to a macro?
+  Doug brought that up during the SE review.)
+  A notable omission is that
+  there isn't a way to iterate over the values in a pack ---
+  the SE proposal calls that out as a potential future direction.
+
 ## Generic Subscripts
 
 Subscripts can be generic,

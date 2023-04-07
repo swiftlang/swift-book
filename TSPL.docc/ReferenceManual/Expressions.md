@@ -1525,6 +1525,24 @@ A single expression inside parentheses is a parenthesized expression.
 
 ### Parameter Pack Expression
 
+XXX OUTLINE:
+
+- a `repeat` expression must contain one or more `each` expressions
+  and has the shape `repeat <#repetition pattern#>`
+
+- TODO list of contexts where expansion is supported
+
+  + in a tuple, producing tuple elements
+  + as a statement, repeating the statement's expression
+  + but not in a function call, producing arguments
+
+- The *repetition pattern* is repeated once for each type in the pack
+
+- all of the `each` expressions must expand packs with the same number of types
+
+- It's valid for a pack expression contain no elements,
+  in which case the parameter-pack expansion expression isn't evaluated at all (zero times)
+
 > Grammar of a pack-expansion expression:
 >
 > *parameter-pack-expression* → **`each`** *expression*
