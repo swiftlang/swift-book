@@ -1855,6 +1855,47 @@ protocol ComparableContainer: Container where Item: Comparable { }
 
 ## Generic Parameter Packs
 
+Parameter packs preserve type information
+while also not depending on a specific number of arguments being passed in.
+For example,
+using parameter packs lets you avoid writing multiple overloads
+that vary in the number of parameters they accept:
+
+```swift
+func someFunction<T>(_ x1: T) -> T { ... }
+func someFunction<T, U>(_ x1: T, _ x2: U) -> T, U { ... }
+func someFunction<T, U, V>(_ x1: T, _ x2: U, _ x3: V) -> T, U, V { ... }
+```
+
+The example above is repetitive and error prone,
+and limits the function to a maximum of three arguments.
+Using `Any`, as shown below,
+allows an arbitrary number of arguments
+at the expense of erasing type information.
+
+```swift
+func someFunction(_ x: [Any]) -> [Any] { ... }
+```
+
+Writing this function with a parameter pack
+preserves type information about its arguments,
+and lets you call the function an arbitrary number of arguments.
+
+```swift
+func someFunction<each Element>(x: repeat each Element)
+    -> repeat each Element { ... }
+
+func someFunction<each T>(x: repeat each T) -> repeat each T { ... }
+```
+
+In the code above, `Element` is a generic type parameter.
+It's marked `each Element`,
+indicating that it's a type-parameter pack.
+
+<!-- XXX Listings above are all untested -->
+
+
+
 XXX OUTLINE:
 
 Why parameter packs?
@@ -1862,34 +1903,6 @@ Why parameter packs?
 - Another way that code can be generic
   is to accept and return a list of values
   where the length of that list can vary.
-
-- If you want to preserve type information,
-  you could manually provide overloads
-  that take a different number of arguments:
-
-  ```swift
-  func f(_ x1: Int) -> Int { ... }
-  func f(_ x1: Int, _ x2: Int) -> Int { ... }
-  func f(_ x1: Int, _ x2: Int, _ x3: Int) -> Int { ... }
-  ```
-
-  FIXME: This kind of example won't work,
-  because you can't iterate over the elements of a pack
-  to combine them in some way into a single result.
-  Need to frame the examples around "structural" code.
-
-  But that's tedious and repetitive,
-  and still imposes an arbitrary upper limit.
-
-- You could do this with type erasure:
-
-  ```swift
-  func f(xs x: [Any]) -> [Any] { ... }
-  ```
-
-- Parameter packs let have both --
-  a function that can take a variable number of parameters,
-  while still preserving type information.
 
 How do you create a parameter pack?
 
