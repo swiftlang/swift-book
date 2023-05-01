@@ -897,29 +897,29 @@ could return a value of type `T` or `Dictionary<String, T>`.
 >
 > *opaque-type* → **`some`** *type*
 
-## Parameter Pack Type
+## Type-Parameter Pack
 
 XXX OUTLINE:
 
-- `each T` creates a parameter pack type
+- `each T` creates a type-parameter pack
   when it appears in a generic parameter clause,
   or indicates which pack should be expanded
   when it appears in a `repeat` expression
 
-- `repeat T` expands the parameter pack type
+- `repeat T` expands the type-parameter pack
 
 - Packs are never nested; expansion implies flattening
 
 - To expand the values, you use a parameter pack expression;
   see <doc:Expressions#Parameter-Pack-Expression>
 
-- It's valid for a pack type to contain no elements.
+- It's valid for a type pack to contain no elements.
 
-> Grammar of a parameter pack type:
+> Grammar of a type-parameter pack:
 >
-> *parameter-pack-type* → **`each`** *type*
+> *type-parameter-pack* → **`each`** *type*
 >
-> *parameter-pack-expansion-type* → **`repeat`** *type*
+> *type-parameter-pack-expansion* → **`repeat`** *type*
 
 <!--
 The grammar above overproduces:

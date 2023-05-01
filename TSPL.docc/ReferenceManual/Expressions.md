@@ -1533,7 +1533,7 @@ XXX OUTLINE:
 - TODO list of contexts where expansion is supported
 
   + in a tuple, producing tuple elements
-  + as a statement, repeating the statement's expression
+  + as a statement, including at top level, repeating the statement's expression
   + but not in a function call, producing arguments
 
 - The *repetition pattern* is repeated once for each type in the pack
