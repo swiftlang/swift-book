@@ -1855,46 +1855,55 @@ protocol ComparableContainer: Container where Item: Comparable { }
 
 ## Generic Parameter Packs
 
-Parameter packs preserve type information
-while also not depending on a specific number of arguments being passed in.
-For example,
-using parameter packs lets you avoid writing multiple overloads
-that vary in the number of parameters they accept:
+To understand the problem that parameter packs solve,
+consider the following group of overloads:
 
 ```swift
-func someFunction<T>(_ x1: T) -> T { ... }
-func someFunction<T, U>(_ x1: T, _ x2: U) -> T, U { ... }
-func someFunction<T, U, V>(_ x1: T, _ x2: U, _ x3: V) -> T, U, V { ... }
+func double<T: Numeric>(_ value: T) -> T {
+    return 2 * value
+}
+
+func double<T: Numeric, U: Numeric>(_ value1: T, _ value2: U) -> (T, U) {
+    return (2 * value1, 2 * value2)
+}
+
+func double<T: Numeric, U: Numeric, V: Numeric>(
+        _ value1: T,
+        _ value2: U,
+        _ value3: V) -> (T, U, V) {
+    return (2 * value1, 2 * value2, 2 * value3)
+}
 ```
 
-The example above is repetitive and error prone,
+Each of the overloads takes a different number of arguments,
+and returns a tuple containing the result of doubling those arguments.
+Manually writing out each function like this
+is repetitive and error prone,
 and limits the function to a maximum of three arguments.
-Using `Any`, as shown below,
-allows an arbitrary number of arguments
-at the expense of erasing type information.
-
-```swift
-func someFunction(_ x: [Any]) -> [Any] { ... }
-```
+Other similar approaches that also have drawbacks
+include using an array, which requires all arguments to be the same type,
+or using `Any` which erases type information.
 
 Writing this function with a parameter pack
 preserves type information about its arguments,
 and lets you call the function an arbitrary number of arguments.
 
 ```swift
-func someFunction<each Element>(x: repeat each Element)
-    -> repeat each Element { ... }
+extension Numeric {
+    func doubled() -> Self {
+        return 2 * self
+    }
+}
 
-func someFunction<each T>(x: repeat each T) -> repeat each T { ... }
+func double<each T: Numeric>(_ value: repeat each T) -> (repeat each T) {
+    return ( repeat (each value).doubled() )
+}
+
 ```
 
 In the code above, `Element` is a generic type parameter.
 It's marked `each Element`,
 indicating that it's a type-parameter pack.
-
-<!-- XXX Listings above are all untested -->
-
-
 
 XXX OUTLINE:
 
@@ -1968,6 +1977,13 @@ How do you access the values of a parameter pack?
   The latter makes one tuple, `(T1, ..., Tn, Int)`.
   Other code can come between `repeat` and `each` ---
   both of those are different from `repeat (Int, each T)`
+
+- Tripping hazard:
+  You can call methods on the repeated values,
+  as in `repeat (each x).doSomething` ---
+  and the grouping parentheses are required there ---
+  but you can't include operators like `repeat (1 + each x)`
+  as part of the pack expansion.
 
 - You can expand a parameter pack's values
   only inside a tuple or a function call.
