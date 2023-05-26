@@ -1856,7 +1856,7 @@ protocol ComparableContainer: Container where Item: Comparable { }
 ## Generic Parameter Packs
 
 To understand the problem that parameter packs solve,
-consider the following group of overloads:
+consider the following overloads:
 
 ```swift
 func double<T: Numeric>(_ value: T) -> T {
@@ -1875,43 +1875,55 @@ func double<T: Numeric, U: Numeric, V: Numeric>(
 }
 ```
 
-Each of the overloads takes a different number of arguments,
+Each function in the example above
+takes a different number of arguments,
 and returns a tuple containing the result of doubling those arguments.
+Because the functions are generic,
+they can take values of any numeric type,
+and each argument can be a different type ---
+and the doubled values that are returned have those same types.
 Manually writing out each function like this
-is repetitive and error prone,
-and limits the function to a maximum of three arguments.
-Other similar approaches that also have drawbacks
-include using an array, which requires all arguments to be the same type,
+is repetitive and can be error prone.
+It also imposes an arbitrary limit of three arguments,
+even though the doubling operation could really apply
+to any number of arguments.
+
+Other approaches that also have drawbacks
+include taking the arguments an array or a variadic parameter,
+which requires all arguments to be the same type,
 or using `Any` which erases type information.
 
 Writing this function with a parameter pack
 preserves type information about its arguments,
-and lets you call the function an arbitrary number of arguments.
+and lets you call the function an arbitrary number of arguments:
 
 ```swift
+func double<each T: Numeric>(_ value: repeat each T) -> (repeat each T) {
+    return (repeat (each value).doubled())
+}
+
 extension Numeric {
     func doubled() -> Self {
         return 2 * self
     }
 }
-
-func double<each T: Numeric>(_ value: repeat each T) -> (repeat each T) {
-    return ( repeat (each value).doubled() )
-}
-
 ```
 
 In the code above, `Element` is a generic type parameter.
 It's marked `each Element`,
 indicating that it's a type-parameter pack.
+In contrast to generic type parameters,
+which act like a blank where you fill in a single type,
+generic type-parameter packs act like a list of blanks.
+There isn't any syntax in Swift to write out the list of types,
+but you use `repeat` and `each`
+to mark code that is repeated for each value in that list.
 
+For example,
+◊ call the function
+
+<!--
 XXX OUTLINE:
-
-Why parameter packs?
-
-- Another way that code can be generic
-  is to accept and return a list of values
-  where the length of that list can vary.
 
 How do you create a parameter pack?
 
@@ -1992,6 +2004,8 @@ How do you access the values of a parameter pack?
   A notable omission is that
   there isn't a way to iterate over the values in a pack ---
   the SE proposal calls that out as a potential future direction.
+
+-->
 
 ## Generic Subscripts
 
