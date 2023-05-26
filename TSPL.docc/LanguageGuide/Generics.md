@@ -1895,12 +1895,34 @@ or using `Any` which erases type information.
 
 Writing this function with a parameter pack
 preserves type information about its arguments,
-and lets you call the function an arbitrary number of arguments:
+and lets you call the function with an arbitrary number of arguments:
+
+```swift
+func double<each T: Numeric>(_ value: repeat each T) -> (repeat each T) {
+    // ...
+}
+```
+
+In the code above, `Element` is a generic type parameter.
+It's marked `each Element`,
+indicating that it's a type-parameter pack.
+In contrast to a generic type parameter,
+which serves as a placeholder for a single type,
+a type-parameter pack is a placeholder for multiple types.
+The ability to have `T` contain a varying number of types
+is what allows this version of `double(_:)`
+to take any number of parameters
+while preserving the type information about each of its parameters.
+
+There isn't any syntax in Swift to write out the list of types,
+but you use `repeat` and `each`
+to mark code that is repeated for each value in that list.
 
 ```swift
 func double<each T: Numeric>(_ value: repeat each T) -> (repeat each T) {
     return (repeat (each value).doubled())
 }
+
 
 extension Numeric {
     func doubled() -> Self {
@@ -1908,19 +1930,6 @@ extension Numeric {
     }
 }
 ```
-
-In the code above, `Element` is a generic type parameter.
-It's marked `each Element`,
-indicating that it's a type-parameter pack.
-In contrast to generic type parameters,
-which act like a blank where you fill in a single type,
-generic type-parameter packs act like a list of blanks.
-There isn't any syntax in Swift to write out the list of types,
-but you use `repeat` and `each`
-to mark code that is repeated for each value in that list.
-
-For example,
-◊ call the function
 
 <!--
 XXX OUTLINE:

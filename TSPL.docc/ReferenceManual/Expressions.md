@@ -1523,7 +1523,7 @@ A single expression inside parentheses is a parenthesized expression.
 >
 > *tuple-element* → *expression* | *identifier* **`:`** *expression*
 
-### Parameter Pack Expression
+### Parameter-Pack Expression
 
 XXX OUTLINE:
 

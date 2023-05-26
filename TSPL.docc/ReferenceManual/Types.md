@@ -915,6 +915,11 @@ XXX OUTLINE:
 
 - It's valid for a type pack to contain no elements.
 
+- list of places where type-parameter pack can appear:
+
+  + generic type parameter list
+  + as an argument to a generic type parameter
+
 > Grammar of a type-parameter pack:
 >
 > *type-parameter-pack* → **`each`** *type*
