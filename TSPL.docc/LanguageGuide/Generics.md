@@ -1893,6 +1893,8 @@ include taking the arguments an array or a variadic parameter,
 which requires all arguments to be the same type,
 or using `Any` which erases type information.
 
+<!-- XXX transition -->
+
 Writing this function with a parameter pack
 preserves type information about its arguments,
 and lets you call the function with an arbitrary number of arguments:
@@ -1929,31 +1931,83 @@ extension Numeric {
         return 2 * self
     }
 }
+
+let numbers = [12, 0.5, 8 as Int8]
+let doubledNumbers = double(numbers)
 ```
 
-<!--
+The value of `doubledNumbers` is `(24, 1.0, 16)`,
+and each element in this tuple has the same type
+as the value in `numbers` that it comes from.
+Both `12` and `24` are `Int`,
+`0.5` and `1.0` are `Double`,
+and `8` and `16` are `Int8`.
+
+* * *
+
 XXX OUTLINE:
+
+How do you read a parameter pack at its call site?
+
+- A parameter pack "packs" together types.
+  A pack that's made up of types is called a *type pack*.
+  A pack that's made up of values is called a *value pack*.
+
+- A value pack provides the types for a value pack.
+  The corresponding types and values appear at the same positions
+  in their respective packs.
+
+- When you write code that works on collections, you use iteration.
+  Working with parameter packs is similar ---
+  except each element has a different type,
+  and instead of iteration you use repetition.
 
 How do you create a parameter pack?
 
 - In the generic type parameters,
-  write `each` in front of the type that can occur multiple times.
+  write `each` in front of a generic argument
+  to indicate that this argument creates a type parameter pack.
 
 - In the function's parameters,
   write `repeat` in front of the type for the parameter
-  that can accept a variable number of arguments.
+  that can accept a variable number of arguments,
+  to create an *expansion pattern*.
+  You can also write `repeat` in the function's return type.
 
-- Inside the pack-expansion type,
-  write `each` in front of every place where the repetition takes place.
-  In the simple case, where only one type repeats,
-  this means you write `repeat each T` or similar.
+- The expansion of a repetition pattern produces a comma-separated list.
+  It can appear in generic argument lists,
+  in tuples types,
+  and in function argument lists.
+
+  ```swift
+  func f<each T>(_ t: repeat each T) -> repeat each T
+  ```
+
+- The expansion pattern is repeated for every element in the given type pack
+  by iterating over the types in the type pack
+  and replacing the type placeholder that comes after `each`.
+
+  For example, expanding `repeat Request<each Payload>`
+  where the `Payload` type pack contains `Bool`, `Int`, and `String`
+  produces `Request<Bool>, Request<Int>, Request<String>`.
+
+- When the type of a function argument is a type pack,
+  the values that are passed in for that argument become a value pack.
 
 - Naming convention:
   Use singular names for parameter packs,
   and plural names only in argument labels.
 
+Note:
+Parameter packs can contain zero or more arguments.
+If you need to require one or more,
+use a regular parameter before the pack parameters.
+
 What else can you repeat?
 How do you repeat more than one type?
+
+- In the simple case, where only one type repeats,
+  this means you write `repeat each T` or similar.
 
 - For collections or other generic types,
   the pack expansion can happen inside,
@@ -1966,10 +2020,25 @@ How do you repeat more than one type?
   the list of types that `Key` expands to must be the same length
   as the list that `Value` expands to.
 
+How do you vary the return types, based on the parameter types?
+(TODO: Worked code example.
+Use WWDC 2023 session 10168 example at 16 minutes
+as a starting point.)
+
+How do you constrain the types in a parameter pack?
+
+- In the simple case,
+  write the `where` clause in the generic parameters list.
+  `func foo<each T: Runcible>`
+  requires all of the types passed in the `T` type pack to conform.
+
+- In the more complex case,
+  use `repeat each T ` in a trailing `where` clause.
+
 How do you access the values of a parameter pack?
 
 - Inside the function body, you use `repeat`
-  to make the places where code must be expanded.
+  to mark places where the code expands the elements of a parameter pack.
 
 - When you use `repeat` at the start of a line (as a statement),
   the whole line is duplicated once for each type.
@@ -1986,8 +2055,13 @@ How do you access the values of a parameter pack?
   return (Pair(each first, each second))
   ```
 
-- Tripping hazard:
-  You don't always write `repeat each` one after the other.
+- The result (and its type) of expanding a parameter pack
+  vary depending on the number of elements in the pack.
+  Zero-element packs produce `()`,
+  single-element packs produce a simple type,
+  and multi-element packs produce a tuple type.
+
+- You don't always write `repeat each` one after the other.
   The part to repeat is marked `repeat`
   and the location of the element from the pack is marked `each`.
 
@@ -2014,7 +2088,20 @@ How do you access the values of a parameter pack?
   there isn't a way to iterate over the values in a pack ---
   the SE proposal calls that out as a potential future direction.
 
--->
+How do you work with errors?
+
+- Throwing or propagating an error stops iteration over the value pack.
+
+- For example,
+  to return a result only if none of the calls threw an error:
+
+  ```
+  do {
+      return (repeat try (each item).doSomething())
+  } catch {
+      return nil
+  }
+  ```
 
 ## Generic Subscripts
 
