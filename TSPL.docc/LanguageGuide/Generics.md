@@ -2088,6 +2088,30 @@ How do you access the values of a parameter pack?
   there isn't a way to iterate over the values in a pack ---
   the SE proposal calls that out as a potential future direction.
 
+- When a function returns a tuple using pack expansion,
+  or otherwise created by expanding a value pack,
+  you can perform the same operations on that tuple
+  as if it were still an unexpanded parameter pack.
+  This doesn't include tuples created any other way,
+  or tuples that contain a mix of elements created this way and another way.
+
+  For example:
+
+  <!-- from SE-0399 -->
+  ```swift
+  func tuplify<each T>(_ value: repeat each T) -> (repeat each T) {
+      return (repeat each value)
+  }
+
+  func example<each T>(_ value: repeat each T) {
+      let abstractTuple = tuplify(repeat each value)
+      repeat print(each abstractTuple)  // Ok
+
+      let concreteTuple = (true, "two", 3)
+      repeat print(each concreteTuple)  // Invalid
+  }
+  ```
+
 How do you work with errors?
 
 - Throwing or propagating an error stops iteration over the value pack.
