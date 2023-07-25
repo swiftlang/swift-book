@@ -1,44 +1,32 @@
-# The Swift Programming Language
+# The Swift Programming Language en Español
 
-This repository contains the source for *The Swift Programming Language*
-(sometimes abbreviated as TSPL),
-which is published on [docs.swift.org][published]
-and built using [Swift-DocC][docc].
+Este repositorio contiene el código fuente de la traducción al español de *The Swift Programming Language* (a veces abreviado como TSPL), el cual se encuentra publicado en [swiftbook.es][published] y fue desarollado usando [Swift-DocC][docc].
 
-## Contributing
+## Contribuciones
 
-For small changes,
-like typo fixes and changes to a few paragraphs,
-fork this repository and make a pull request.
+Para cambios pequeños, como correcciones de erratas (*typos*) y cambios en algunos párrafos, haz un fork de este repositorio y envía un *pull request*.
 
-A formal contribution process for this document is still in development.
-In the meantime,
-start a pitch thread in the [Swift forums][forum] for larger changes
-to discuss your approach and identify possible issues
-before you invest a lot of time in writing.
+El proceso formal de contribución a este documento aún se encuentra en desarrollo. Mientras tanto, inicia un hilo de contribución en los [foros de Swift][forum] para cambios más grandes, para discutir tu enfoque e identificar posibles problemas antes de que inviertas mucho tiempo escribiendo.
 
-Content in this book follows [Apple Style Guide][asg]
-and [this book’s style guide][tspl-style].
+El contenido de este libro sigue la [Guía de Estilo de Apple][asg] y la [guía de estilo de este libro][tspl-style].
 
-File bugs about the content using the [issues page][bugs] on Github.
+Reporta errores sobre el contenido usando la [página de issues][bugs] en Github.
 
-Discussions and contributions follow the [Swift Code of Conduct][conduct].
+Las discusiones y contribuciones siguen el [Código de Conducta de Swift][conduct].
 
-For more information, see [Contributing to The Swift Programming Language][contributing].
+Para más información, visita [Contribuyendo a The Swift Programming Language][contributing].
 
 [asg]: https://help.apple.com/applestyleguide/
-[bugs]: https://github.com/apple/swift-book/issues
+[bugs]: https://github.com/patternina/swift-book-es/issues
 [conduct]: https://www.swift.org/code-of-conduct
 [contributing]: /CONTRIBUTING.md
 [forum]: https://forums.swift.org/c/swift-documentation/92
-[tspl-style]: /Style.md
-[published]: https://docs.swift.org/swift-book/documentation/the-swift-programming-language/
+[tspl-style]: /Estilo.md
+[published]: https://swiftbook.es
 [docc]: https://github.com/apple/swift-docc
 
-## Building
+## Compilación
 
-Run `docc preview TSPL.docc`
-in this repository's root directory.
+Ejecuta `docc preview TSPL.docc` en el directorio raíz de este repositorio.
 
-After running DocC, open the link that `docc` outputs
-to display a local preview in your browser.
+Luego de ejecutar DocC, abre el enlace que `docc` imprime para mostrar una vista previa local en tu navegador.
