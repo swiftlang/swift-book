@@ -1,5 +1,5 @@
-<!-- What's in this pull request? -->
-Replace this paragraph with your rationale and a brief summary of what changed.
+<!-- ¿Qué contiene este pull request? -->
+Reemplaza este párrafo con tu justificación y un breve resumen de lo que se cambió.
 
-<!-- If this pull request fixes a bug tracked in GitHub issues, provide the link. -->
-Fixes: https://github.com/apple/swift-book/issues/####
+<!-- Si este pull request arregla un bug que rastreado en GitHub issues, proporciona el enlace. -->
+Fixes: <https://github.com/patternina/swift-book-es/issues/####>
