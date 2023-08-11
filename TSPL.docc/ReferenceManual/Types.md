@@ -36,32 +36,20 @@ and describes the type inference behavior of Swift.
 
 > Grammar of a type:
 >
-> *type* → *function-type*
->
-> *type* → *array-type*
->
-> *type* → *dictionary-type*
->
-> *type* → *type-identifier*
->
-> *type* → *tuple-type*
->
-> *type* → *optional-type*
->
-> *type* → *implicitly-unwrapped-optional-type*
->
-> *type* → *protocol-composition-type*
->
-> *type* → *opaque-type*
->
+> *type* → *function-type* \
+> *type* → *array-type* \
+> *type* → *dictionary-type* \
+> *type* → *type-identifier* \
+> *type* → *tuple-type* \
+> *type* → *optional-type* \
+> *type* → *implicitly-unwrapped-optional-type* \
+> *type* → *protocol-composition-type* \
+> *type* → *boxed-protocol-type* \
+> *type* → *opaque-type* \
 > *type* → *parameter-pack-type*
->
-> *type* → *metatype-type*
->
-> *type* → *any-type*
->
-> *type* → *self-type*
->
+> *type* → *metatype-type* \
+> *type* → *any-type* \
+> *type* → *self-type* \
 > *type* → **`(`** *type* **`)`**
 
 ## Type Annotation
@@ -147,8 +135,7 @@ var someValue: ExampleModule.MyType
 
 > Grammar of a type identifier:
 >
-> *type-identifier* → *type-name* *generic-argument-clause*_?_ | *type-name* *generic-argument-clause*_?_ **`.`** *type-identifier*
->
+> *type-identifier* → *type-name* *generic-argument-clause*_?_ | *type-name* *generic-argument-clause*_?_ **`.`** *type-identifier* \
 > *type-name* → *identifier*
 
 ## Tuple Type
@@ -191,12 +178,9 @@ except for `Void` which is a type alias for the empty tuple type, `()`.
 
 > Grammar of a tuple type:
 >
-> *tuple-type* → **`(`** **`)`** | **`(`** *tuple-type-element* **`,`** *tuple-type-element-list* **`)`**
->
-> *tuple-type-element-list* → *tuple-type-element* | *tuple-type-element* **`,`** *tuple-type-element-list*
->
-> *tuple-type-element* → *element-name* *type-annotation* | *type*
->
+> *tuple-type* → **`(`** **`)`** | **`(`** *tuple-type-element* **`,`** *tuple-type-element-list* **`)`** \
+> *tuple-type-element-list* → *tuple-type-element* | *tuple-type-element* **`,`** *tuple-type-element-list* \
+> *tuple-type-element* → *element-name* *type-annotation* | *type* \
 > *element-name* → *identifier*
 
 ## Function Type
@@ -495,18 +479,11 @@ see <doc:MemorySafety>.
 >
 > *function-type* → *attributes*_?_ *function-type-argument-clause* **`async`**_?_ **`throws`**_?_ **`->`** *type*
 >
->
->
-> *function-type-argument-clause* → **`(`** **`)`**
->
+> *function-type-argument-clause* → **`(`** **`)`** \
 > *function-type-argument-clause* → **`(`** *function-type-argument-list* **`...`**_?_ **`)`**
 >
->
->
-> *function-type-argument-list* → *function-type-argument* | *function-type-argument* **`,`** *function-type-argument-list*
->
-> *function-type-argument* → *attributes*_?_ **`inout`**_?_ *type* | *argument-label* *type-annotation*
->
+> *function-type-argument-list* → *function-type-argument* | *function-type-argument* **`,`** *function-type-argument-list* \
+> *function-type-argument* → *attributes*_?_ **`inout`**_?_ *type* | *argument-label* *type-annotation* \
 > *argument-label* → *identifier*
 
 <!--
@@ -844,8 +821,7 @@ typealias PQR = PQ & Q & R
 
 > Grammar of a protocol composition type:
 >
-> *protocol-composition-type* → *type-identifier* **`&`** *protocol-composition-continuation*
->
+> *protocol-composition-type* → *type-identifier* **`&`** *protocol-composition-continuation* \
 > *protocol-composition-continuation* → *type-identifier* | *protocol-composition-type*
 
 ## Opaque Type
@@ -883,6 +859,13 @@ that are part of the interface defined by the *constraint*.
   and the compiler uses the same machinery for both under the hood.
 -->
 
+At compile time,
+a value whose type is opaque has a specific concrete type,
+and Swift can use that underlying type for optimizations.
+However,
+the opaque type forms a boundary
+that information about that underlying type can't cross.
+
 Protocol declarations can't include opaque types.
 Classes can't use an opaque type as the return type of a nonfinal method.
 
@@ -896,6 +879,75 @@ could return a value of type `T` or `Dictionary<String, T>`.
 > Grammar of an opaque type:
 >
 > *opaque-type* → **`some`** *type*
+
+## Boxed Protocol Type
+
+A *boxed protocol type* defines a type
+that conforms to a protocol or protocol composition,
+with the ability for that conforming type
+to vary while the program is running.
+
+Boxed protocol types have the following form:
+
+```swift
+any <#constraint#>
+```
+
+The *constraint* is a protocol type,
+protocol composition type,
+a metatype of a protocol type,
+or a metatype of a protocol composition type.
+
+At runtime,
+an instance of a boxed protocol type can contain a value
+of any type that satisfies the *constraint*.
+This behavior contrasts with how an opaque types work,
+where there is some specific conforming type known at compile time.
+The additional level of indirection that's used
+when working with a boxed protocol type is called :newTerm:`boxing`.
+Boxing typically requires a separate memory allocation for storage
+and an additional level of indirection for access,
+which incurs a performance cost at runtime.
+
+Applying `any` to the `Any` or `AnyObject` types
+has no effect,
+because those types are already boxed protocol types.
+
+<!--
+  - test: `any-any-does-nothing`
+
+   >> var x: any Any = 12
+   >> var y: Any = 12
+   >> print(type(of: x))
+   << Int
+   >> print(type(of: y))
+   << Int
+   >> print(type(of: x) == type(of: y))
+   << true
+-->
+
+<!--
+  - test: `any-anyobject-does-nothing`
+
+   >> import Foundation
+   >> var x: any AnyObject = NSNumber(value: 12)
+   >> var y: AnyObject = NSNumber(value: 12)
+   >> print(type(of: x))
+   << __NSCFNumber
+   >> print(type(of: y))
+   << __NSCFNumber
+   >> print(type(of: x) == type(of: y))
+   << true
+-->
+
+<!--
+Contrast P.Type with (any P.Type) and (any P).Type
+https://github.com/apple/swift-evolution/blob/main/proposals/0335-existential-any.md#metatypes
+-->
+
+> Grammar of a boxed protocol type:
+>
+> *boxed-protocol-type* → **`any`** *type*
 
 ## Type-Parameter Pack
 
@@ -1263,8 +1315,7 @@ to specify the type of its raw values, see <doc:Enumerations#Raw-Values>.
 
 > Grammar of a type inheritance clause:
 >
-> *type-inheritance-clause* → **`:`** *type-inheritance-list*
->
+> *type-inheritance-clause* → **`:`** *type-inheritance-list* \
 > *type-inheritance-list* → *attributes*_?_ *type-identifier* | *attributes*_?_ *type-identifier* **`,`** *type-inheritance-list*
 
 ## Type Inference

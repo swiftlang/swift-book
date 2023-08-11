@@ -2,9 +2,25 @@
 
 Review the recent changes to this book.
 
-**2023-02-16**
+**2023-06-05**
+
+- Updated for Swift 5.9.
+- Added information about `if` and `switch` expressions
+  to the <doc:ControlFlow> chapter
+  and the <doc:Expressions#Conditional-Expression> section.
+- Added the <doc:Macros> chapter,
+  with information about generating code at compile time.
+- Added information about boxed protocol types
+  to the <doc:OpaqueTypes> chapter.
+- Updated the <doc:Attributes#Result-Building-Methods> section
+  with information about the `buildPartialBlock(first:)`
+  and `buildPartialBlock(accumulated:next:)` methods.
+
+**2023-03-30**
 
 - Updated for Swift 5.8.
+- Added the <doc:ControlFlow#Deferred-Actions> section,
+  showing `defer` outside of error handling.
 - Adopted Swift-DocC for publication.
 - Minor corrections and additions throughout.
 
@@ -187,7 +203,7 @@ Review the recent changes to this book.
   and to the <doc:Protocols#Conditionally-Conforming-to-a-Protocol> section
   of the <doc:Protocols> chapter.
 - Added information about recursive protocol constraints
-  to the <doc:Generics#Using-a-Protocol-in-Its-Associated-Type's-Constraints> section.
+  to the <doc:Generics#Using-a-Protocol-in-Its-Associated-Types-Constraints> section.
 - Added information about
   the `canImport()` and `targetEnvironment()` platform conditions
   to <doc:Statements#Conditional-Compilation-Block>.
