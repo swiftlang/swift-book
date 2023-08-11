@@ -2007,7 +2007,7 @@ What else can you repeat?
 How do you repeat more than one type?
 
 - In the simple case, where only one type repeats,
-  this means you write `repeat each T` or similar.
+  you write `repeat each T` or similar.
 
 - For collections or other generic types,
   the pack expansion can happen inside,
@@ -2034,6 +2034,12 @@ How do you constrain the types in a parameter pack?
 
 - In the more complex case,
   use `repeat each T ` in a trailing `where` clause.
+
+- You must restrict the types that appear in a type-parameter pack;
+  conformance requirements don't implicitly propagate.
+  For example, given `each T: Hashable` writing `repeat Set<each T>` works,
+  but it doesn't work with just `each T`
+  because `Set` requires `T` to be hashable but the pack doesn't.
 
 How do you access the values of a parameter pack?
 

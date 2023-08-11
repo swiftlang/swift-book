@@ -1527,7 +1527,7 @@ A single expression inside parentheses is a parenthesized expression.
 
 XXX OUTLINE:
 
-- a `repeat` expression must contain one or more `each` expressions
+- A `repeat` expression must contain one or more `each` expressions
   and has the shape `repeat <#repetition pattern#>`
 
 - TODO list of contexts where expansion is supported
@@ -1538,10 +1538,26 @@ XXX OUTLINE:
 
 - The *repetition pattern* is repeated once for each type in the pack
 
-- all of the `each` expressions must expand packs with the same number of types
+- If an expression includes both the `repeat` operator and
+  a `try` or `await` operator,
+  the `repeat` operator must appear first.
+  (So `repeat try each foo` or `repeat each try foo`)
+
+- All of the `each` expressions in a parameter-pack expression
+  must expand packs that have the same number of types.
+
+- In a function declaration,
+  an argument whose type is a parameter-pack expansion type
+  must be the last parameter
+  or the parameter after it must have a label.
 
 - It's valid for a pack expression contain no elements,
   in which case the parameter-pack expansion expression isn't evaluated at all (zero times)
+
+<!--
+You can't write ( immediately after `each`
+because `each(` is parsed as a function call.
+-->
 
 > Grammar of a pack-expansion expression:
 >
