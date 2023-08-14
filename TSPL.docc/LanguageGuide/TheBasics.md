@@ -87,7 +87,7 @@ The current login attempt counter is declared as a variable,
 because this value must be incremented after each failed login attempt.
 
 You can declare multiple constants or multiple variables on a single line,
-separated by commas:
+separated by commas.
 
 ```swift
 var x = 0.0, y = 0.0, z = 0.0
@@ -137,7 +137,7 @@ so the code above can be read as:
 The phrase “of type `String`” means “can store any `String` value.”
 Think of it as meaning “the type of thing” (or “the kind of thing”) that can be stored.
 
-The `welcomeMessage` variable can now be set to any string value without error:
+The `welcomeMessage` variable can now be set to any string value without error.
 
 ```swift
 welcomeMessage = "Hello"
@@ -154,7 +154,7 @@ welcomeMessage = "Hello"
 -->
 
 You can define multiple related variables of the same type on a single line,
-separated by commas, with a single type annotation after the final variable name:
+separated by commas, with a single type annotation after the final variable name.
 
 ```swift
 var red, green, blue: Double
@@ -179,7 +179,7 @@ var red, green, blue: Double
 ### Naming Constants and Variables
 
 Constant and variable names can contain almost any character,
-including Unicode characters:
+including Unicode characters.
 
 ```swift
 let π = 3.14159
@@ -235,7 +235,7 @@ friendlyWelcome = "Bonjour!"
 -->
 
 Unlike a variable, the value of a constant can't be changed after it's set.
-Attempting to do so is reported as an error when your code is compiled:
+Attempting to do so is reported as an error when your code is compiled.
 
 ```swift
 let languageName = "Swift"
@@ -262,7 +262,7 @@ languageName = "Swift++"
 
 ### Printing Constants and Variables
 
-You can print the current value of a constant or variable with the `print(_:separator:terminator:)` function:
+You can print the current value of a constant or variable with the `print(_:separator:terminator:)` function.
 
 ```swift
 print(friendlyWelcome)
@@ -316,7 +316,7 @@ see <doc:Functions#Default-Parameter-Values>.
 Swift uses *string interpolation* to include the name of a constant or variable
 as a placeholder in a longer string,
 and to prompt Swift to replace it with the current value of that constant or variable.
-Wrap the name in parentheses and escape it with a backslash before the opening parenthesis:
+Wrap the name in parentheses and escape it with a backslash before the opening parenthesis.
 
 ```swift
 print("The current value of friendlyWelcome is \(friendlyWelcome)")
@@ -342,7 +342,7 @@ as a note or reminder to yourself.
 Comments are ignored by the Swift compiler when your code is compiled.
 
 Comments in Swift are very similar to comments in C.
-Single-line comments begin with two forward-slashes (`//`):
+Single-line comments begin with two forward-slashes (`//`).
 
 ```swift
 // This is a comment.
@@ -357,7 +357,7 @@ Single-line comments begin with two forward-slashes (`//`):
 -->
 
 Multiline comments start with a forward-slash followed by an asterisk (`/*`)
-and end with an asterisk followed by a forward-slash (`*/`):
+and end with an asterisk followed by a forward-slash (`*/`).
 
 ```swift
 /* This is also a comment
@@ -377,7 +377,7 @@ Unlike multiline comments in C,
 multiline comments in Swift can be nested inside other multiline comments.
 You write nested comments by starting a multiline comment block
 and then starting a second multiline comment within the first block.
-The second block is then closed, followed by the first block:
+The second block is then closed, followed by the first block.
 
 ```swift
 /* This is the start of the first multiline comment.
@@ -404,7 +404,7 @@ Unlike many other languages,
 Swift doesn't require you to write a semicolon (`;`) after each statement in your code,
 although you can do so if you wish.
 However, semicolons *are* required
-if you want to write multiple separate statements on a single line:
+if you want to write multiple separate statements on a single line.
 
 ```swift
 let cat = "🐱"; print(cat)
@@ -436,7 +436,7 @@ Like all types in Swift, these integer types have capitalized names.
 ### Integer Bounds
 
 You can access the minimum and maximum values of each integer type
-with its `min` and `max` properties:
+with its `min` and `max` properties.
 
 ```swift
 let minValue = UInt8.min  // minValue is equal to 0, and is of type UInt8
@@ -462,7 +462,7 @@ and can therefore be used in expressions alongside other values of the same type
 
 In most cases, you don't need to pick a specific size of integer to use in your code.
 Swift provides an additional integer type, `Int`,
-which has the same size as the current platform's native word size:
+which has the same size as the current platform's native word size.
 
 - On a 32-bit platform, `Int` is the same size as `Int32`.
 - On a 64-bit platform, `Int` is the same size as `Int64`.
@@ -496,7 +496,7 @@ such as `3.14159`, `0.1`, and `-273.15`.
 
 Floating-point types can represent a much wider range of values than integer types,
 and can store numbers that are much larger or smaller than can be stored in an `Int`.
-Swift provides two signed floating-point number types:
+Swift provides two signed floating-point number types.
 
 - `Double` represents a 64-bit floating-point number.
 - `Float` represents a 32-bit floating-point number.
@@ -552,7 +552,7 @@ such as `42` and `3.14159` in the examples below.)
 For example, if you assign a literal value of `42` to a new constant
 without saying what type it is,
 Swift infers that you want the constant to be an `Int`,
-because you have initialized it with a number that looks like an integer:
+because you have initialized it with a number that looks like an integer.
 
 ```swift
 let meaningOfLife = 42
@@ -571,7 +571,7 @@ let meaningOfLife = 42
 -->
 
 Likewise, if you don't specify a type for a floating-point literal,
-Swift infers that you want to create a `Double`:
+Swift infers that you want to create a `Double`.
 
 ```swift
 let pi = 3.14159
@@ -593,7 +593,7 @@ Swift always chooses `Double` (rather than `Float`)
 when inferring the type of floating-point numbers.
 
 If you combine integer and floating-point literals in an expression,
-a type of `Double` will be inferred from the context:
+a type of `Double` will be inferred from the context.
 
 ```swift
 let anotherPi = 3 + 0.14159
@@ -676,13 +676,13 @@ indicated by an uppercase or lowercase `p`.
 -->
 
 For decimal numbers with an exponent of `x`,
-the base number is multiplied by 10ˣ:
+the base number is multiplied by 10ˣ.
 
 - `1.25e2` means 1.25 x 10², or `125.0`.
 - `1.25e-2` means 1.25 x 10⁻², or `0.0125`.
 
 For hexadecimal numbers with an exponent of `x`,
-the base number is multiplied by 2ˣ:
+the base number is multiplied by 2ˣ.
 
 - `0xFp2` means 15 x 2², or `60.0`.
 - `0xFp-2` means 15 x 2⁻², or `3.75`.
@@ -708,7 +708,7 @@ let hexadecimalDouble = 0xC.3p0
 Numeric literals can contain extra formatting to make them easier to read.
 Both integers and floats can be padded with extra zeros
 and can contain underscores to help with readability.
-Neither type of formatting affects the underlying value of the literal:
+Neither type of formatting affects the underlying value of the literal.
 
 ```swift
 let paddedDouble = 000123.456
@@ -748,7 +748,7 @@ is different for each numeric type.
 An `Int8` constant or variable can store numbers between `-128` and `127`,
 whereas a `UInt8` constant or variable can store numbers between `0` and `255`.
 A number that won't fit into a constant or variable of a sized integer type
-is reported as an error when your code is compiled:
+is reported as an error when your code is compiled.
 
 ```swift
 let cannotBeNegative: UInt8 = -1
@@ -827,7 +827,7 @@ is covered in <doc:Extensions>.
 
 ### Integer and Floating-Point Conversion
 
-Conversions between integer and floating-point numeric types must be made explicit:
+Conversions between integer and floating-point numeric types must be made explicit.
 
 ```swift
 let three = 3
@@ -853,7 +853,7 @@ so that both sides of the addition are of the same type.
 Without this conversion in place, the addition would not be allowed.
 
 Floating-point to integer conversion must also be made explicit.
-An integer type can be initialized with a `Double` or `Float` value:
+An integer type can be initialized with a `Double` or `Float` value.
 
 ```swift
 let integerPi = Int(pi)
@@ -892,7 +892,7 @@ You define type aliases with the `typealias` keyword.
 
 Type aliases are useful when you want to refer to an existing type
 by a name that's contextually more appropriate,
-such as when working with data of a specific size from an external source:
+such as when working with data of a specific size from an external source.
 
 ```swift
 typealias AudioSample = UInt16
@@ -907,7 +907,7 @@ typealias AudioSample = UInt16
 -->
 
 Once you define a type alias,
-you can use the alias anywhere you might use the original name:
+you can use the alias anywhere you might use the original name.
 
 ```swift
 var maxAmplitudeFound = AudioSample.min
@@ -935,7 +935,7 @@ Swift has a basic *Boolean* type, called `Bool`.
 Boolean values are referred to as *logical*,
 because they can only ever be true or false.
 Swift provides two Boolean constant values,
-`true` and `false`:
+`true` and `false`.
 
 ```swift
 let orangesAreOrange = true
@@ -988,7 +988,7 @@ if turnipsAreDelicious {
 Conditional statements such as the `if` statement are covered in more detail in <doc:ControlFlow>.
 
 Swift's type safety prevents non-Boolean values from being substituted for `Bool`.
-The following example reports a compile-time error:
+The following example reports a compile-time error.
 
 ```swift
 let i = 1
@@ -1012,7 +1012,7 @@ if i {
   ```
 -->
 
-However, the alternative example below is valid:
+However, the alternative example below is valid.
 
 ```swift
 let i = 1
@@ -1077,7 +1077,7 @@ a tuple of type `(Int, Int, Int)`, or `(String, Bool)`,
 or indeed any other permutation you require.
 
 You can *decompose* a tuple's contents into separate constants or variables,
-which you then access as usual:
+which you then access as usual.
 
 ```swift
 let (statusCode, statusMessage) = http404Error
@@ -1101,7 +1101,7 @@ print("The status message is \(statusMessage)")
 
 If you only need some of the tuple's values,
 ignore parts of the tuple with an underscore (`_`)
-when you decompose the tuple:
+when you decompose the tuple.
 
 ```swift
 let (justTheStatusCode, _) = http404Error
@@ -1120,7 +1120,7 @@ print("The status code is \(justTheStatusCode)")
 -->
 
 Alternatively,
-access the individual element values in a tuple using index numbers starting at zero:
+access the individual element values in a tuple using index numbers starting at zero.
 
 ```swift
 print("The status code is \(http404Error.0)")
@@ -1140,7 +1140,7 @@ print("The status message is \(http404Error.1)")
   ```
 -->
 
-You can name the individual elements in a tuple when the tuple is defined:
+You can name the individual elements in a tuple when the tuple is defined.
 
 ```swift
 let http200Status = (statusCode: 200, description: "OK")
@@ -1155,7 +1155,7 @@ let http200Status = (statusCode: 200, description: "OK")
 -->
 
 If you name the elements in a tuple,
-you can use the element names to access the values of those elements:
+you can use the element names to access the values of those elements.
 
 ```swift
 print("The status code is \(http200Status.statusCode)")
@@ -1218,7 +1218,7 @@ However, not every string can be converted into an integer.
 The string `"123"` can be converted into the numeric value `123`,
 but the string `"hello, world"` doesn't have an obvious numeric value to convert to.
 
-The example below uses the initializer to try to convert a `String` into an `Int`:
+The example below uses the initializer to try to convert a `String` into an `Int`.
 
 ```swift
 let possibleNumber = "123"
@@ -1250,7 +1250,7 @@ It's either an `Int`, or it's nothing at all.)
 ### nil
 
 You set an optional variable to a valueless state
-by assigning it the special value `nil`:
+by assigning it the special value `nil`.
 
 ```swift
 var serverResponseCode: Int? = 404
@@ -1277,7 +1277,7 @@ serverResponseCode = nil
 > always declare it as an optional value of the appropriate type.
 
 If you define an optional variable without providing a default value,
-the variable is automatically set to `nil` for you:
+the variable is automatically set to `nil` for you.
 
 ```swift
 var surveyAnswer: String?
@@ -1305,7 +1305,7 @@ by comparing the optional against `nil`.
 You perform this comparison with the “equal to” operator (`==`)
 or the “not equal to” operator (`!=`).
 
-If an optional has a value, it's considered to be “not equal to” `nil`:
+If an optional has a value, it's considered to be “not equal to” `nil`.
 
 ```swift
 if convertedNumber != nil {
@@ -1330,7 +1330,7 @@ you can access its underlying value
 by adding an exclamation point (`!`) to the end of the optional's name.
 The exclamation point effectively says,
 “I know that this optional definitely has a value; please use it.”
-This is known as *forced unwrapping* of the optional's value:
+This is known as *forced unwrapping* of the optional's value.
 
 ```swift
 if convertedNumber != nil {
@@ -1367,7 +1367,7 @@ and to extract that value into a constant or variable,
 as part of a single action.
 `if` and `while` statements are described in more detail in <doc:ControlFlow>.
 
-Write an optional binding for an `if` statement as follows:
+Write an optional binding for an `if` statement as follows.
 
 ```swift
 if let <#constantName#> = <#someOptional#> {
@@ -1377,7 +1377,7 @@ if let <#constantName#> = <#someOptional#> {
 
 You can rewrite the `possibleNumber` example from
 the <doc:TheBasics#Optionals> section
-to use optional binding rather than forced unwrapping:
+to use optional binding rather than forced unwrapping.
 
 ```swift
 if let actualNumber = Int(possibleNumber) {
@@ -1415,7 +1415,7 @@ In this example, `actualNumber` is simply used to print the result of the conver
 
 If you don't need to refer to the original, optional constant or variable
 after accessing the value it contains,
-you can use the same name for the new constant or variable:
+you can use the same name for the new constant or variable.
 
 ```swift
 let myNumber = Int(possibleNumber)
@@ -1491,7 +1491,7 @@ If any of the values in the optional bindings are `nil`
 or any Boolean condition evaluates to `false`,
 the whole `if` statement's condition
 is considered to be `false`.
-The following `if` statements are equivalent:
+The following `if` statements are equivalent.
 
 ```swift
 if let firstNumber = Int("4"), let secondNumber = Int("42"), firstNumber < secondNumber && secondNumber < 100 {
@@ -1575,7 +1575,7 @@ but can also be used like a non-optional value,
 without the need to unwrap the optional value each time it's accessed.
 The following example shows the difference in behavior between
 an optional string and an implicitly unwrapped optional string
-when accessing their wrapped value as an explicit `String`:
+when accessing their wrapped value as an explicit `String`.
 
 ```swift
 let possibleString: String? = "An optional string."
@@ -1606,7 +1606,7 @@ In the code above,
 the optional value `assumedString` is force-unwrapped
 before assigning its value to `implicitString`
 because `implicitString` has an explicit, non-optional type of `String`.
-In code below,
+In the code below,
 `optionalString` doesn't have an explicit type
 so it's an ordinary optional.
 
@@ -1632,7 +1632,7 @@ The result is exactly the same as if you place an exclamation point
 after a normal optional that doesn't contain a value.
 
 You can check whether an implicitly unwrapped optional is `nil`
-the same way you check a normal optional:
+the same way you check a normal optional.
 
 ```swift
 if assumedString != nil {
@@ -1653,7 +1653,7 @@ if assumedString != nil {
 -->
 
 You can also use an implicitly unwrapped optional with optional binding,
-to check and unwrap its value in a single statement:
+to check and unwrap its value in a single statement.
 
 ```swift
 if let definiteString = assumedString {
