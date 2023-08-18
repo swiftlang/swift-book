@@ -1953,7 +1953,7 @@ How do you read a parameter pack at its call site?
   A pack that's made up of types is called a *type pack*.
   A pack that's made up of values is called a *value pack*.
 
-- A value pack provides the types for a value pack.
+- A type pack provides the types for a value pack.
   The corresponding types and values appear at the same positions
   in their respective packs.
 
