@@ -1394,7 +1394,7 @@ the `actualNumber` constant becomes available for use within
 the first branch of the `if` statement.
 It has already been initialized with the value contained within the optional,
 and has the corresponding non-optional type.
-In this case, the type of `possibleNumber` is `Int?`,
+In this case, the type of `Int(possibleNumber)` is `Int?`,
 so the type of `actualNumber` is `Int`.
 
 If you don't need to refer to the original, optional constant or variable
