@@ -61,7 +61,12 @@ as described in <doc:Expressions#Implicit-Conversion-to-a-Pointer-Type>.
 
 > Grammar of an in-out expression:
 >
-> *in-out-expression* → **`&`** *primary-expression*
+> *in-out-expression* → **`&`** *in-out-expression-tail*
+> *in-out-expression-tail* → *in-out-expression-tail* **`.`** *decimal-digits*
+> *in-out-expression-tail* → *in-out-expression-tail* **`.`** *identifier*
+> *in-out-expression-tail* → *in-out-expression-tail* **`[`** *function-call-argument-list* **`]`**
+> *in-out-expression-tail* → **`(`** *in-out-expression-tail* **`)`**
+> *in-out-expression-tail* → *identifier*
 
 ### Try Operator
 
