@@ -323,7 +323,7 @@ make the same change here also.
 
 > Grammar of an in-out expression:
 >
-> *in-out-expression* → **`&`** *postfix-expression*
+> *in-out-expression* → **`&`** *primary-expression*
 
 > Grammar of a try expression:
 >

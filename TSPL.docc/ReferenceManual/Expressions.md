@@ -51,6 +51,15 @@ as an in-out argument to a function call expression.
 &<#expression#>
 ```
 
+The _expression_ is a combination of the following kinds of expression:
+
+- An identifier or `self`
+- Access to a member, including properties, tuple elements, and `.self`
+- Access to an array subscript
+
+Member access can be explicit like `f(&x.y)` or implicit like `f(&.z)`.
+The _expression_ can also include grouping parentheses.
+
 For more information about in-out parameters and to see an example,
 see <doc:Functions#In-Out-Parameters>.
 
@@ -61,12 +70,7 @@ as described in <doc:Expressions#Implicit-Conversion-to-a-Pointer-Type>.
 
 > Grammar of an in-out expression:
 >
-> *in-out-expression* → **`&`** *in-out-expression-tail*
-> *in-out-expression-tail* → *in-out-expression-tail* **`.`** *decimal-digits*
-> *in-out-expression-tail* → *in-out-expression-tail* **`.`** *identifier*
-> *in-out-expression-tail* → *in-out-expression-tail* **`[`** *function-call-argument-list* **`]`**
-> *in-out-expression-tail* → **`(`** *in-out-expression-tail* **`)`**
-> *in-out-expression-tail* → *identifier*
+> *in-out-expression* → **`&`** *primary-expression*
 
 ### Try Operator
 
