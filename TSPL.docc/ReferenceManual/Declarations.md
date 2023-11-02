@@ -34,7 +34,6 @@ the term *declaration* covers both declarations and definitions.
 > *declaration* → *macro-declaration* \
 > *declaration* → *operator-declaration* \
 > *declaration* → *precedence-group-declaration* \
-> *declarations* → *declaration* *declarations*_?_
 
 ## Top-Level Code
 
@@ -156,6 +155,24 @@ as long as it's guaranteed to have a value set
 before the first time its value is read.
 If the compiler can prove that the constant's value is never read,
 the constant isn't required to have a value set at all.
+This analysis is called *definite initialization* ---
+the compiler proves that a value is definitely set before being read.
+
+> Note:
+> Definite initialization
+> can't construct proofs that require domain knowledge,
+> and its ability to track state across conditionals has a limit.
+> If you can determine that constant always has a value set,
+> but the compiler can't prove this is the case,
+> try simplifying the code paths that set the value,
+> or use a variable declaration instead.
+
+<!--
+In the most general case,
+DI reduces to the halting problem,
+as shown by Rice's theorem.
+-->
+
 When a constant declaration occurs in the context of a class or structure
 declaration, it's considered a *constant property*.
 Constant declarations aren't computed properties and therefore don't have getters
@@ -277,6 +294,9 @@ That said, if no initializer *expression* is present,
 the variable declaration must include an explicit type annotation (`:` *type*).
 
 As with constant declarations,
+if a variable declaration omits the initializer *expression*,
+the variable must have a value set before the first time it is read.
+Also like constant declarations,
 if the *variable name* is a tuple pattern,
 the name of each item in the tuple is bound to the corresponding value
 in the initializer *expression*.
@@ -1805,21 +1825,6 @@ as described in <doc:Patterns#Enumeration-Case-Pattern>.
   because they behave differently. I'm not sure why we've blended them together,
   especially given that they have distinct syntactic declaration requirements
   and they behave differently.
--->
-
-<!--
-  old-grammar
-  Grammar of an enumeration declaration
-
-  enum-declaration -> attribute-list-OPT ``enum`` enum-name generic-parameter-clause-OPT type-inheritance-clause-OPT enum-body
-  enum-name -> identifier
-  enum-body -> ``{`` declarations-OPT ``}``
-
-  enum-member-declaration -> attribute-list-OPT ``case`` enumerator-list
-  enumerator-list -> enumerator raw-value-assignment-OPT | enumerator raw-value-assignment-OPT ``,`` enumerator-list
-  enumerator -> enumerator-name tuple-type-OPT
-  enumerator-name -> identifier
-  raw-value-assignment -> ``=`` literal
 -->
 
 ## Structure Declaration
@@ -3465,7 +3470,7 @@ binds more tightly to its operands.
 > can't be used next to each other without grouping parentheses.
 
 Swift defines numerous precedence groups to go along
-with the operators provided by the standard library.
+with the operators provided by the Swift standard library.
 For example, the addition (`+`) and subtraction (`-`) operators
 belong to the `AdditionPrecedence` group,
 and the multiplication (`*`) and division (`/`) operators
@@ -3497,7 +3502,7 @@ The *assignment* of a precedence group specifies the precedence of an operator
 when used in an operation that includes optional chaining.
 When set to `true`, an operator in the corresponding precedence group
 uses the same grouping rules during optional chaining
-as the assignment operators from the standard library.
+as the assignment operators from the Swift standard library.
 Otherwise, when set to `false` or omitted,
 operators in the precedence group follows the same optional chaining rules
 as operators that don't perform assignment.
