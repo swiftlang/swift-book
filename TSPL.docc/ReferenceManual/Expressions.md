@@ -70,7 +70,7 @@ as described in <doc:Expressions#Implicit-Conversion-to-a-Pointer-Type>.
 
 > Grammar of an in-out expression:
 >
-> *in-out-expression* → **`&`** *primary-expression*
+> *in-out-expression* → **`&`** *postfix-expression*
 
 ### Try Operator
 
