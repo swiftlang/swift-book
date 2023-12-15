@@ -43,7 +43,7 @@ Swift supports all of the bitwise operators found in C, as described below.
 
 The *bitwise NOT operator* (`~`) inverts all bits in a number:
 
-![](bitwiseNOT)
+![A diagram of NOT 00001111 --> 11110000.](bitwiseNOT)
 
 The bitwise NOT operator is a prefix operator,
 and appears immediately before the value it operates on,
@@ -87,7 +87,7 @@ The *bitwise AND operator* (`&`) combines the bits of two numbers.
 It returns a new number whose bits are set to `1`
 only if the bits were equal to `1` in *both* input numbers:
 
-![](bitwiseAND)
+![The input 11111100, with the first two bits highlighted; the input 00111111, with the last two bits highlighted; and the result 00111100.  The highlighted bits are 1 in only one input, and 0 in the result.](bitwiseAND)
 
 In the example below,
 the values of `firstSixBits` and `lastSixBits`
@@ -118,7 +118,7 @@ The *bitwise OR operator* (`|`) compares the bits of two numbers.
 The operator returns a new number whose bits are set to `1`
 if the bits are equal to `1` in *either* input number:
 
-![](bitwiseOR)
+![The inputs 10110010 and 01011110 produce the result 11111110.](bitwiseOR)
 
 <!-- Apple Books screenshot ends here. -->
 
