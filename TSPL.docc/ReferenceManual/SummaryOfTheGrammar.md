@@ -697,8 +697,8 @@ make the same change here also.
 > *platform-condition* → **`canImport`** **`(`** *import-path* **`)`** \
 > *platform-condition* → **`targetEnvironment`** **`(`** *environment* **`)`**
 >
-> *operating-system* → **`macOS`** | **`iOS`** | **`watchOS`** | **`tvOS`** | **`Linux`** | **`Windows`** \
-> *architecture* → **`i386`** | **`x86_64`** | **`arm`** | **`arm64`** \
+> *operating-system* → **`OSX`** | **`macOS`** | **`tvOS`** | **`watchOS`** | **`iOS`** | **`Linux`** | **`FreeBSD`** | **`OpenBSD`** | **`Windows`** | **`Android`** | **`PS4`** | **`Cygwin`** | **`Haiku`** | **`WASI`** \
+> *architecture* → **`arm`** | **`arm64`** | **`arm64_32`** | **`i386`** | **`x86_64`** | **`powerpc`** | **`powerpc64`** | **`powerpc64le`** | **`s390x`** | **`wasm32`** | **`riscv64`** \
 > *swift-version* → *decimal-digits* *swift-version-continuation*_?_ \
 > *swift-version-continuation* → **`.`** *decimal-digits* *swift-version-continuation*_?_ \
 > *environment* → **`simulator`** | **`macCatalyst`**
