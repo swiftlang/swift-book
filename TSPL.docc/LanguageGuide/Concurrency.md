@@ -587,8 +587,8 @@ The explicit parent-child relationships between tasks has several advantages:
 - When setting a higher priority on a child task,
   the parent task's priority is automatically escalated.
 
-- When a parent task is canceled,
-  each of its child tasks is also automatically canceled.
+- When a parent task is cancelled,
+  each of its child tasks is also automatically cancelled.
 
 - Task-local values propagate to child tasks efficiently and automatically.
 
@@ -679,7 +679,7 @@ whose values aren't collected.
 ### Task Cancellation
 
 Swift concurrency uses a cooperative cancellation model.
-Each task checks whether it has been canceled
+Each task checks whether it has been cancelled
 at the appropriate points in its execution,
 and responds to cancellation appropriately.
 Depending on what work the task is doing,
@@ -693,11 +693,11 @@ Downloading pictures could take a long time
 if the pictures are large or the network is slow.
 To let the user stop this work,
 without waiting for all of the tasks to complete,
-the tasks need check for cancellation and stop running if they are canceled.
+the tasks need check for cancellation and stop running if they are cancelled.
 There are two ways a task can do this:
 by calling the [`Task.checkCancellation()`][] method,
 or by reading the [`Task.isCancelled`][] property.
-Calling `checkCancellation()` throws an error if the task is canceled;
+Calling `checkCancellation()` throws an error if the task is cancelled;
 a throwing task can propagate the error out of the task,
 stopping all of the task's work.
 This has the advantage of being simple to implement and understand.
@@ -734,7 +734,7 @@ The code above makes several changes from the previous version:
 
 - Each task checks for cancellation
   before starting to download the photo.
-  If it has been canceled, the task returns `nil`.
+  If it has been cancelled, the task returns `nil`.
 
 - At the end,
   the task group skips `nil` values when collecting the results.
@@ -755,11 +755,11 @@ For example:
 let task = await Task.withTaskCancellationHandler {
     // ...
 } onCancel: {
-    print("Canceled!")
+    print("Cancelled!")
 }
 
 // ... some time later...
-task.cancel()  // Prints "Canceled!"
+task.cancel()  // Prints "Cancelled!"
 ```
 
 When using a cancellation handler,
@@ -781,7 +781,7 @@ which could create a race condition.
       await withTaskGroup(of: Bool.self) { group in
           var done = false
           while done {
-          await group.addTask { Task.isCancelled } // is this child task canceled?
+          await group.addTask { Task.isCancelled } // is this child task cancelled?
           done = try await group.next() ?? false
           }
       print("done!") // <1>
