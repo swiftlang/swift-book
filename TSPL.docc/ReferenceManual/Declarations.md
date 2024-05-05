@@ -3862,7 +3862,7 @@ that introduces the declaration.
 
 ### Access Control Levels
 
-Swift provides five levels of access control: open, public, internal, file private, and private.
+Swift provides five levels of access control: open, public, internal, file-private, and private.
 You can mark a declaration with one of the access-level modifiers below
 to specify the declaration's access level.
 Access control is discussed in detail in <doc:AccessControl>.

@@ -137,7 +137,7 @@ the code in your app is typically self-contained within the app
 and doesn't need to be made available outside of the app's module.
 The default access level of internal already matches this requirement.
 Therefore, you don't need to specify a custom access level.
-You may, however, want to mark some parts of your code as file private or private
+You may, however, want to mark some parts of your code as file-private or private
 in order to hide their implementation details from other code within the app's module.
 
 ### Access Levels for Frameworks
@@ -151,7 +151,7 @@ This public-facing interface is the application programming interface
 
 > Note: Any internal implementation details of your framework can still use
 > the default access level of internal,
-> or can be marked as private or file private if you want to hide them from
+> or can be marked as private or file-private if you want to hide them from
 > other parts of the framework's internal code.
 > You need to mark an entity as open or public only if you want it to become
 > part of your framework's API.
@@ -237,8 +237,8 @@ in the source file in which the file-private class is defined.
 The access control level of a type also affects
 the default access level of that type's *members*
 (its properties, methods, initializers, and subscripts).
-If you define a type's access level as private or file private,
-the default access level of its members will also be private or file private.
+If you define a type's access level as private or file-private,
+the default access level of its members will also be private or file-private.
 If you define a type's access level as internal or public
 (or use the default access level of internal
 without specifying an access level explicitly),
@@ -1051,8 +1051,8 @@ as part of the type's definition.
 
 The default memberwise initializer for a structure type is considered private
 if any of the structure's stored properties are private.
-Likewise, if any of the structure's stored properties are file private,
-the initializer is file private.
+Likewise, if any of the structure's stored properties are file-private,
+the initializer is file-private.
 Otherwise, the initializer has an access level of internal.
 
 As with the default initializer above,
@@ -1292,7 +1292,7 @@ type members declared in the original type being extended.
 If you extend a public or internal type, any new type members you add
 have a default access level of internal.
 If you extend a file-private type, any new type members you add
-have a default access level of file private.
+have a default access level of file-private.
 If you extend a private type, any new type members you add
 have a default access level of private.
 
