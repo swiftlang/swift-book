@@ -3908,8 +3908,6 @@ Access control is discussed in detail in <doc:AccessControl>.
 For the purpose of access control,
 extensions to the same type that are in the same file
 share an access-control scope.
-If the type they extend is also in the same file,
-they share the type's access-control scope.
 Private members declared in the type's declaration
 can be accessed from extensions,
 and private members declared in one extension
