@@ -410,7 +410,7 @@ Here's how you call a type method on a class called `SomeClass`:
 
 ```swift
 class SomeClass {
-    class func someTypeMethod() {
+    static func someTypeMethod() {
         // type method implementation goes here
     }
 }
