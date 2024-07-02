@@ -70,7 +70,8 @@ and a `continue` statement and is discussed in <doc:Statements#Break-Statement> 
 A `for`-`in` statement allows a block of code to be executed
 once for each item in a collection (or any type)
 that conforms to the
-[`Sequence`](https://developer.apple.com/documentation/swift/sequence) protocol, or in a value parameter pack.
+[`Sequence`](https://developer.apple.com/documentation/swift/sequence) protocol,
+or in a value parameter pack.
 
 A `for`-`in` statement has the following form:
 
@@ -80,9 +81,10 @@ for <#item#> in <#expression#> {
 }
 ```
 
-If the *expression* of a `for`-`in` statement is a collection *expression*, the
-`makeIterator()` method is called on it to obtain a value of an iterator type
- --- that is, a type that conforms to the 
+If the *expression* of a `for`-`in` statement is a collection *expression*,
+the `makeIterator()` method is called on it
+to obtain a value of an iterator type --- that is,
+a type that conforms to the
 [`IteratorProtocol`](https://developer.apple.com/documentation/swift/iteratorprotocol) protocol.
 The program begins executing a loop
 by calling the `next()` method on the iterator.
@@ -93,15 +95,20 @@ and then continues execution at the beginning of the loop.
 Otherwise, the program doesn't perform assignment or execute the *statements*,
 and it's finished executing the `for`-`in` statement.
 
-The *expression* of a `for`-`in` statement may also be a pack expansion 
-*expression*. In this case, on the *i*th iteration, the type of *item* is the 
-*i*th type parameter in the type parameter pack being iterated over. The value 
-of *item* is the pattern type of *expression*, with each captured type 
-parameter pack replaced with an implicit scalar type parameter with matching
-requirements. The *expression* is evaluated once at each iteration, instead of
-`n` times eagerly, where `n` is the length of the packs captured by the 
-pattern. The program will continue executing *statements* while the total 
-length of the packs captured by the pattern isn't reached.
+The *expression* of a `for`-`in` statement
+may also be a pack expansion *expression*.
+In this case,
+on the *i*th iteration,
+the type of *item* is the *i*th type parameter
+in the type parameter pack being iterated over.
+The value of *item* is the pattern type of *expression*,
+with each captured type parameter pack replaced with
+an implicit scalar type parameter with matching requirements.
+The *expression* is evaluated once at each iteration,
+instead of `n` times eagerly,
+where `n` is the length of the packs captured by the pattern.
+The program will continue executing *statements*
+while the total length of the packs captured by the pattern isn't reached.
 
 > Grammar of a for-in statement:
 >
