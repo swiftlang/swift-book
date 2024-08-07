@@ -1521,13 +1521,15 @@ A macro-expansion expression omits the parentheses after the macro's name
 if the macro doesn't take any arguments.
 
 A macro-expansion expression can't appear as the default value for a parameter,
-except the [`file()`][] and [`line()`][] macros from the Swift standard library.
-When used as the default value of a function or method parameter,
-these macros are evaluated using the source code location of the call site,
-not the location where they appear in a function definition.
+except the [`file()`][],  [`line()`][] and [`isolation()`][] macros from the Swift standard library.
 
 [`file()`]: https://developer.apple.com/documentation/swift/file()
 [`line()`]: https://developer.apple.com/documentation/swift/line()
+[`isolation()`]: https://developer.apple.com/documentation/swift/isolation()
+
+When used as the default value of a function or method parameter,
+these macros are evaluated using the source code location of the call site,
+not the location where they appear in a function definition.
 
 You use macro expressions to call freestanding macros.
 To call an attached macro,
