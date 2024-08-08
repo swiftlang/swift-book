@@ -949,16 +949,18 @@ https://github.com/apple/swift-evolution/blob/main/proposals/0335-existential-an
 >
 > *boxed-protocol-type* → **`any`** *type*
 
-## Type-Parameter Pack
+## Type Parameter Pack
 
 XXX OUTLINE:
 
-- `each T` creates a type-parameter pack
+- `each T` creates a type parameter pack
   when it appears in a generic parameter clause,
   or indicates which pack should be expanded
   when it appears in a `repeat` expression
 
-- `repeat T` expands the type-parameter pack
+- `repeat P`, where `P` captures at least one type
+  parameter pack, expands it into a list of types
+  or values
 
 - Packs are never nested; expansion implies flattening
 
@@ -967,16 +969,20 @@ XXX OUTLINE:
 
 - It's valid for a type pack to contain no elements.
 
-- list of places where type-parameter pack can appear:
+- list of places where type parameter pack can appear:
 
   + generic type parameter list
   + as an argument to a generic type parameter
+  + tuple element
+  + function type parameter list
 
 > Grammar of a type-parameter pack:
 >
 > *type-parameter-pack* → **`each`** *type*
 >
-> *type-parameter-pack-expansion* → **`repeat`** *type*
+> *type-parameter-pack-expansion* → **`repeat`** *pattern-type*
+>
+> *pattern-type* -> *type*
 
 <!--
 The grammar above overproduces:

@@ -1489,6 +1489,7 @@ XXX OUTLINE:
   + in a tuple, producing tuple elements
   + as a statement, including at top level, repeating the statement's expression
   + but not in a function call, producing arguments
+  + in a `for`-`each` loop
 
 - The *repetition pattern* is repeated once for each type in the pack
 
@@ -1497,7 +1498,7 @@ XXX OUTLINE:
   the `repeat` operator must appear first.
   (So `repeat try each foo` or `repeat each try foo`)
 
-- All of the `each` expressions in a parameter-pack expression
+- All of the `each` expressions in a pattern expression
   must expand packs that have the same number of types.
 
 - In a function declaration,
@@ -1505,7 +1506,7 @@ XXX OUTLINE:
   must be the last parameter
   or the parameter after it must have a label.
 
-- It's valid for a pack expression contain no elements,
+- It's valid for a pack expression to contain no elements,
   in which case the parameter-pack expansion expression isn't evaluated at all (zero times)
 
 <!--

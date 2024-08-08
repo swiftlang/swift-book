@@ -1889,7 +1889,7 @@ even though the doubling operation could really apply
 to any number of arguments.
 
 Other approaches that also have drawbacks
-include taking the arguments an array or a variadic parameter,
+include taking the arguments as an array or a variadic parameter,
 which requires all arguments to be the same type,
 or using `Any` which erases type information.
 
@@ -1905,12 +1905,11 @@ func double<each T: Numeric>(_ value: repeat each T) -> (repeat each T) {
 }
 ```
 
-In the code above, `Element` is a generic type parameter.
-It's marked `each Element`,
-indicating that it's a type-parameter pack.
+In the code above, `each T` is declared in a generic parameter list.
+It's marked with `each`, indicating that it's a type parameter pack.
 In contrast to a generic type parameter,
 which serves as a placeholder for a single type,
-a type-parameter pack is a placeholder for multiple types.
+a type parameter pack is a placeholder for multiple types.
 The ability to have `T` contain a varying number of types
 is what allows this version of `double(_:)`
 to take any number of parameters
@@ -1933,7 +1932,7 @@ extension Numeric {
 }
 
 let numbers = [12, 0.5, 8 as Int8]
-let doubledNumbers = double(numbers)
+let doubledNumbers = doubled(numbers)
 ```
 
 The value of `doubledNumbers` is `(24, 1.0, 16)`,
@@ -1980,7 +1979,7 @@ How do you create a parameter pack?
   and in function argument lists.
 
   ```swift
-  func f<each T>(_ t: repeat each T) -> repeat each T
+  func f<each T>(_ t: repeat each T) -> (repeat each T)
   ```
 
 - The expansion pattern is repeated for every element in the given type pack
@@ -2035,8 +2034,8 @@ How do you constrain the types in a parameter pack?
 - In the more complex case,
   use `repeat each T ` in a trailing `where` clause.
 
-- You must restrict the types that appear in a type-parameter pack;
-  conformance requirements don't implicitly propagate.
+- You must restrict the types that appear in a type parameter pack
+  if its expansion will be used as a restricted generic type parameter.
   For example, given `each T: Hashable` writing `repeat Set<each T>` works,
   but it doesn't work with just `each T`
   because `Set` requires `T` to be hashable but the pack doesn't.
@@ -2062,7 +2061,7 @@ How do you access the values of a parameter pack?
   ```
 
 - The result (and its type) of expanding a parameter pack
-  vary depending on the number of elements in the pack.
+  within a tuple vary depending on the number of elements in the pack.
   Zero-element packs produce `()`,
   single-element packs produce a simple type,
   and multi-element packs produce a tuple type.
@@ -2073,7 +2072,7 @@ How do you access the values of a parameter pack?
 
   For example,
   `repeat (each T, Int)` is different from `(repeat each T, Int)`.
-  The former makes multiple tuple `(T1, Int) ... (Tn, Int)`,
+  The former makes multiple tuples `(T1, Int) ... (Tn, Int)`,
   expanding `T` and adding `Int` to each tuple.
   The latter makes one tuple, `(T1, ..., Tn, Int)`.
   Other code can come between `repeat` and `each` ---
