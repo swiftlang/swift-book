@@ -29,7 +29,7 @@ and only `distributed` methods may be called on it.
 
 ## Thinking in Distributed Actors
 
-In order to build distributed systems successfully you will need to get into the right mindset.
+Building distributed systems is a complex task that requires careful consideration of reliability, maintainability, and scalability. There are various approaches to build such systems, and Swift, as a general-purpose language, offers tools for this, such as actors. However, in order to build distributed systems successfully with this tools, you will need to get into the right mindset.
 
 You can use distributed actors, to break up your program into isolated, independent
 pieces of code, which may be located on different processes or hosts at runtime. This extends the notion of isolation
@@ -343,7 +343,7 @@ func testLocal(score: Score,
 As we can see, an cross-actor call to an actor function caused an implicit `async` effect,
 while the same type of call to a `distributed func` caused an additional `throws` effect that needed to be handled
 with a `try`. Since the method `increment(by:)` itself is not declared throwing by itself, we know that the only
-way this method can fail, is by the underlying transport mechanism failing in sme way.
+way this method can fail, is by the underlying transport mechanism failing in some way.
 
 > Note: Exact transport semantics can vary between actor system implementations, so you should consult the 
 > documentation of the `DistributedActorSystem` your actor is using to get a complete picture of its failure
@@ -585,15 +585,15 @@ actor. In local-only actors, a common way of modeling this is passing a closure 
 In distributed actors, the same can be achieved using distributed method calls rather than closures, like this:
 
 ```swift
-protocol InfoListener: Codable {
-  func additionalInfo(_ info: String) async throws
+protocol InfoListener: DistributedActor, Codable {
+  distributed func additionalInfo(_ info: String)
 }
 
 distributed actor Alice {
-  distributed func call(later: InfoListener) async -> String {
+  distributed func call(later: some InfoListener) async -> String {
     Task.detached {
       // do some asynchronous processing AFTER returning from the 'call' method...
-      later("Here's the info you asked for!")
+      try await later.additionalInfo("Here's the info you asked for!")
     }
 
     return "Thanks for your call!"
@@ -616,7 +616,7 @@ distributed actor Bob {
 
 extension Bob: InfoListener {
   distributed func additionalInfo(_ info: String) {
-    print("later: \(laterReply)")
+    print("later: \(info)")
   }
 }
 
@@ -633,7 +633,8 @@ like to associate the reply with, like this:
 ```swift
 distributed actor Bob {
   func test(alice: Alice) async {
-    let immediateReply = try await alice.call(self)
+    // We have to make sure, in some way, that the `DistributedCallback` instance stays alive to receive the callback
+    let immediateReply = try await alice.call(later: DistributedCallback(name: "Bob", actorSystem: self.actorSystem))
 
     print("immediately: \(immediateReply)")
   }
