@@ -162,7 +162,7 @@ import SomeDistributedSystem // just an example package
 typealias DefaultDistributedActorSystem = SomeDistributedActorSystem
 
 distributed actor Worker {
-  // no ActorSystem typealias necessary! 
+  // no ActorSystem typealias necessary!
 }
 ```
 
@@ -181,7 +181,7 @@ import SomeDistributedSystem // just an example package
 typealias DefaultDistributedActorSystem = SomeDistributedActorSystem
 
 distributed actor Worker {
-  // no ActorSystem typealias necessary! 
+  // no ActorSystem typealias necessary!
 }
 
 distributed actor WebSocketWorker {
@@ -234,9 +234,9 @@ if the game lobby had declared some member functions,
 those will also not be accessible in cross-actor:
 
 ```swift
-extension GameLobby { 
-  func getIdlePlayers() -> Set<Player> { 
-    // return only players not currently participating in a game 
+extension GameLobby {
+  func getIdlePlayers() -> Set<Player> {
+    // return only players not currently participating in a game
   }
 }
 ```
@@ -247,13 +247,13 @@ like this:
 
 ```swift
 let lobby: GameLobby = ...
-await lobby.getIdlePlayers() // error: only 'distributed' instance methods can be called on a potentially remote distributed actor            
+await lobby.getIdlePlayers() // error: only 'distributed' instance methods can be called on a potentially remote distributed actor
 ```
 
 All this strict distributed actor isolation checking
 is enforced by the compiler
 in order to allow us to use local as well as remote references
-of the same actor type in the same way. 
+of the same actor type in the same way.
 
 Non-distributed methods and distributed actor isolated state
 can be accessed from the actor itself,
@@ -271,7 +271,7 @@ using the `whenLocal` method
 that exists on every `distributed actor`:
 
 ```swift
-let lobby: GameLobby = ... 
+let lobby: GameLobby = ...
 
 await lobby.whenLocal { (l: isolated GameLobby) in
   lobby.players // can inspect isolated state
@@ -302,15 +302,15 @@ and they must be instance methods
 Computed read-only properties may also be distributed,
 and function effectively the same as if
 they were no argument taking distributed methods.
-However, writable computed properties are note allowed, 
+However, writable computed properties are note allowed,
 similar to how actors cannot declare writable asynchronous
 properties.
 
 ```swift
-distributed actor GameLobby { 
-  
-  // ... 
-  
+distributed actor GameLobby {
+
+  // ...
+
   distributed func join(player: Player) {
     if players.insert(player) {
       try await player.greet("Welcome to the game lobby \(name), current players: \(players.count)")
@@ -318,8 +318,8 @@ distributed actor GameLobby {
       try await player.greet("Welcome back!")
     }
   }
-  
-  distributed var lobbyName: String { 
+
+  distributed var lobbyName: String {
     self.name
   }
 }
@@ -338,7 +338,7 @@ crossing a network boundary via such call exists, e.g.:
 ```swift
 let lobby: GameLobby = ...
 let somePlayer: Player = ...
-  
+
 // potentially remote call, thus implicitly throwing and asynchronous:
 try await lobby.join(player: somePlayer)
 ```
@@ -367,7 +367,7 @@ This prevents us from
 accidentally causing runtime failures
 when serialization would fail handling some type at runtime,
 and instead informs us about these issues earlier,
-at compile time. 
+at compile time.
 
 Most systems generally default to offering a
 [`Codable`](https://developer.apple.com/documentation/swift/codable)
@@ -385,10 +385,10 @@ we would see the following errors:
 ```swift
 distributed actor GameLobby {
   // typealias ActorSystem = LocalTestingDistributedActorSystem
-  
+
   distributed func cantAccept(value: NotCodableValue) { /* ... */ }
   // error: parameter 'value' of type 'GameLobby.NotCodableValue' in distributed instance method does not conform to serialization requirement 'Codable'
-  
+
   distributed func computeValue: NotCodableValue { /* ... */ }
   // error: result type 'GameLobby.NotCodableValue' of distributed property 'computeValue' does not conform to serialization requirement 'Codable'
 }
@@ -407,7 +407,7 @@ if the system we're using requires a different one).
 > as long as the actor system expresses that requirement
 > and implements the serialization accordingly.
 > Actor systems are not constrained to be using `Codable`,
-> however it is a nice default mechanism 
+> however it is a nice default mechanism
 > as it's Swift's native serialization mechanism.
 
 ### Implicit Effects of Distributed Methods
@@ -436,7 +436,7 @@ actor Score {
 
 distributed actor DistributedScore {
   var count: Int
-  
+
   distributed func increment(by points: Int) {
     precondition(points >= 0)
     self.count += points
@@ -453,7 +453,7 @@ and forcing us to annotate the call with an `await`
 to acknowladge  the potential suspension point:
 
 ```swift
-func testLocal(score: Score, 
+func testLocal(score: Score,
                distributedScore: DistributedScore) async throws {
   await score.increment(by: 10) // implicitly async
   try await distributedScore.increment(by: 10) // implicitly async throws
@@ -491,7 +491,7 @@ between them and protocols that we should explain.
 A distributed actor can conform to protocols stating non distributed requirements:
 
 ```
-protocol GameplayProtocol { 
+protocol GameplayProtocol {
   func makeMove() async throws
 }
 ```
@@ -512,7 +512,7 @@ is declared as accepting an `actorSystem` of the `ActorSystem` type
 that the actor is associated with.
 This initializer effectively assigns the actor system to self
 and therefore readies the actor
-with the distributed actor system: 
+with the distributed actor system:
 
 ```swift
 distributed actor Player {
@@ -521,7 +521,7 @@ distributed actor Player {
   // let id: ActorSystem.ActorID
 
   // synthesized:
-  // init(actorSystem: ActorSystem) { 
+  // init(actorSystem: ActorSystem) {
   //   self.actorSystem = actorSystem
   //   self.id = actorSystem.assignID(Self.self)
   // }
@@ -536,7 +536,7 @@ distributed actor Player {
   // synthesized:
   // let actorSystem: ActorSystem // synthesized property
   // let id: ActorSystem.ActorID
-  
+
   let name: String
 
   init(name: String, actorSystem: ActorSystem) {
@@ -575,9 +575,9 @@ distributed actor Player {
   typealias ActorSystem = MyActorSystem
 }
 
-let system: MyActorSystem 
+let system: MyActorSystem
 let playerID: Player.ID = /* obtained using some discovery mechanism */
- 
+
 let player: Player = try Player.resolve(id: playerID, using: system)
 ```
 
@@ -615,7 +615,7 @@ using their own built-in  discovery mechanisms -
 refer to the actor system's documentation
 that you are using for specific guidance.
 
-### Resolvable Distributed Actor Protocols (Client/Server applications) 
+### Resolvable Distributed Actor Protocols (Client/Server applications)
 
 Previous examples mostly used
 the concrete distributed actor type
@@ -640,18 +640,18 @@ where some nodes have code which others do not.
 Specifically,
 a "server" may have implementation logic for a `GameSession`
 while clients which host only `Player` distributed actors,
-do not (and should not!) have the GameSession logic, 
-as it is intended to be only running on the "server" hosting the game.  
+do not (and should not!) have the GameSession logic,
+as it is intended to be only running on the "server" hosting the game.
 
 In order to facilitate such client/server split,
 we'll have to introduce a `protocol` for the `GameSession`,
 which client systems are aware of,
-and have it be implemented only in the server component. 
+and have it be implemented only in the server component.
 
 Let us define the game session protocol like this:
 
 ```
-import Distributed 
+import Distributed
 
 @Resolvable
 public GameSession: DistributedActor where ActorSystem: DistributedActorSystem<any Codable> {
@@ -660,9 +660,9 @@ public GameSession: DistributedActor where ActorSystem: DistributedActorSystem<a
 ```
 
 Let's say we implement the game session
-in a way where players are not connected directly to each-other, 
-but instead have to send their moves to the central server. 
-The server's game session validates the move and forwards it to the opponent. 
+in a way where players are not connected directly to each-other,
+but instead have to send their moves to the central server.
+The server's game session validates the move and forwards it to the opponent.
 For a simple turn-based game like chess
 this could be a simple way of modeling this interaction:
 
@@ -675,21 +675,21 @@ distributed actor GameSessionImpl: GameSession {
 
   distributed func makeMove(player: Player, move: GameMove) async throws -> GameMoveResponse {
     if let illegalMove = state.validateMove(player, move) {
-      // we return some well typed representation of an illegal move, 
+      // we return some well typed representation of an illegal move,
       // rather than throwing untyped errors
       return .illegalMove(illegalMove)
     }
-    
+
     let moved = state.applyMove(player, move)
     try await opponent(of: player).opponentMoved(opponent: player, move)
-    
+
     return .ok(moved)
   }
 }
 ```
 
-In order to facilitate this shared-protocol but separate implementations, 
-you would organize your distributed types into 
+In order to facilitate this shared-protocol but separate implementations,
+you would organize your distributed types into
 
 
 ## Common Distributed Actor Patterns
@@ -775,7 +775,7 @@ actor Bob {
   }
 }
 
-// OUTPUT: 
+// OUTPUT:
 // immediately: Thanks for your call!
 // later: Here's the info you asked for!
 ```
@@ -833,7 +833,7 @@ extension Bob: InfoListener {
 }
 
 
-// OUTPUT: 
+// OUTPUT:
 // immediately: Thanks for your call!
 // later: Here's the info you asked for!
 ```
@@ -862,7 +862,7 @@ distributed actor DistributedCallback: InfoListener {
 }
 
 
-// OUTPUT: 
+// OUTPUT:
 // immediately (first): Thanks for your call!
 // later (first): Here's the info you asked for!
 
