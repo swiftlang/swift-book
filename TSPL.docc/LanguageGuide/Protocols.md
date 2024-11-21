@@ -755,10 +755,24 @@ a nonfailable initializer or an implicitly unwrapped failable initializer.
 ## Protocols as Types
 
 Protocols don't actually implement any functionality themselves.
-Regardless, you can use a protocol as a type in your code.
+Regardless, you can use a protocol as a type in your code, for example as the type of a variable or function parameter.
 
-The most common way to use a protocol as a type
-is to use a protocol as a generic constraint.
+```swift
+func printFullName(_ fullyNamed: FullyNamed) {
+    print("The full name is \(fullyNamed.fullName)")
+}
+
+printFullName(ncc1701)
+/// The full name is USS Enterprise
+printFullName(john)
+/// The full name is John
+
+let ncc1701: FullyNamed = Starship(name: "Enterprise", prefix: "USS")
+ncc1701.prefix // error! The type of the `ncc1701` variable is `FullyNamed`, not `Starship`.
+```
+
+Another common way to use a protocol as a type
+is to use a protocol as a constraint on the type of a generic parameter (known as a generic constraint).
 Code with generic constraints can work with
 any type that conforms to the protocol,
 and the specific type is chosen by the code that uses the API.
@@ -767,18 +781,8 @@ when you call a function that takes an argument
 and that argument's type is generic,
 the caller chooses the type.
 
-Code with an opaque type
-works with some type that conforms to the protocol.
-The underlying type is known at compile time,
-and the API implementation chooses that type,
-but that type's identity is hidden from clients of the API.
-Using an opaque type lets you prevent implementation details of an API
-from leaking through the layer of abstraction ---
-for example, by hiding the specific return type from a function,
-and only guaranteeing that the value conforms to a given protocol.
-
-Code with a boxed protocol type
-works with any type, chosen at runtime, that conforms to the protocol.
+Using a protocol as the type in a context where the conforming structure, class or enumeration is not statically known creates a boxed protocol type.
+Such code works with any type, chosen at runtime, that conforms to the protocol.
 To support this runtime flexibility,
 Swift adds a level of indirection when necessary ---
 known as a *box*,
@@ -1604,9 +1608,9 @@ that tries to adopt `SomeClassOnlyProtocol`.
 ## Protocol Composition
 
 It can be useful to require a type to conform to multiple protocols at the same time.
-You can combine multiple protocols into a single requirement
+You can combine multiple protocols into a single *protocol composition type*
 with a *protocol composition*.
-Protocol compositions behave as if you
+Protocol composition behaves as if you
 defined a temporary local protocol that has the combined requirements
 of all protocols in the composition.
 Protocol compositions don't define any new protocol types.
@@ -1619,7 +1623,7 @@ a protocol composition can also contain one class type,
 which you can use to specify a required superclass.
 
 Here's an example that combines two protocols called `Named` and `Aged`
-into a single protocol composition requirement on a function parameter:
+into a single protocol composition type, and using that as a requirement on a function parameter:
 
 ```swift
 protocol Named {
