@@ -1955,6 +1955,75 @@ Taken together, these constraints mean that
 the value passed for the `indices` parameter
 is a sequence of integers.
 
+## Implicit Constraints
+
+In addition to the constraints you write explicitly,
+many places in your code
+also implicitly include an constraint
+that types conform to some very common protocols
+like [`Copyable`][].
+<!-- When SE-0446 is implemented, add Escapable above -->
+For information on when a protocol is implied,
+see the reference for that protocol.
+
+[`Copyable`]: https://developer.apple.com/documentation/swift/copyable
+
+This constraint is implicit because
+almost all types in Swift conform to these protocols,
+so you specify only the exceptions.
+For example, both of the following function declarations
+require `MyType` to be copyable:
+
+```swift
+function someFunction<MyType> { ... }
+function someFunction<MyType: Copyable> { ... }
+```
+
+Both declarations of `someFunction()` in the code above
+require the generic type parameter `MyType` to be copyable.
+In the first version, the constraint is implicit;
+the second version lists the explicitly.
+In most code,
+types also implicitly conform to these common protocol.
+For more information,
+see <doc:Protocols#Implicit-Conformance-to-a-Protocol>.
+
+To suppress an implicit constraint,
+you write the protocol name with a tilde (`~`) in front of it.
+You can read `~Copyable` as "maybe copyable" ---
+this suppressed constraint allows
+both copyable and noncopyable types in this position.
+Note that `~Copyable` doesn't *require* the type to be noncopyable.
+For example:
+
+```swift
+func f<MyType>(x: inout MyType) {
+    let x1 = x  // The value of x1 is a copy of x's value.
+    let x2 = x  // The value of x2 is a copy of x's value.
+}
+
+func g<AnotherType: ~Copyable>(y: inout AnotherType) {
+    let y1 = y  // The assignment consumes y's value.
+    let y2 = y  // Error: Value consumed more than once.
+}
+```
+
+In the code above,
+the function `f()` implicitly requires `MyType` to be copyable.
+Within the function body,
+the value of `x` is copied to `x1` and `x2` in the assignment.
+In contrast, `g()` suppresses the implicit constraint on `AnotherType`,
+which allows you to pass either a copyable or noncopyable value.
+Within the function body,
+you can't copy the value of `y`
+because `AnotherType` might be noncopyable.
+Assignment consumes the value of `y`
+and it's an error to consume that value more than once.
+Noncopyable values like `y`
+must be passed as in-out, borrowing, or consuming parameters ---
+for more information,
+see <doc:Declarations#Borrowing-and-Consuming-Parameters>.
+
 <!--
   TODO: Generic Enumerations
   --------------------------
