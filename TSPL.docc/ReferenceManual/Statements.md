@@ -1004,7 +1004,7 @@ conditions listed in the table below.
 
 | Platform condition | Valid arguments |
 | ------------------ | --------------- |
-| `os()` | `macOS`, `iOS`, `watchOS`, `tvOS`, `visionOS`, `Linux`, `Windows` |
+| `os()` | `macOS`, `iOS`, `watchOS`, `tvOS`, `visionOS`, `Linux`, `Windows`, `Android` |
 | `arch()` | `i386`, `x86_64`, `arm`, `arm64` |
 | `swift()` | `>=` or `<` followed by a version number |
 | `compiler()` | `>=` or `<` followed by a version number |
@@ -1253,7 +1253,7 @@ see <doc:Expressions#Explicit-Member-Expression>.
 > *platform-condition* → **`canImport`** **`(`** *import-path* **`)`** \
 > *platform-condition* → **`targetEnvironment`** **`(`** *environment* **`)`**
 >
-> *operating-system* → **`macOS`** | **`iOS`** | **`watchOS`** | **`tvOS`** | **`visionOS`** | **`Linux`** | **`Windows`** \
+> *operating-system* → **`macOS`** | **`iOS`** | **`watchOS`** | **`tvOS`** | **`visionOS`** | **`Linux`** | **`Windows`** | **`Android`** \
 > *architecture* → **`i386`** | **`x86_64`** | **`arm`** | **`arm64`** \
 > *swift-version* → *decimal-digits* *swift-version-continuation*_?_ \
 > *swift-version-continuation* → **`.`** *decimal-digits* *swift-version-continuation*_?_ \
