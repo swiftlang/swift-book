@@ -44,7 +44,7 @@ and Swift,
 as a general-purpose language,
 offers tools for this, such as actors.
 However, in order to build distributed systems successfully
-with this tools,
+with these tools,
 you will need to get into the right mindset.
 
 You can use distributed actors,
@@ -98,7 +98,7 @@ Distributed actors can be declared
 by importing the `Distributed` module,
 and prefixing the actor keyword with the `distributed` modifier.
 For example,
-let's declare a GameLobby actor,
+let's declare a `GameLobby` actor,
 which can handle various players registering for a game of chess
 in the lobby:
 
@@ -185,23 +185,43 @@ distributed actor Worker {
 }
 
 distributed actor WebSocketWorker {
-  typealias ActorSystem = SampleWebSocketActorSystem // just an example system
+  typealias ActorSystem = SampleWebSocketActorSystem // some other actor system
 }
 ```
 
 This way we're able to have most of our distributed actors use one system,
 but some of them are actually using a different one.
-This may happen in practice
+This may happen 
 when we're building a more advanced application
 which uses different transport mechanisms,
 like websockets to communicate with client apps,
 but also clustering or some other process isolation mechanism
 within the server-side application itself.
 
+You can also use typical Swift techniques such as protocols or conditional extensions 
+to provide some specific actor system for some kinds of actors if you wanted to:
+
+```swift
+protocol WebSocketActor where ActorSystem == ExampleWebSocketActorSystem {}
+
+distributed actor WSWorker: WebSocketActor {} // uses ExampleWebSocketActorSystem
+```
+
 Distributed actors implicitly conform to the
 [`DistributedActor`](https://developer.apple.com/documentation/distributed/distributedactor)
 protocol, which is similar to the `Actor` protocol
-that `actor` declarations conform to.
+that `actor` declarations conform to:
+
+```
+distributed actor Worker { 
+  typealias ActorSystem = LocalTestingDistributedActorSystem 
+}
+
+func check(actor: some DistributedActor) { ... }
+
+let system = LocalTestingDistributedActorSystem()
+check(actor: Worker(actorSystem: system)) // ok
+```
 
 ### Distributed Actor Isolation
 
@@ -256,10 +276,10 @@ in order to allow us to use local as well as remote references
 of the same actor type in the same way.
 
 Non-distributed methods and distributed actor isolated state
-can be accessed from the actor itself,
-however it is worth calling out
-that whenever we obtain an `isolated` instance of a distributed actor,
-it is guaranteed to be a local reference.
+can be accessed from the actor itself.
+Or in other words, they are possible to be invoked on an `isolated` instance of a distributed actor,
+which is guaranteed to be a local reference (i.e. located in the same process as the caller).
+
 It is not possible to obtain an `isolated` remote actor reference.
 
 It is possible
@@ -309,9 +329,13 @@ properties.
 ```swift
 distributed actor GameLobby {
 
-  // ...
+  var players: Set<Player> = []
 
-  distributed func join(player: Player) {
+  distributed func hasJoined(player: Player) -> Bool {
+    self.players.contains(player)
+  }
+      
+  distributed func join(player: Player) async throws {
     if players.insert(player) {
       try await player.greet("Welcome to the game lobby \(name), current players: \(players.count)")
     } else {
@@ -340,21 +364,22 @@ let lobby: GameLobby = ...
 let somePlayer: Player = ...
 
 // potentially remote call, thus implicitly throwing and asynchronous:
-try await lobby.join(player: somePlayer)
+try await lobby.hasJoined(player: somePlayer)
 ```
 
 It is useful to see in Swift source
 that those are the functions that may be invoked remotely,
 as potentially we may need to apply
 additional authentication or access control on such functions,
-if they are serving as entry points to our service.
+because they are serving as "entry points" to our service,
+and therefore are a great spot place to centralize any additional checks.
 
 Distributed functions are also
 subject to additional type-system restrictions,
 that don't apply to normal functions.
 For example,
 distributed functions cannot accept closures,
-or parameters of types that are not serializable.
+or parameters of types that do not conform to the actor system's stated serialization requirement (usually `Codable`).
 
 The serialization requirement of such methods
 is checked by the compiler
@@ -373,10 +398,9 @@ Most systems generally default to offering a
 [`Codable`](https://developer.apple.com/documentation/swift/codable)
 based serialization implementation,
 and would therefore declare this requirement as `any Codable`.
-This is also the case for the
-[`LocalTestingDistributedActorSystem`](https://developer.apple.com/documentation/distributed/localtestingdistributedactorsystem)
-which ships with the `Distributed` module.
-
+For example, the [`LocalTestingDistributedActorSystem`](https://developer.apple.com/documentation/distributed/localtestingdistributedactorsystem), 
+which ships with the `Distributed` module, 
+uses `any Codable` as it's serialization requirement.
 If we were to introduce a function
 that has some not-`Codable` parameters,
 while using a `Codable` based distributed actor system,
@@ -478,21 +502,89 @@ is by the underlying transport mechanism failing in some way.
 > of the `DistributedActorSystem` your actor is using
 > to get a complete picture of its failure handling semantics.
 
+### Dynamically obtaining a local distributed actor reference
+
+We have discussed that distributed actors are able to uphold their location transparency 
+and programming model due to the fact that they always seem "potentially remote", 
+and therefore always apply the distributed isolation checks even if the underlying instance
+is actually located in the same process (i.e. "local").
+
+This is important because it allows us to use and test the same code paths using either local
+or remote instances. For example we can test a complex distributed computation using just local
+actor instances in an unit test, and we know for certain it will work the same way with remote references.
+We can even inject faults and problems in the local testing, however that's a topic for a later discussion.
+
+Sometimes however we truly need to peek through the strict isolation rules and if an distributed actor 
+truly was "local" access it as-if it was a normal `actor`, omitting the distributed isolation checks. This need
+arises frequently during testing when we'd like to inspect if the actor  has achieved some expected state.
+While we could introduce new distributed methods to expose this state for testing, this isn't recommended 
+because we would have increased the service API of the actor and could potentially leave more distributed entry points
+in the production system than we intended to. Another reason to not do expose more distributed methods with
+the only purpose of testing is that perhaps the state we want to assert on isn't serializable, and should not be, 
+so we would be working around the safety properties the system provides us only in order to write the test.
+
+Instead, we can use the `whenLocal`method–available on any distributed actor–
+to obtain an `isolated` instance to an actor, on which we're able to then
+write assertions and call non-distributed methods:
+
+```swift
+distributed actor DistributedScore {
+  var count: Int
+
+  distributed func increment(by points: Int) {
+    precondition(points >= 0)
+    self.count += points
+  }
+}
+
+func test(score: DistributedScore) async throws { 
+  try await score.increment(by: 10)
+
+  let count: Int? = await score.whenLocal { score in 
+    score.count // allowed to access non-distributed methods/properties
+  }
+  
+  assert(count == 10)
+}
+```
+
+The [`whenLocal(_:)`](https://developer.apple.com/documentation/distributed/distributedactor/whenlocal(_:)) method is asynchronous because, if the actor is indeed a local reference,
+it performs performs a hop to the target actor's execution context and runs the passed in closure.
+It is able to return internal state of the actor and this way we can then write an assertion outside of the 
+actor's execution context.
+
+If the actor would have been remote, the `whenLocal` call will not invoke the passed in closure,
+and instead will return `nil`, signaling to the caller that the instance was actually remote and that the passed closure was not executed.
+
 ### Conforming to Protocols with Distributed Actors
 
 Protocols are one of Swift's more powerful ways to abstract and reuse logic.
 
-Distributed actors can make use of protocols,
-in the same way as other Swift types,
-however their "local" and "remote" sides
-mean that there are some interesting interactions
-between them and protocols that we should explain.
+Distributed actors behave very similar to actors with regards to protocol conformances.
+Their implicit effects cause certain limitations to what protocols they can conform to.
 
-A distributed actor can conform to protocols stating non distributed requirements:
+For example **TODO**
 
-```
-protocol GameplayProtocol {
-  func makeMove() async throws
+```swift
+import Distributed 
+
+typealias DefaultDistributedActorSystem = 
+  LocalTestingDistributedActorSystem
+
+protocol Score {
+  func increment(by points: Int)
+}
+
+
+protocol ScoreAsync {
+  func increment(by points: Int) async throws
+}
+
+distributed actor DistributedScore: Score { 
+    var count: Int = 0
+    func increment(by points: Int) {
+
+    }
 }
 ```
 
@@ -871,11 +963,10 @@ distributed actor DistributedCallback: InfoListener {
 ```
 
 
-## Implementing Your Own DistributedActorSystem
 
-TODO: This may be better located in the reference manual actually,
-because very few developers will be implementing
-their own systems.
+<!-- TODO: Implementing your own actor system as an article in API docs -->
+
+
 
 <!--
 This source file is part of the Swift.org open source project
