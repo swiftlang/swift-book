@@ -2269,6 +2269,27 @@ A nonisolated member executes like code outside of the actor:
 It can't interact with any of the actor's isolated state,
 and callers don't mark it with `await` when using it.
 
+XXX OUTLINE (additions for SE-0449):
+
+- Writing `nonisolated` on a type or protocol declaration
+  suppresses an implicit/inherited global actor isolation.
+  For example, given `@MainActor protocol P`
+  you can write `nonisolated protocol P2: P` and `nonisolated struct S: P`
+- Writing `nonisolated` on an extension
+  applies to each declaration in the extension ---
+  the same as writing `@MainActor` on an extension,
+  but with the opposite effect.
+- Writing `nonisolated` on a type declaration
+  doesn't apply to type declarations nested inside of it,
+  like how `@MainActor` doesn't.
+- Writing `nonisolated` on a nonsendable stored property
+  lets you explicitly spell the implicit/default behavior.
+
+- ?? nonisolated inference from within the module
+  for mutable storage of sendable value types
+  ?? and annotating such storage with `nonisolated`
+  to allow synchronous access from outside the module
+
 Members of an actor can be marked with the `@objc` attribute
 only if they are nonisolated or asynchronous.
 
