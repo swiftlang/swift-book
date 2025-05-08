@@ -2268,25 +2268,37 @@ whose declarations are marked with the `nonisolated` keyword.
 A nonisolated member executes like code outside of the actor:
 It can't interact with any of the actor's isolated state,
 and callers don't mark it with `await` when using it.
+You can write `nonisolated` in the following places:
 
-XXX OUTLINE (additions for SE-0449):
-
-- Writing `nonisolated` on a type or protocol declaration
-  suppresses an implicit/inherited global actor isolation.
-  For example, given `@MainActor protocol P`
-  you can write `nonisolated protocol P2: P` and `nonisolated struct S: P`
 - Writing `nonisolated` on an extension
-  applies to each declaration in the extension ---
-  the same as writing `@MainActor` on an extension,
-  but with the opposite effect.
+  applies to each declaration in the extension.
+
 - Writing `nonisolated` on a type declaration
-  doesn't apply to type declarations nested inside of it,
-  like how `@MainActor` doesn't.
+  applies to that type and its members,
+  but not to any nested type declarations.
+
+- Writing `nonisolated` on a type declaration or protocol declaration
+  suppresses an inherited global actor isolation.
+  For example,
+  if a protocol is declared as `@MainActor protocol SomeProtocol`
+  then types and protocols that conform to `SomeProtocol`
+  are also isolated to the main actor.
+  Writing `nonisolated protocol AnotherProtocol: SomeProtocol`
+  or `nonisolated struct SomeStroct: SomeProtocol`
+  suppresses that actor isolation.
+
 - Writing `nonisolated` on a nonsendable stored property
-  lets you explicitly spell the implicit/default behavior.
-- Writing `nonisolated` on (TR: stored?) sendable properties on sendable value types,
+  doesn't have any effect
+  because the property is already nonisolated by default.
+  However, you can write this to be explicit.
+  <!-- XXX TR: Any context where you'd be overriding another isolation? -->
+
+  <!--
+- Writing `nonisolated` on sendable properties of a sendable value type,
   broadening the SE-0434 rule,
   but only within the module.
+  XXX TR: Does it have to be a *stored* property?
+  -->
 
 Members of an actor can be marked with the `@objc` attribute
 only if they are nonisolated or asynchronous.
