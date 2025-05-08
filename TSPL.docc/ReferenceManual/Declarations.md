@@ -2284,11 +2284,9 @@ XXX OUTLINE (additions for SE-0449):
   like how `@MainActor` doesn't.
 - Writing `nonisolated` on a nonsendable stored property
   lets you explicitly spell the implicit/default behavior.
-
-- ?? nonisolated inference from within the module
-  for mutable storage of sendable value types
-  ?? and annotating such storage with `nonisolated`
-  to allow synchronous access from outside the module
+- Writing `nonisolated` on (TR: stored?) sendable properties on sendable value types,
+  broadening the SE-0434 rule,
+  but only within the module.
 
 Members of an actor can be marked with the `@objc` attribute
 only if they are nonisolated or asynchronous.
