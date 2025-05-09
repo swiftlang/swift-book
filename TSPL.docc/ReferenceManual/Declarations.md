@@ -3810,41 +3810,54 @@ that introduces the declaration.
   see <doc:Properties#Lazy-Stored-Properties>.
 
 - term `nonisolated`:
+  Apply this modifier to a declaration
+  to place it outside any actor's concurrency domain.
+  Nonisolated functions can run on any actor
+  and code running on any actor can access nonisolated values.
 
-  A nonisolated member executes like code outside of the actor:
-  It can't interact with any of the actor's isolated state,
-  and callers don't mark it with `await` when using it.
-  You can write `nonisolated` in the following places:
+  <!--
+  XXX TR: Are there any specific declarations you can't mark nonisolated?
+  It seems like "nonisolated actor" wouldn't make sense, for example.
+  -->
 
-  - Writing `nonisolated` on an extension
-    applies to each declaration in the extension.
+  When you mark an actor's method or property `nonisolated`,
+  callers don't mark it with `await` when calling or accessing it.
+  This can be a first step towards adopting concurrency,
+  by marking code that you want to move off of the main actor
+  and then using the compiler errors to guide refactoring.
 
-  - Writing `nonisolated` on a type declaration
-    applies to that type and its members,
-    but not to any nested type declarations.
+  On a structure, class, enumeration, or protocol declaration,
+  `nonisolated` applies to that type and its members,
+  but not to any nested type declarations.
+  Writing `nonisolated` also suppresses any inferred global actor isolation.
+  <!-- XXX Is @MainActor also inferred from a superclass? -->
 
-  - Writing `nonisolated` on a type declaration or protocol declaration
-    suppresses an inherited global actor isolation.
-    For example,
-    if a protocol is declared as `@MainActor protocol SomeProtocol`
-    then types and protocols that conform to `SomeProtocol`
-    are also isolated to the main actor.
-    Writing `nonisolated protocol AnotherProtocol: SomeProtocol`
-    or `nonisolated struct SomeStroct: SomeProtocol`
-    suppresses that actor isolation.
+  ```swift
+  // Explicitly isolated to the main actor.
+  @MainActor protocol SomeProtocol
 
-  - Writing `nonisolated` on a nonsendable stored property
-    doesn't have any effect
-    because the property is already nonisolated by default.
-    However, you can write this to be explicit.
-    <!-- XXX TR: Any context where you'd be overriding another isolation? -->
+  // Implicitly isolated to the main actor.
+  protocol MyProtocol: SomeProtocol
+  struct MyStruct: SomeProtocol
 
-    <!--
-  - Writing `nonisolated` on sendable properties of a sendable value type,
-    broadening the SE-0434 rule,
-    but only within the module.
-    XXX TR: Does it have to be a *stored* property?
-    -->
+  // Not isolated to the main actor.
+  nonisolated protocol AnotherProtocol: SomeProtocol
+  nonisolated struct AnotherStruct: SomeProtocol
+  ```
+
+  On an extension,
+  `nonisolated` applies to each declaration in the extension.
+
+  On a nonsendable stored property,
+  `nonsendable` doesn't have any effect
+  because the property is already nonisolated by default.
+  However, you can write this to be explicit.
+  <!-- XXX TR: Any context where you'd be overriding another isolation? -->
+
+  On sendable properties of a sendable value type,
+  but only within the module.
+  XXX broadening the SE-0434 rule,
+  <!-- XXX TR: Does it have to be a *stored* property? -->
 
 - term `optional`:
   Apply this modifier to a protocol's property, method,
