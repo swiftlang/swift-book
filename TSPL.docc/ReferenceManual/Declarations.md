@@ -2264,8 +2264,8 @@ to synchronous functions,
 but not to asynchronous functions.
 
 Actors can also have nonisolated members,
-whose declarations are marked with the `nonisolated` keyword.
-XXX delete the above or xref to new spot?
+whose declarations are marked with the `nonisolated` keyword
+as described in <doc:Declarations#Declaration-Modifiers>.
 
 Members of an actor can be marked with the `@objc` attribute
 only if they are nonisolated or asynchronous.
