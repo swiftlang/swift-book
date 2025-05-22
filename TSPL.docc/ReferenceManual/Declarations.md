@@ -3812,25 +3812,36 @@ that introduces the declaration.
 - term `nonisolated`:
   Apply this modifier to a declaration
   to place it outside any actor's concurrency domain.
-  Nonisolated functions can run on any actor
-  and code running on any actor can access nonisolated values.
+  This modifier suppresses any implicit isolation
+  to the main actor or another global actor.
+  Nonisolated functions can run on any actor,
+  and nonisolated variables and properties
+  are accessible from code running on any actor.
+  <!-- XXX TR: On any actor, or on the shared thread pool? -->
 
   <!--
-  XXX TR: Are there any specific declarations you can't mark nonisolated?
-  It seems like "nonisolated actor" wouldn't make sense, for example.
+  XXX TR: Are there any declarations you can't mark nonisolated?
+  The SE proposal says "all type and protocol declarations".
+  It seems like "nonisolated actor" wouldn't make sense, for example,
+  but this compiles: nonisolated actor A { }
   -->
 
-  When you mark an actor's method or property `nonisolated`,
-  callers don't mark it with `await` when calling or accessing it.
+  Nonisolated methods and nonisolated computed properties
+  can't directly access any actor-isolated state;
+  they use `await` like code outside the actor.
+  When you mark a method or property `nonisolated`,
+  code that calls or accesses it don't mark use `await`.
   This can be a first step towards adopting concurrency,
   by marking code that you want to move off of the main actor
   and then using the compiler errors to guide refactoring.
 
-  On a structure, class, enumeration, or protocol declaration,
+  On a structure, class, or enumeration declaration,
   `nonisolated` applies to that type and its members,
   but not to any nested type declarations.
-  Writing `nonisolated` also suppresses any inferred global actor isolation.
-  <!-- XXX Is @MainActor also inferred from a superclass? -->
+
+  On a protocol declaration,
+  `nonisolated` suppresses any inferred global-actor isolation,
+  which allows conforming types to be either actor-isolated or nonisolated.
 
   ```swift
   // Explicitly isolated to the main actor.
@@ -3848,16 +3859,33 @@ that introduces the declaration.
   On an extension,
   `nonisolated` applies to each declaration in the extension.
 
-  On a nonsendable stored property,
-  `nonsendable` doesn't have any effect
-  because the property is already nonisolated by default.
-  However, you can write this to be explicit.
-  <!-- XXX TR: Any context where you'd be overriding another isolation? -->
+  Nonsendable stored properties are nonisolated by default;
+  however, you can write this modifier to be explicit.
+  <!--
+  XXX TR:
+  I'm not sure the above is correct.
+  Does this also apply to nonsendable variables?
+  Any context where you'd be overriding an inferred isolation?
 
-  On sendable properties of a sendable value type,
-  but only within the module.
-  XXX broadening the SE-0434 rule,
-  <!-- XXX TR: Does it have to be a *stored* property? -->
+  The code example from the SE proposal doesn't compile:
+
+  class NonSendable { }
+  class MyClass {
+      nonisolated var x: NonSendable = NonSendable()
+  }
+  -->
+
+  Sendable variables and properties are nonisolated by default,
+  when you access them within the same module.
+  <!-- XXX TR: What defines "value type" in this context? -->
+
+  <!-- TODO: Expand the above with the more specific rules from SE-0434. -->
+
+  You can't write `nonisolated` on a declaration
+  that's also marked with `@MainActor`
+  or isolated to another global actor,
+  on a sendable type's property if that property's type isn't sendable,
+  or on a sendable class's stored property if that property is mutable.
 
 - term `optional`:
   Apply this modifier to a protocol's property, method,
