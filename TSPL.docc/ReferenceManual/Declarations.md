@@ -3871,8 +3871,10 @@ that introduces the declaration.
   I'm not sure the above is correct.
   Does this also apply to nonsendable variables?
   Any context where you'd be overriding an inferred isolation?
-
-  The code example from the SE proposal doesn't compile:
+  -->
+  <!-- XXX Add an upcoming feature flag note;
+  the code example from the SE proposal compiles
+  only when you have approachable concurrency turned on.
 
   class NonSendable { }
   class MyClass {
