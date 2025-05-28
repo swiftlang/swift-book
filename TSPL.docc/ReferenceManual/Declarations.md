@@ -3817,7 +3817,12 @@ that introduces the declaration.
   Nonisolated functions can run on any actor,
   and nonisolated variables and properties
   are accessible from code running on any actor.
-  <!-- XXX TR: On any actor, or on the shared thread pool? -->
+  <!--
+  XXX TR: Is there a meaningful difference here between
+  "on any actor" vs "on the shared thread pool"?
+  Or would this be clearer as explained in contrast to "isolation",
+  as defined in the new section in the Concurrency chapter?
+  -->
 
   <!--
   XXX TR: Are there any declarations you can't mark nonisolated?
