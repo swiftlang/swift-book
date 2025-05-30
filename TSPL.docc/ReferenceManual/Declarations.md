@@ -860,7 +860,7 @@ A *parameter modifier* changes how an argument is passed to the function.
 ```
 
 To use a parameter modifier,
-write `inout`, `borrowing`, or `consuming`
+write `inout`, `isolated`, `borrowing`, or `consuming`
 before the argument's type.
 
 ```swift
@@ -1058,6 +1058,17 @@ see <doc:Functions#In-Out-Parameters>.
   !! ^
   ```
 -->
+
+#### Actor-Isolated Parameters
+
+XXX Outline
+
+- Marking a parameter `isolated` isolates the function
+- The parameter's type must be an actor
+- The function is isolated to the given instance of that actor
+- A function can have at most one actor-isolated parameter
+- This behaves the same as instance methods on actor types,
+  which are essentially methods isolated to `self`.
 
 #### Borrowing and Consuming Parameters
 
