@@ -1394,16 +1394,15 @@ as described in <doc:Attributes#globalActor>.
 
 ### Isolation inference
 
-Global actor isolation can be inferred in the code you write. Isolation
-is inferred from class inheritance, protocol conformances, and context
-where code is written.
+Swift infers global actor isolation in the code you write based on
+class inheritance and protocol conformances.
 
 #### Classes
 
-If a superclass is isolated to a global actor, the global actor is
-inferred on subclasses. For example, the code below has a main-actor
+If a superclass has global actor isolation, Swift infers that global actor
+on subclasses. For example, the code below has a main-actor
 isolated class `Vehicle`, and a subclass `Train` that inherits
-main-actor isolation:
+from `Vehicle`:
 
 ```swift
 @MainActor
@@ -1421,12 +1420,13 @@ class Train: Vehicle {
 }
 ```
 
-In the above example, `Vehicle` and all of its methods and properties
-are isolated to the main actor. The `Train` subclass infers its isolation
-from the superclass, so the overridden `makeNoise` method is also isolated
-to the main actor.
+In the above example, all methods and properties in `Vehicle`
+are isolated to the main actor. The `Train` class inherits all
+methods, properties, and global actor isolation from the `Vehicle`
+superclass, so Swift infers main-actor isolation for the `makeNoise`
+override.
 
-Global actor isolation is also inferred from individual overridden
+Swift also infers global-actor isolation from individual overridden
 methods. For example, the following code isolates one method of the
 `Vehicle` class to the main actor instead of the entire class:
 
@@ -1447,15 +1447,17 @@ class Train: Vehicle {
 }
 ```
 
-The override of `makeNoise` in `Train` infers main-actor isolation from
-the overridden `makeNoise` method in `Vehicle`.
+Swift infers main-actor isolation for the `makeNoise` override of
+the `Train` subclass based on the isolation of the `makeNoise` method
+in `Vehicle`.
 
 #### Protocols
 
-If a protocol is isolated to a global actor, the global actor is
-inferred on conforming types. For example, the following code has
-a main-actor isolated protocol `Togglable`, and a conforming struct
-`Switch`:
+Swift infers global-actor isolation from protocol conformances.
+When a type conforms to a protocol, Swift infers actor isolation from
+the protocol itself, and from individual protocol requirements.
+For example, the following code has a main-actor isolated protocol
+`Togglable`, and a conforming struct `Switch`:
 
 ```swift
 @MainActor
@@ -1473,12 +1475,13 @@ struct Switch: Togglable {
 ```
 
 In the above example, `Togglable` and all of its requirements
-are isolated to the main actor. The `Switch` type infers its isolation
-from the protocol conformance, and the implementation of `toggle` is
-isolated to the main actor.
+are isolated to the main actor. Swift infers main-actor isolation
+on types that conform to `Togglable`, so all methods and properties
+of `Switch` are isolated to the main actor, including the `isOn`
+property and the `toggle` method.
 
-Isolation is only inferred from protocols when the conformance is
-written at the primary declaration. If the conformance is written in
+Swift only infers isolation from protocols when you write the conformance
+at the primary declaration. If you write the conformance in
 an extension, then isolation inference only applies to requirements that
 are implemented in the extension. For example, the following code
 implements a conformance of `Switch` to `Togglable` in an extension:
@@ -1500,9 +1503,12 @@ extension Switch: Togglable {
 }
 ```
 
-Now, the `Switch` type itself does not have inferred isolation. The
-`toggle` method inside `Switch` is isolated to the main actor, because
-the protocol requirement that it implements is isolated to the main actor.
+Swift does not infer global-actor isolation on the `Switch` type itself;
+the `Switch` type is `nonisolated`, and the methods and properties directly
+inside the type are `nonisolated`. Swift infers global-actor isolation for
+the protocol requirements implemented in the extension that declares the
+conformance to `Togglable`, so the `toggle` method is isolated to the
+main actor.
 
 
 <!--
