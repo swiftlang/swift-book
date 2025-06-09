@@ -1392,6 +1392,124 @@ You can define your own singleton global actors
 using the `@globalActor` attribute,
 as described in <doc:Attributes#globalActor>.
 
+### Isolation inference
+
+Swift infers global actor isolation in the code you write based on
+class inheritance and protocol conformances.
+
+#### Classes
+
+If a superclass has global actor isolation, Swift infers that global actor
+on subclasses. For example, the code below has a main-actor
+isolated class `Vehicle`, and a subclass `Train` that inherits
+from `Vehicle`:
+
+```swift
+@MainActor
+class Vehicle {
+    var currentSpeed = 0.0
+    func makeNoise() {
+        // do nothing - an arbitrary vehicle doesn't necessarily make a noise
+    }
+}
+
+class Train: Vehicle {
+    override func makeNoise() {
+        print("Choo Choo")
+    }
+}
+```
+
+In the above example, all methods and properties in `Vehicle`
+are isolated to the main actor. The `Train` class inherits all
+methods, properties, and global actor isolation from the `Vehicle`
+superclass, so Swift infers main-actor isolation for the `makeNoise`
+override.
+
+Swift also infers global-actor isolation from individual overridden
+methods. For example, the following code isolates one method of the
+`Vehicle` class to the main actor instead of the entire class:
+
+```swift
+class Vehicle {
+    var currentSpeed = 0.0
+
+    @MainActor
+    func makeNoise() {
+        // do nothing - an arbitrary vehicle doesn't necessarily make a noise
+    }
+}
+
+class Train: Vehicle {
+    override func makeNoise() {
+        print("Choo Choo")
+    }
+}
+```
+
+Swift infers main-actor isolation for the `makeNoise` override of
+the `Train` subclass based on the isolation of the `makeNoise` method
+in `Vehicle`.
+
+#### Protocols
+
+Swift infers global-actor isolation from protocol conformances.
+When a type conforms to a protocol, Swift infers actor isolation from
+the protocol itself, and from individual protocol requirements.
+For example, the following code has a main-actor isolated protocol
+`Togglable`, and a conforming struct `Switch`:
+
+```swift
+@MainActor
+protocol Togglable {
+    mutating func toggle()
+}
+
+struct Switch: Togglable {
+    var isOn: Bool = false
+
+    mutating func toggle() {
+        isOn.toggle()
+    }
+}
+```
+
+In the above example, `Togglable` and all of its requirements
+are isolated to the main actor. Swift infers main-actor isolation
+on types that conform to `Togglable`, so all methods and properties
+of `Switch` are isolated to the main actor, including the `isOn`
+property and the `toggle` method.
+
+Swift only infers isolation from protocols when you write the conformance
+at the primary declaration. If you write the conformance in
+an extension, then isolation inference only applies to requirements that
+are implemented in the extension. For example, the following code
+implements a conformance of `Switch` to `Togglable` in an extension:
+
+```swift
+@MainActor
+protocol Togglable {
+    mutating func toggle()
+}
+
+struct Switch: Togglable {
+    var isOn: Bool = false
+}
+
+extension Switch: Togglable {
+    mutating func toggle() {
+        isOn.toggle()
+    }
+}
+```
+
+Swift does not infer global-actor isolation on the `Switch` type itself;
+the `Switch` type is `nonisolated`, and the methods and properties directly
+inside the type are `nonisolated`. Swift infers global-actor isolation for
+the protocol requirements implemented in the extension that declares the
+conformance to `Togglable`, so the `toggle` method is isolated to the
+main actor.
+
 
 <!--
   OUTLINE
