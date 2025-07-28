@@ -1893,7 +1893,10 @@ include taking the arguments as an array or a variadic parameter,
 which requires all arguments to be the same type,
 or using `Any` which erases type information.
 
-<!-- XXX transition -->
+Parameter packs make it possible to abstract such function over the
+number of generic arguments, eliminating the need to type-erase or
+provide multiple overloaded copies of the same function with
+a variable number of generic arguments.
 
 Writing this function with a parameter pack
 preserves type information about its arguments,
@@ -1921,23 +1924,17 @@ to mark code that is repeated for each value in that list.
 
 ```swift
 func double<each T: Numeric>(_ value: repeat each T) -> (repeat each T) {
-    return (repeat (each value).doubled())
+    return (repeat (each value) * 2)
 }
 
-
-extension Numeric {
-    func doubled() -> Self {
-        return 2 * self
-    }
-}
-
-let numbers = [12, 0.5, 8 as Int8]
-let doubledNumbers = doubled(numbers)
+let doubledNumbers = double(12, 0.5, 8)
+print(doubledNumbers)
+// Prints (24, 1.0, 16)
 ```
 
 The value of `doubledNumbers` is `(24, 1.0, 16)`,
 and each element in this tuple has the same type
-as the value in `numbers` that it comes from.
+as the value in the value pack that it comes from.
 Both `12` and `24` are `Int`,
 `0.5` and `1.0` are `Double`,
 and `8` and `16` are `Int8`.
