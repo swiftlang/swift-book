@@ -1927,7 +1927,7 @@ func double<each T: Numeric>(_ value: repeat each T) -> (repeat each T) {
     return (repeat (each value) * 2)
 }
 
-let doubledNumbers = double(12, 0.5, 8)
+let doubledNumbers = double(12, 0.5, 8 as Int8)
 print(doubledNumbers)
 // Prints (24, 1.0, 16)
 ```
@@ -1939,65 +1939,76 @@ Both `12` and `24` are `Int`,
 `0.5` and `1.0` are `Double`,
 and `8` and `16` are `Int8`.
 
-* * *
+There are two types of parameter packs: type packs and value packs. The type
+packs are made of type parameters, while value packs are made of values.
 
-XXX OUTLINE:
+At the call site of `double`, the type of the pack `T` will be substituted
+for the type pack `{Int, Double, Int8}`. The type of the type pack is derived
+from the value pack `12, 0.5, 8 as Int8` passed at the call site. This
+guarantees that the corresponding types and values appear at the same
+positions in their respective packs.
 
-How do you read a parameter pack at its call site?
+The `double` function doubles each element of the parameter pack by applying
+the `repeat` statement to each element of the value pack multiplied by 2.
+The `repeat` statement applied to a value pack denotes a "repetition pattern",
+which is a pattern that will be repeated for every value in the pack.
 
-- A parameter pack "packs" together types.
-  A pack that's made up of types is called a *type pack*.
-  A pack that's made up of values is called a *value pack*.
+Repetition is a great way to apply a simple transformation on each element
+of the parameter pack. It effectively performs iteration on the value pack,
+but in a clean and concise way. However, there are cases where your code either
+demands a piece of other state to be updated on each iteration, or you want the
+iteration to stop when a certain condition is met.
 
-- A type pack provides the types for a value pack.
-  The corresponding types and values appear at the same positions
-  in their respective packs.
+Similarly to collections, value packs support iteration with a `for`-`in repeat`
+loop.
 
-- When you write code that works on collections, you use iteration.
-  Working with parameter packs is similar ---
-  except each element has a different type,
-  and instead of iteration you use repetition.
+```swift
+func allEmpty<each T>(_ array: repeat [each T]) -> Bool {
+    for a in repeat each array {
+        guard a.isEmpty else { return false }
+    }
 
-How do you create a parameter pack?
+    return true
+}
+```
 
-- In the generic type parameters,
-  write `each` in front of a generic argument
-  to indicate that this argument creates a type parameter pack.
+In the code above, the `allEmpty` function is generic over a type parameter
+pack `each T`, and takes a value parameter pack `array`, the type of which is
+declared using `repeat [each T]` pack expansion, where `[each T]` is the
+repetition pattern.
 
-- In the function's parameters,
-  write `repeat` in front of the type for the parameter
-  that can accept a variable number of arguments,
-  to create an *expansion pattern*.
-  You can also write `repeat` in the function's return type.
+The `for`-`in repeat` loop gives an opportunity to access elements of the value
+pack on each iteration using a local variable. In this case, the local variable
+`a` represents the value stored in the value pack on a given iteration. Using
+`for`-`in repeat` loop gives you an opportunity to stop the iteration early—in
+this case, the iteration will stop once a non-empty array is found.
 
-- The expansion of a repetition pattern produces a comma-separated list.
-  It can appear in generic argument lists,
-  in tuples types,
-  and in function argument lists.
+Here's how you might use the `allEmpty` function:
 
-  ```swift
-  func f<each T>(_ t: repeat each T) -> (repeat each T)
-  ```
+```swift
+print(allEmpty(["One", "Two"], [1], [true, false], []))
+// False
+```
 
-- The expansion pattern is repeated for every element in the given type pack
-  by iterating over the types in the type pack
-  and replacing the type placeholder that comes after `each`.
+Using the `for`-`in repeat` loop is useful in cases where you want more control
+over the pack iteration—stop the evaluation early for performance, or mutate
+some other state on each iteration.
 
-  For example, expanding `repeat Request<each Payload>`
-  where the `Payload` type pack contains `Bool`, `Int`, and `String`
-  produces `Request<Bool>, Request<Int>, Request<String>`.
+Note that both approaches for iterating over the pack are fine! Choose one that
+fits your use-case the most.
 
-- When the type of a function argument is a type pack,
-  the values that are passed in for that argument become a value pack.
+> Note: Use singular naming convention when naming your parameter packs.
 
-- Naming convention:
-  Use singular names for parameter packs,
-  and plural names only in argument labels.
+Parameter packs can contain zero or more arguments. If you need to
+require one or more, use a regular generic argument together with the type
+pack argument:
 
-Note:
-Parameter packs can contain zero or more arguments.
-If you need to require one or more,
-use a regular parameter before the pack parameters.
+```swift
+func requireOneOrMore<T, each U>(element: (T, repeat each U)) { }
+```
+
+The function above can now be called with at least one value passed into the
+`element` parameter, required by the `T` generic argument.
 
 What else can you repeat?
 How do you repeat more than one type?
