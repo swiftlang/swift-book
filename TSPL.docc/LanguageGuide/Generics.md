@@ -2010,135 +2010,143 @@ func requireOneOrMore<T, each U>(element: (T, repeat each U)) { }
 The function above can now be called with at least one value passed into the
 `element` parameter, required by the `T` generic argument.
 
-What else can you repeat?
-How do you repeat more than one type?
+Repetition patterns can be applied to so many types! In the the `nonEmpty`
+example above, the `array` parameter's type is declared with `repeat [each T]`,
+expanding into multiple array types.
 
-- In the simple case, where only one type repeats,
-  you write `repeat each T` or similar.
+A more complex type can include `each` multiple times. For example:
 
-- For collections or other generic types,
-  the pack expansion can happen inside,
-  like `repeat Array<each T>` expands to multiple array types.
+```swift
+func evaluateAll<each V, each E: Error>(
+    result: repeat Result<each V, each E>
+) -> [any Codable] {
+    // ...
+}
+```
 
-- A more complex type can include `each` multiple times,
-  like `repeat Dictionary<each Key, each Value>`.
-  All of the expansions have to be the same size ---
-  in this example,
-  the list of types that `Key` expands to must be the same length
-  as the list that `Value` expands to.
+The above `evaluateAll` function is generic over two different type packs,
+`V` and `E`. The type of `result` is declared using the `Result` type that
+takes 2 generic parameters. `repeat Result<each V, each E>` expands the
+type of the `result` parameter to be a type pack where the expansion of
+`each V` and `each E` is required to be of the same size, meaning the
+number of types both packs expand to are guaranteed to be equal.
 
-How do you vary the return types, based on the parameter types?
-(TODO: Worked code example.
-Use WWDC 2023 session 10168 example at 16 minutes
-as a starting point.)
+You can also vary the return types of your function based on the parameter
+types:
 
-How do you constrain the types in a parameter pack?
+```swift
+protocol RequestProtocol {
+    associatedtype Input
+    associatedtype Output
+    func evaluate(_ input: Input) -> Output
+}
 
-- In the simple case,
-  write the `where` clause in the generic parameters list.
-  `func foo<each T: Runcible>`
-  requires all of the types passed in the `T` type pack to conform.
+struct Evaluator<each Request: RequestProtocol> {
+    var item: (repeat each Request)
 
-- In the more complex case,
-  use `repeat each T ` in a trailing `where` clause.
+    func query(_ input: repeat (each Request).Input) -> (repeat (each Request).Output) {
+        return (repeat (each item).evaluate(each input))
+    }
+}
+```
 
-- You must restrict the types that appear in a type parameter pack
-  if its expansion will be used as a restricted generic type parameter.
-  For example, given `each T: Hashable` writing `repeat Set<each T>` works,
-  but it doesn't work with just `each T`
-  because `Set` requires `T` to be hashable but the pack doesn't.
+In the above code example, the protocol `RequestProtocol` requires a function
+`evaluate` that, given an input of an associated type `Input`, returns the
+other associated type `Output`.
 
-How do you access the values of a parameter pack?
+The `Evaluator` struct is generic over the `Request` type, which is a parameter
+pack. Like with regular generics, parameter packs support type constraints—each
+element in the `Request` type pack has to conform to the `RequestProtocol`
+protocol.
 
-- Inside the function body, you use `repeat`
-  to mark places where the code expands the elements of a parameter pack.
+The `item` property stores the elements of the `Request` parameter
+pack in a tuple.
 
-- When you use `repeat` at the start of a line (as a statement),
-  the whole line is duplicated once for each type.
-  When you use `repeat` in the middle of a line (as an expression),
-  it expands to make a tuple
-  with one tuple element for each type.
+The `query` methods operates on an `input` argument of
+`repeat (each Request).Input` type. Because each element of the `Request`
+type pack conforms to `RequestProtocol`, the implementation of `query` is able
+to call the protocol requirement `evaluate`, using the elements of the `input`
+parameter pack as its input. As a result, a new pack containing
+`RequestProtocol.Output` type is produced.
 
-- After `repeat`, you write `each` in front of the type being expanded.
-  You can expand multiple packs in the same repeat expression,
-  as long as all of the packs have the same length.
+You don't always write `repeat each` one after the other. The part to repeat
+is marked `repeat` and the location of the element from the pack is marked
+`each`. In this example, the `repeat`
+keyword applied in front of `(each item).evaluate(each input)` call
+calls `evaluate` function on each pair of elements from `item` and `input`
+value packs, respectively. Again, such construction guarantees that `item`
+and `input` packs have to be of the same length. As a result, the tuple
+returned by `query` also has the same length.
 
-  ```swift
-  repeat print(each t)
-  return (Pair(each first, each second))
-  ```
+You can also use trailing `where` clause with parameter packs in more complex
+cases. For example, consider the following type:
 
-- The result (and its type) of expanding a parameter pack
-  within a tuple vary depending on the number of elements in the pack.
-  Zero-element packs produce `()`,
-  single-element packs produce a simple type,
-  and multi-element packs produce a tuple type.
+```swift
+struct Container<each Element> {
+    var value: (repeat each Element)
+}
+```
 
-- You don't always write `repeat each` one after the other.
-  The part to repeat is marked `repeat`
-  and the location of the element from the pack is marked `each`.
+With the `where` clause, it is easy to conditionally constrain the type to
+conform to protocols using the types in the `Element` parameter pack:
 
-  For example,
-  `repeat (each T, Int)` is different from `(repeat each T, Int)`.
-  The former makes multiple tuples `(T1, Int) ... (Tn, Int)`,
-  expanding `T` and adding `Int` to each tuple.
-  The latter makes one tuple, `(T1, ..., Tn, Int)`.
-  Other code can come between `repeat` and `each` ---
-  both of those are different from `repeat (Int, each T)`
+```swift
+extension Container: Sendable where repeat each Element: Sendable {}
+```
 
-- Tripping hazard:
-  You can call methods on the repeated values,
-  as in `repeat (each x).doSomething` ---
-  and the grouping parentheses are required there ---
-  but you can't include operators like `repeat (1 + each x)`
-  as part of the pack expansion.
+In the code above, `Container` conditionally conforms to `Sendable` when each
+element of the type parameter pack `Element` conforms to `Sendable`, making it
+usable in contexts requiring sendability.
 
-- You can expand a parameter pack's values
-  only inside a tuple or a function call.
-  (TR: Also inside arguments to a macro?
-  Doug brought that up during the SE review.)
-  A notable omission is that
-  there isn't a way to iterate over the values in a pack ---
-  the SE proposal calls that out as a potential future direction.
+The types that appear in a type parameter pack must be constrained if its
+expansion is used as a constrained generic type parameter. For example,
+types such as `Set` require its generic argument to conform to `Hashable`,
+so each element of the parameter pack needs to be constrained:
 
-- When a function returns a tuple using pack expansion,
-  or otherwise created by expanding a value pack,
-  you can perform the same operations on that tuple
-  as if it were still an unexpanded parameter pack.
-  This doesn't include tuples created any other way,
-  or tuples that contain a mix of elements created this way and another way.
+```swift
+struct Container<each Element: Hashable> {
+    var value: (repeat each Set<Element>)
+}
+```
 
-  For example:
+Using all of the concepts above, parameter packs provide powerful capabilities
+in your code. Let's consider a more advanced example of using parameter packs,
+and start off by declaring the following protocol:
 
-  <!-- from SE-0399 -->
-  ```swift
-  func tuplify<each T>(_ value: repeat each T) -> (repeat each T) {
-      return (repeat each value)
-  }
+```swift
+protocol ValueProducer {
+  associatedtype Value: Codable
+  func evaluate() -> Value
+}
+```
 
-  func example<each T>(_ value: repeat each T) {
-      let abstractTuple = tuplify(repeat each value)
-      repeat print(each abstractTuple)  // Ok
+The above protocol `ValueProducer` requires the `evaluate()` method that’s
+return type is the associated type `Value` that conforms to `Codable` protocol.
 
-      let concreteTuple = (true, "two", 3)
-      repeat print(each concreteTuple)  // Invalid
-  }
-  ```
+For example, suppose you get a parameter pack of values of type
+`Result<ValueProducer, Error>`, and you need to iterate only over the success
+elements and call the `evaluate()` method on its value. Also, suppose you need
+to save the result of each call into an array.
 
-How do you work with errors?
+```swift
+func evaluateAll<each V: ValueProducer, each E: Error>(result: repeat Result<each V, each E>) -> [any Codable] {
+    var evaluated: [any Codable] = []
+    for case .success(let valueProducer) in repeat each result {
+        evaluated.append(valueProducer.evaluate())
+    }
 
-- Throwing or propagating an error stops iteration over the value pack.
+    return evaluated
+}
+```
 
-- For example,
-  to return a result only if none of the calls threw an error:
-
-  ```
-  do {
-      return (repeat try (each item).doSomething())
-  } catch {
-      return nil
-  }
-  ```
+In the body of `evaluateAll`, you can use the `for`-`in repeat` loop
+for performing an operation while
+iterating over the values stored in the `result` value pack. Note that you
+can use a familiar `for case` pattern to only iterate over the `.success`
+case of the `Result` enum. You can bind the value using the `valueProducer`
+variable. Finally, on each iteration, you can append the result of the call
+to the `evaluate()` method to the `evaluated` array, which gets returned
+from the function.
 
 ## Generic Subscripts
 
