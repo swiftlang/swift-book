@@ -860,7 +860,7 @@ A *parameter modifier* changes how an argument is passed to the function.
 ```
 
 To use a parameter modifier,
-write `inout`, `isolated`, `borrowing`, or `consuming`
+write `inout`, `isolated`, `nonisolated`, `borrowing`, or `consuming`
 before the argument's type.
 
 ```swift
@@ -1718,7 +1718,7 @@ but the new method must preserve its return type and nonreturning behavior.
 > *external-parameter-name* → *identifier* \
 > *local-parameter-name* → *identifier* \
 > *parameter-type-annotation* → **`:`** *attributes*_?_ *parameter-modifier*_?_ *type* \
-> *parameter-modifier* → **`inout`** | **`borrowing`** | **`consuming`**
+> *parameter-modifier* → **`inout`** | **`borrowing`** | **`consuming`** | **`isolated`** | **`nonisolated`**
 > *default-argument-clause* → **`=`** *expression*
 
 <!--
