@@ -1061,14 +1061,29 @@ see <doc:Functions#In-Out-Parameters>.
 
 #### Actor-Isolated Parameters
 
-XXX Outline
+The `isolated` modifier on a parameter
+indicates that the function is actor-isolated,
+in the same way methods of an actor are isolated to that actor's instances.
 
-- Marking a parameter `isolated` isolates the function
-- The parameter's type must be an actor
-- The function is isolated to the given instance of that actor
-- A function can have at most one actor-isolated parameter
-- This behaves the same as instance methods on actor types,
-  which are essentially methods isolated to `self`.
+When calling a function that has a parameter marked `isolated`,
+the argument to that parameter must be an instance of an actor type.
+The function is isolated to that actor instance,
+and the function can access that actor's state.
+
+```swift
+actor SomeActor {
+    var number: Int
+    init () { self.number = 12 }
+}
+let anActor = SomeActor()
+anActor.number = 99  // Error: Can't access isolated state
+
+func setNumber(to newNumber: Int, on myActor: isolated SomeActor) {
+	myActor.number = 34  // OK
+}
+```
+
+A function can have at most one parameter marked `isolated`.
 
 #### Borrowing and Consuming Parameters
 
@@ -3850,6 +3865,12 @@ that introduces the declaration.
   This can be a first step towards adopting concurrency,
   by marking code that you want to move off of the main actor
   and then using the compiler errors to guide refactoring.
+
+  On a declaration inside an actor,
+  `nonisolated` suppresses the default isolation to `self`.
+  Nonisolated members of an actor
+  can satisfy the constraints of a synchronous protocol.
+  <!-- XXX what’s a synchronous protocol? -->
 
   On a structure, class, or enumeration declaration,
   `nonisolated` applies to that type and its members,
