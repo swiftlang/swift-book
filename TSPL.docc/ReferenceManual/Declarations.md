@@ -3836,27 +3836,29 @@ that introduces the declaration.
   see <doc:Properties#Lazy-Stored-Properties>.
 
 - term `nonisolated`:
-  Apply this modifier to a declaration
-  to place it outside any actor's concurrency domain.
-  This modifier suppresses any implicit isolation
-  to the main actor or another global actor.
-  Nonisolated functions can run on any actor,
-  and nonisolated variables and properties
-  are accessible from code running on any actor.
-  <!--
-  XXX TR: Is there a meaningful difference here between
-  "on any actor" vs "on the shared thread pool"?
-  Or would this be clearer as explained in contrast to "isolation",
-  as defined in the new section in the Concurrency chapter?
-  -->
+  Apply this modifier to a declaration to suppress any implicit isolation.
+  For example, by default,
+  properties of an actor are implicitly isolated to that actor ---
+  you can apply `nonisolated` to the property declaration
+  to define a nonisolated property that isn't isolated to that actor.
+  Likewise, a nonisolated method of an `@MainActor` class <!-- XXX jargon? -->
+  isn't isolated to the main actor.
+
+  A nonisolated method or property
+  is isolated in the same way as any other function or variable
+  that isn't isolated to an actor.
+  For isolation purposes,
+  the body of a nonisolated declaration
+  is treated as if it were outside the actor.
+  For example,
+  if you call an isolated method from a nonisolated method,
+  you must mark the call with `await`. <!-- XXX add example? -->
 
   <!--
-  XXX TR: Are there any declarations you can't mark nonisolated?
-  The SE proposal says "all type and protocol declarations".
-  It seems like "nonisolated actor" wouldn't make sense, for example,
-  but this compiles: nonisolated actor A { }
+  You can write "nonisolated actor", but that's a bug <rdar://158142168>.
   -->
 
+  <!-- XXX connect this to the para above; consequence of the same point -->
   Nonisolated methods and nonisolated computed properties
   can't directly access any actor-isolated state;
   they use `await` like code outside the actor.
@@ -3870,7 +3872,7 @@ that introduces the declaration.
   `nonisolated` suppresses the default isolation to `self`.
   Nonisolated members of an actor
   can satisfy the constraints of a synchronous protocol.
-  <!-- XXX what’s a synchronous protocol? -->
+  <!-- XXX what's a synchronous protocol? -->
 
   On a structure, class, or enumeration declaration,
   `nonisolated` applies to that type and its members,
