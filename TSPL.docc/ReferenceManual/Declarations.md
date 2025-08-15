@@ -3868,6 +3868,35 @@ that introduces the declaration.
   by marking code that you want to move off of the main actor
   and then using the compiler errors to guide refactoring.
 
+  <!-- XXX move this para? -->
+  Swift restricts nonisolated stored variables,
+  to ensure they provide data isolation without using an actor.
+  Nonisolated global variables,
+  static properties,
+  and instance properties of actors and sendable classes
+  must be constants of a sendable type.
+  Nonisolated instance properties of sendable structures
+  must have a sendable type, but they are allowed to be mutable.
+
+  <!-- XXX Add an upcoming feature flag note;
+  the code example from the SE proposal compiles
+  only when you have approachable concurrency turned on.
+
+  class NonSendable { }
+  class MyClass {
+      nonisolated var x: NonSendable = NonSendable()
+  }
+  -->
+
+  If a stored variable meets the conditions for being nonisolated
+  but isn't marked `nonisolated`,
+  you  can use it as a nonisolated property
+  only within the module that defines it.
+  To use it as `nonisolated` outside of that module,
+  mark it `nonisolated` explicitly.
+
+  <!-- XXX Turn the below into a bulleted list? -->
+
   On a declaration inside an actor,
   `nonisolated` suppresses the default isolation to `self`.
   Nonisolated members of an actor
@@ -3898,28 +3927,6 @@ that introduces the declaration.
   On an extension,
   `nonisolated` applies to each declaration in the extension.
 
-  Nonsendable stored properties are nonisolated by default;
-  however, you can write this modifier to be explicit.
-  <!--
-  XXX TR:
-  I'm not sure the above is correct.
-  Does this also apply to nonsendable variables?
-  Any context where you'd be overriding an inferred isolation?
-  -->
-  <!-- XXX Add an upcoming feature flag note;
-  the code example from the SE proposal compiles
-  only when you have approachable concurrency turned on.
-
-  class NonSendable { }
-  class MyClass {
-      nonisolated var x: NonSendable = NonSendable()
-  }
-  -->
-
-  Sendable variables and properties are nonisolated by default,
-  when you access them within the same module.
-  <!-- XXX TR: What defines "value type" in this context? -->
-
   <!-- TODO: Expand the above with the more specific rules from SE-0434. -->
 
   You can't write `nonisolated` on a declaration
@@ -3927,6 +3934,20 @@ that introduces the declaration.
   or isolated to another global actor,
   on a sendable type's property if that property's type isn't sendable,
   or on a sendable class's stored property if that property is mutable.
+
+- term `nonisolated(unsafe)`:
+  Apply this modifier to a stored property to suppress any implicit isolation,
+  even though the property doesn't satisfy the restrictions
+  and can't be marked `nonisolated`.
+  You are responsible for ensuring
+  that all access to the property is correctly ordered.
+  This may be appropriate if, for example,
+  you are protecting the value with a mutex
+  and can't use the [`Mutex`][] type from the Synchronization module.
+  <!-- XXX TR: Is the fact that it's a non-Mutex mutex the reason
+  they have to write nonisolated(unsafe) instead of just nonisolated? -->
+
+  [`Mutex`]: https://developer.apple.com/documentation/synchronization/mutex
 
 - term `optional`:
   Apply this modifier to a protocol's property, method,
