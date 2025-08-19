@@ -1670,15 +1670,13 @@ extension Person: nonisolated Equatable {
 ### Data-Race Safety for Isolated Conformances
 
 Swift prevents data races for isolated conformances
-by ensuring that protocol requirements are only called
+by ensuring that protocol requirements are only used
 on the global actor that the conformance is isolated to.
 In generic code,
 where the concrete conforming type is abstracted away,
-protocol requirements can be called through type parameters or `any` types.
+protocol requirements can be used through type parameters or `any` types.
 
 #### Using Isolated Conformances
-
-##### Generic Code
 
 A conformance requirement to `Sendable` allows generic code to send parameter
 values to concurrently-executing code.  If generic code accepts non-`Sendable`
@@ -1719,8 +1717,6 @@ Calling `perform` from a concurrent task
 results in an error,
 because it would allow calling the main actor isolated implementation of `perform`
 from outside the main actor.
-
-##### Dynamic Casting
 
 Generic code can check whether a value conforms to a protocol
 through dynamic casting.
@@ -1778,7 +1774,7 @@ so the dynamic cast fails and `perform` is not called.
 
 #### Restricting Isolated Conformances in Concurrent Code
 
-Protocol requirements can be called
+Protocol requirements can be used
 through instances of conforming types and through metatype values.
 In generic code,
 a conformance requirement to `Sendable` or `SendableMetatype`
