@@ -1697,7 +1697,7 @@ func perform(_ p: some P) {
     p.perform()
 }
 
-@MainActor class C: P { ... }
+@MainActor class C: @MainActor P { ... }
 
 Task { @MainActor in
     let c = C()
@@ -1753,7 +1753,7 @@ the dynamic cast will only succeed
 when `performIfP` is called from the main actor:
 
 ```swift
-@MainActor class C: P {
+@MainActor class C: @MainActor P {
     func perform() {
         print("C.perform")
     }
@@ -1812,7 +1812,7 @@ Swift prohibits using an isolated conformance
 when the type is also required to conform to `Sendable`:
 
 ```swift
-@MainActor class C: P { ... }
+@MainActor class C: @MainActor P { ... }
 
 let c = C()
 performConcurrently(c)  // Error
@@ -1885,7 +1885,7 @@ Swift will prevent calling `createParallel`
 with a type that has an isolated conformance to `P`:
 
 ```swift
-@MainActor class C: P {
+@MainActor class C: @MainActor P {
     static func perform() { /* use main actor state */ }
 }
 
