@@ -1789,7 +1789,9 @@ so the dynamic cast fails and `perform` is not called.
 #### Restricting Isolated Conformances in Concurrent Code
 
 Protocol requirements can be used
-through instances of conforming types and through metatype values.
+through instances of conforming types and through
+instances of the conforming types themselves
+called *metatype values*.
 In generic code,
 a conformance requirement to `Sendable` or `SendableMetatype`
 tells Swift that an instance or metatype value is safe to use concurrently.
