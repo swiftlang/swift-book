@@ -1629,7 +1629,15 @@ This allows the implementation of the conformance
 to use global actor isolated state
 while ensuring that state is only accessed
 from within the actor.
-Isolated conformances are also inferred
+
+### Inferring an Isolated Conformance
+
+> Note:
+> Isolated conformance inference is an upcoming language feature.
+> To enable it in current language modes of Swift,
+> use the feature identifier `InferIsolatedConformances`.
+
+Isolated conformances are inferred
 for global actor isolated types.
 The following code example declares a conformance to `Equatable`
 for a main-actor isolated class,
