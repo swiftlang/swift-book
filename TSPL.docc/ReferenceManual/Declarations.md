@@ -3841,7 +3841,8 @@ that introduces the declaration.
   properties of an actor are implicitly isolated to that actor ---
   you can apply `nonisolated` to the property declaration
   to define a nonisolated property that isn't isolated to that actor.
-  Likewise, a nonisolated method of an `@MainActor` class <!-- XXX jargon? -->
+  Likewise,
+  a nonisolated method of a class that's marked with the `MainActor` attribute
   isn't isolated to the main actor.
 
   A nonisolated method or property
@@ -3850,25 +3851,21 @@ that introduces the declaration.
   For isolation purposes,
   the body of a nonisolated declaration
   is treated as if it were outside the actor.
-  For example,
-  if you call an isolated method from a nonisolated method,
-  you must mark the call with `await`. <!-- XXX add example? -->
+  Because nonisolated methods and nonisolated properties
+  can't directly access actor-isolated state,
+  you mark calls to isolated methods with `await`
+  like you do in code outside the actor.
 
   <!--
   You can write "nonisolated actor", but that's a bug <rdar://158142168>.
   -->
 
-  <!-- XXX connect this to the para above; consequence of the same point -->
-  Nonisolated methods and nonisolated computed properties
-  can't directly access any actor-isolated state;
-  they use `await` like code outside the actor.
   When you mark a method or property `nonisolated`,
   code that calls or accesses it don't mark use `await`.
   This can be a first step towards adopting concurrency,
   by marking code that you want to move off of the main actor
   and then using the compiler errors to guide refactoring.
 
-  <!-- XXX move this para? -->
   Swift restricts nonisolated stored variables,
   to ensure they provide data isolation without using an actor.
   Nonisolated global variables,
@@ -3878,8 +3875,9 @@ that introduces the declaration.
   Nonisolated instance properties of sendable structures
   must have a sendable type, but they are allowed to be mutable.
 
-  <!-- XXX Add an upcoming feature flag note;
-  the code example from the SE proposal compiles
+  <!-- XXX TR:
+  Should we add an upcoming feature flag note somewhere here?
+  The code example from SE-0449 compiles
   only when you have approachable concurrency turned on.
 
   class NonSendable { }
@@ -3895,13 +3893,11 @@ that introduces the declaration.
   To use it as `nonisolated` outside of that module,
   mark it `nonisolated` explicitly.
 
-  <!-- XXX Turn the below into a bulleted list? -->
-
   On a declaration inside an actor,
   `nonisolated` suppresses the default isolation to `self`.
-  Nonisolated members of an actor
-  can satisfy the constraints of a synchronous protocol.
-  <!-- XXX what's a synchronous protocol? -->
+  Because a nonisolated member of an actor
+  can't access the actor's isolated state,
+  it can satisfy a synchronous requirement of a protocol.
 
   On a structure, class, or enumeration declaration,
   `nonisolated` applies to that type and its members,
@@ -3927,10 +3923,13 @@ that introduces the declaration.
   On an extension,
   `nonisolated` applies to each declaration in the extension.
 
-  <!-- TODO: Expand the above with the more specific rules from SE-0434. -->
+  <!--
+  TODO: When updating TSPL for SE-0434,
+  expand the above with the more specific rules.
+  -->
 
   You can't write `nonisolated` on a declaration
-  that's also marked with `@MainActor`
+  that's also marked with the `MainActor` attribute
   or isolated to another global actor,
   on a sendable type's property if that property's type isn't sendable,
   or on a sendable class's stored property if that property is mutable.
