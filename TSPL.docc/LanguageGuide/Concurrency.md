@@ -1787,7 +1787,8 @@ a conformance requirement to `Sendable` or `SendableMetatype`
 tells Swift that an instance or metatype value is safe to use concurrently.
 To prevent isolated conformances from being used outside of their actor,
 a type with an isolated conformance
-can't satisfy a conformance requirement to `Sendable` or `SendableMetatype`.
+can't be used for a type that must also satisfy a conformance requirement
+to `Sendable` or `SendableMetatype`.
 
 A conformance requirement to `Sendable` indicates
 that instances may be passed across isolation boundaries and used concurrently:
