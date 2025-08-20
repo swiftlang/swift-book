@@ -1684,8 +1684,9 @@ types, then the generic code can only use the input values from the current
 isolation domain. These generic APIs can safely accept isolated conformances
 and call protocol requirement as long as the caller is on the same global
 actor that the conformance is isolated to. The following code has a protocol
-`P`, a class `C` with a main-actor isolated conformance to `P`, and two
-call-sites to a generic method that accepts `some P`:
+`P`, a class `C` with a main-actor isolated conformance to `P`, and
+call-sites to the `P.perform` requirement from a main-actor
+task and a concurrent task:
 
 ```swift
 protocol P {
@@ -1701,22 +1702,27 @@ func perform(_ p: some P) {
 Task { @MainActor in
     let c = C()
     perform(c)
+
+    let a: any P = c
+    a.perform()
 }
 
 Task { @concurrent in
     let c = C()
     perform(c)  // Error
+
+    let a: any P = c // Error
+    a.perform()
 }
 ```
 
-The above code calls `perform`
-and provides an argument with a main-actor isolated conformance to `P`.
-Calling `perform` from a main actor task
+Calling `P.perform` in generic code and on an `any P` type
+from a main actor task
 is safe because it matches the isolation of the conformance.
-Calling `perform` from a concurrent task
-results in an error,
-because it would allow calling the main actor isolated implementation of `perform`
-from outside the main actor.
+Calling `P.perform` in generic code and on an `any P` type
+from a concurrent task results in an error,
+because it would allow calling the main actor isolated implementation
+of `P.perform` from outside the main actor.
 
 Generic code can check whether a value conforms to a protocol
 through dynamic casting.
