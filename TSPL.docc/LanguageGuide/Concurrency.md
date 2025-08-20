@@ -1903,7 +1903,7 @@ conforming types also conform to `Sendable` or `SendableMetatype`:
 public protocol Error: Sendable {}
 
 public protocol ModelFactory: SendableMetatype {
-    func create() -> Self
+    static func create() -> Self
 }
 ```
 
