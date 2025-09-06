@@ -1692,61 +1692,61 @@ types, then the generic code can only use the input values from the current
 isolation domain. These generic APIs can safely accept isolated conformances
 and call protocol requirements as long as the caller is on the same global
 actor that the conformance is isolated to. The following code has a protocol
-`P`, a class `C` with a main-actor isolated conformance to `P`, and
-calls to the `P.perform` requirement from a main-actor
-task and a concurrent task:
+`Dancer`, a class `Ballerina` with a main-actor isolated
+conformance to `Dancer`, and calls to the `Dancer.perform` requirement
+from a main-actor task and a concurrent task:
 
 ```swift
-protocol P {
+protocol Dancer {
     func perform()
 }
 
-func perform(_ p: some P) {
-    p.perform()
+func startRecital(_ dancer: some Dancer) {
+    dancer.perform()
 }
 
-@MainActor class C: @MainActor P { ... }
+@MainActor class Ballerina: @MainActor Dancer { ... }
 
 Task { @MainActor in
-    let c = C()
-    perform(c)
+    let ballerina = Ballerina()
+    startRecital(ballerina)
 
-    let a: any P = c
-    a.perform()
+    let dancer: any Dancer = ballerina
+    dancer.perform()
 }
 
 Task { @concurrent in
-    let c = C()
-    perform(c)  // Error
+    let ballerina = Ballerina()
+    startRecital(c)  // Error
 
-    let a: any P = c // Error
-    a.perform()
+    let dancer: any Dancer = ballerina // Error
+    dancer.perform()
 }
 ```
 
-Calling `P.perform` in generic code and on an `any P` type
+Calling `Dancer.perform` in generic code and on an `any Dancer` type
 from a main actor task
 is safe because it matches the isolation of the conformance.
-Calling `P.perform` in generic code and on an `any P` type
+Calling `Dancer.perform` in generic code and on an `any Dancer` type
 from a concurrent task results in an error,
 because it would allow calling the main actor isolated implementation
-of `P.perform` from outside the main actor.
+of `Dancer.perform` from outside the main actor.
 
 Abstract code that uses type parameters and `any` types
 can check whether a value conforms to a protocol
 through dynamic casting.
-The following code has a protocol `P`,
-and a method `performIfP` that accepts a parameter of type `Any`
-which is dynamically cast to `any P` in the function body:
+The following code has a protocol `Dancer`,
+and a method `performIfDancer` that accepts a parameter of type `Any`
+which is dynamically cast to `any Dancer` in the function body:
 
 ```swift
-protocol P {
+protocol Dancer {
     func perform()
 }
 
-func performIfP(_ value: Any) {
-    if let p = value as? any P {
-        p.perform()
+func performIfDancer(_ value: Any) {
+    if let dancer = value as? any Dancer {
+        dancer.perform()
     }
 }
 ```
@@ -1756,36 +1756,36 @@ when the code is running on the global actor
 that the conformance is isolated to,
 so the dynamic cast only succeeds
 if the dynamic cast occurs on that global actor.
-For example, if you declare a main-actor isolated conformance to `P`
-and call `performIfP` with an instance of the conforming type,
+For example, if you declare a main-actor isolated conformance to `Dancer`
+and call `performIfDancer` with an instance of the conforming type,
 the dynamic cast will succeed
-when `performIfP` is called in a main actor task, and it
-will fail when `performIfP` is called in a concurrent
+when `performIfDancer` is called in a main actor task, and it
+will fail when `performIfDancer` is called in a concurrent
 task:
 
 ```swift
-@MainActor class C: @MainActor P {
+@MainActor class Ballerina: @MainActor Dancer {
     func perform() {
-        print("C.perform")
+        print("Ballerina.perform")
     }
 }
 
 Task { @MainActor in
-    let c = C()
-    performIfP(c)  // Prints "C.perform"
+    let ballerina = Ballerina()
+    performIfDancer(ballerina)  // Prints "Ballerina.perform"
 }
 
 Task { @concurrent in
-    let c = C()
-    performIfP(c)  // Prints nothing
+    let ballerina = Ballerina()
+    performIfDancer(ballerina)  // Prints nothing
 }
 ```
 
 In the above code,
-the call to `performIfP` from a main-actor isolated task
+the call to `performIfDancer` from a main-actor isolated task
 matches the isolation of the conformance,
 so the dynamic cast succeeds.
-The call to `performIfP` from a concurrent task
+The call to `performIfDancer` from a concurrent task
 happens outside the main actor,
 so the dynamic cast fails and `perform` is not called.
 
@@ -1808,18 +1808,18 @@ A conformance requirement to `Sendable` indicates
 that instances may be passed across isolation boundaries and used concurrently:
 
 ```swift
-protocol P {
+protocol Dancer {
     func perform()
 }
 
-func performConcurrently<T: P>(_ t: T) where T: Sendable {
+func performConcurrently<D: Dancer>(_ dancer: D) where D: Sendable {
     Task { @concurrent in
-        t.perform()
+        dancer.perform()
     }
 }
 ```
 
-The above code would admit data races if the conformance to `P` was isolated,
+The above code would admit data races if the conformance to `Dancer` was isolated,
 because the implementation of `perform`
 may access global actor isolated state.
 To prevent data races,
@@ -1827,14 +1827,14 @@ Swift prohibits using an isolated conformance
 when the type is also required to conform to `Sendable`:
 
 ```swift
-@MainActor class C: @MainActor P { ... }
+@MainActor class Ballerina: @MainActor Dancer { ... }
 
-let c = C()
-performConcurrently(c)  // Error
+let ballerina = Ballerina()
+performConcurrently(ballerina)  // Error
 ```
 
 The above code results in an error
-because the conformance of `C` to `P` is main-actor isolated,
+because the conformance of `Ballerina` to `Dancer` is main-actor isolated,
 which can't satisfy the `Sendable` requirement of `performConcurrently`.
 
 Static and initializer protocol requirements
@@ -1854,15 +1854,17 @@ indicates that the metatype of a type conforms to `Sendable`,
 which allows the implementation to share metatype values in concurrent code:
 
 ```swift
-protocol P {
-    static func perform()
+protocol Dancer {
+    init()
+    func perform()
 }
 
-func performConcurrently<T: P>(n: Int, for: T.Type) async where T: SendableMetatype {
+func performConcurrently<D: Dancer>(n: Int, for: D.Type) async where T: SendableMetatype {
     await withDiscardingTaskGroup { group in
         for _ in 0..<n {
             group.addTask {
-                T.perform()
+                let dancer = T.init()
+                dancer.perform()
             }
         }
     }
@@ -1872,19 +1874,21 @@ func performConcurrently<T: P>(n: Int, for: T.Type) async where T: SendableMetat
 Without a conformance to `SendableMetatype`,
 generic code must only use metatype values from the current isolation domain.
 The following code results in an error
-because the non-`Sendable` metatype `T`
+because the non-`Sendable` metatype `D`
 is used from concurrent child tasks:
 
 ```swift
-protocol P {
-    static func perform()
+protocol Dancer {
+    init()
+    func perform()
 }
 
-func performConcurrently<T: P>(n: Int, for: T.Type) async {
+func performConcurrently<D: Dancer>(n: Int, for: D.Type) async {
     await withDiscardingTaskGroup { group in
         for _ in 0..<n {
             group.addTask {
-                T.perform()  // Error
+                let dancer = D.init() // Error
+                dancer.perform()
             }
         }
     }
@@ -1898,14 +1902,15 @@ if the type is non-`Sendable`.
 Types with isolated conformances can't satisfy
 a `SendableMetatype` generic requirement.
 Swift will prevent calling `createParallel`
-with a type that has an isolated conformance to `P`:
+with a type that has an isolated conformance to `Dancer`:
 
 ```swift
-@MainActor class C: @MainActor P {
-    static func perform() { /* use main actor state */ }
+@MainActor class Ballerina: @MainActor Dancer {
+    init() { /* use main actor state */ }
+    func perform() { /* use main actor state */ }
 }
 
-let items = performConcurrently(n: 10, for: C.self)  // Error
+let items = performConcurrently(n: 10, for: Ballerina.self)  // Error
 ```
 
 ##### Protocols That Require `Sendable` or `SendableMetatype`
