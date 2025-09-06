@@ -1595,13 +1595,13 @@ as discussed in <doc:Protocols#Implicit-Conformance-to-a-Protocol>.
 
 Protocols that are nonisolated
 can be used from anywhere in a concurrent program.
-An implementation of a nonisolated protocol conformance
-can still use global actor isolated state.
-A conformance that needs global actor isolated state
-is called an *isolated* conformance.
+A conformance to a nonisolated protocol can be isolated
+to a global actor, which allows the implementation to
+access actor isolated state synchronously.
+This is called an *isolated conformance*.
 When a conformance is isolated,
 Swift prevents data races by ensuring that
-the conformance is only used on the global actor
+the conformance is only used on the actor
 that the conformance is isolated to.
 
 ### Declaring an Isolated Conformance
