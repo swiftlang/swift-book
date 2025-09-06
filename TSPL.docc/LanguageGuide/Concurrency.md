@@ -1660,7 +1660,7 @@ extension Person: Equatable {
 You can opt out of this inference for a global-actor-isolated type
 by explicitly declaring that a protocol conformance is nonisolated.
 The following code example declares
-a nonisolated isolated conformance to `Equatable` in an extension:
+a nonisolated conformance to `Equatable` in an extension:
 
 ```swift
 @MainActor
@@ -1690,10 +1690,10 @@ A conformance requirement to `Sendable` allows generic code to send parameter
 values to concurrently-executing code.  If generic code accepts non-`Sendable`
 types, then the generic code can only use the input values from the current
 isolation domain. These generic APIs can safely accept isolated conformances
-and call protocol requirement as long as the caller is on the same global
+and call protocol requirements as long as the caller is on the same global
 actor that the conformance is isolated to. The following code has a protocol
 `P`, a class `C` with a main-actor isolated conformance to `P`, and
-call-sites to the `P.perform` requirement from a main-actor
+calls to the `P.perform` requirement from a main-actor
 task and a concurrent task:
 
 ```swift
@@ -1732,11 +1732,12 @@ from a concurrent task results in an error,
 because it would allow calling the main actor isolated implementation
 of `P.perform` from outside the main actor.
 
-Generic code can check whether a value conforms to a protocol
+Abstract code that uses type parameters and `any` types
+can check whether a value conforms to a protocol
 through dynamic casting.
 The following code has a protocol `P`,
 and a method `performIfP` that accepts a parameter of type `Any`
-which is dynamic cast to `any P` in the function body:
+which is dynamically cast to `any P` in the function body:
 
 ```swift
 protocol P {
@@ -1754,11 +1755,13 @@ Isolated conformances are only safe to use
 when the code is running on the global actor
 that the conformance is isolated to,
 so the dynamic cast only succeeds
-if the dynamic cast occurs on the global actor.
-If you declare a main-actor isolated conformance to `P`
+if the dynamic cast occurs on that global actor.
+For example, if you declare a main-actor isolated conformance to `P`
 and call `performIfP` with an instance of the conforming type,
-the dynamic cast will only succeed
-when `performIfP` is called from the main actor:
+the dynamic cast will succeed
+when `performIfP` is called in a main actor task, and it
+will fail when `performIfP` is called in a concurrent
+task:
 
 ```swift
 @MainActor class C: @MainActor P {
@@ -1790,14 +1793,15 @@ so the dynamic cast fails and `perform` is not called.
 
 Protocol requirements can be used
 through instances of conforming types and through
-instances of the conforming types themselves
+instances of the conforming types themselves,
 called *metatype values*.
 In generic code,
 a conformance requirement to `Sendable` or `SendableMetatype`
 tells Swift that an instance or metatype value is safe to use concurrently.
 To prevent isolated conformances from being used outside of their actor,
 a type with an isolated conformance
-can't be used for a type that must also satisfy a conformance requirement
+can't be used as the concrete generic argument for a type
+parameter that requires a conformance
 to `Sendable` or `SendableMetatype`.
 
 A conformance requirement to `Sendable` indicates
@@ -1815,7 +1819,7 @@ func performConcurrently<T: P>(_ t: T) where T: Sendable {
 }
 ```
 
-The above code admits data races if the conformance to `P` is isolated,
+The above code would admit data races if the conformance to `P` was isolated,
 because the implementation of `perform`
 may access global actor isolated state.
 To prevent data races,
@@ -1833,7 +1837,8 @@ The above code results in an error
 because the conformance of `C` to `P` is main-actor isolated,
 which can't satisfy the `Sendable` requirement of `performConcurrently`.
 
-Protocol requirements can also be called through metatype values.
+Static and initializer protocol requirements
+can also be called through metatype values.
 A conformance to Sendable on the metatype type,
 such as `Int.Type`,
 indicates that a metatype value is safe
@@ -1865,7 +1870,7 @@ func performConcurrently<T: P>(n: Int, for: T.Type) async where T: SendableMetat
 ```
 
 Without a conformance to `SendableMetatype`,
-generic code must only use metatype values in the current isolation domain.
+generic code must only use metatype values from the current isolation domain.
 The following code results in an error
 because the non-`Sendable` metatype `T`
 is used from concurrent child tasks:
