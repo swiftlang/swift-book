@@ -44,6 +44,7 @@
 - <doc:Extensions>
 - <doc:Protocols>
 - <doc:Generics>
+- <doc:Ownership>
 - <doc:OpaqueTypes>
 - <doc:AutomaticReferenceCounting>
 - <doc:MemorySafety>
