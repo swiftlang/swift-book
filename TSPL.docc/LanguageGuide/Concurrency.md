@@ -1399,7 +1399,7 @@ as described in <doc:Attributes#globalActor>.
 -->
 
 For classes that are isolated to a global actor,
-Swift infers their subclasses have the same isolation.
+Swift infers that their subclasses have the same isolation.
 For example,
 the code below declares a main-actor isolated class `Vehicle`,
 and a subclass `Train` that inherits from `Vehicle`:
