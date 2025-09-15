@@ -1522,13 +1522,6 @@ extension Switch: Togglable {
 }
 ```
 
-<!-- XXX TR:
-Was it intentional that Switch declaration listed conformance to Togglable
-without implementing the protocol requirement?  When I build the code with
-that, I get an error about redundant conformance in the extension, and it
-didn't quite match the prose, so I removed it.
--->
-
 Because the declaration of `Switch`
 doesn't include conformance to the `Togglable` protocol,
 `Switch` is understood as `nonisolated`,
