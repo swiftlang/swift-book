@@ -1393,10 +1393,10 @@ as described in <doc:Attributes#globalActor>.
 
 ## Isolation Inference
 
-<!-- XXX introduction
-- it would be tedious (or introduce errors) to not have these rules
-- these inference rules apply to the main actor and other global actors
--->
+When you subclass an actor-isolated class
+and conform to an actor-isolated protocol,
+Swift infers the actor isolation for you.
+These inference rules apply to the main actor and to other global actors.
 
 For classes that are isolated to a global actor,
 Swift infers that their subclasses have the same isolation.
