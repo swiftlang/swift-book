@@ -1946,7 +1946,7 @@ Swift prevents declaring an isolated conformance,
 because generic code can always call requirements concurrently.
 
 ```swift
-@MainActor 
+@MainActor
 enum MyError: @MainActor Error {}  // Error
 ```
 
