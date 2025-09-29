@@ -1374,12 +1374,13 @@ you'll get compile-time error instead of introducing a bug.
 ## Global Actors
 
 The main actor is a global singleton instance of the [`MainActor`][] type.
-An actor can normally have multiple instances,
+Normally, an actor can have multiple instances,
 each of which provides independent isolation.
-This is why you declare all of an actor's isolated data
+The possibility of multiple instances
+is why you declare all of an actor's isolated data
 as instance properties of that actor.
-However, because `MainActor` is singleton ---
-there is only ever a single instance of this type ---
+However, because `MainActor` is a singleton ---
+there's only ever a single instance of this type ---
 the type alone is sufficient to identify the actor,
 allowing you to mark main-actor isolation using just an attribute.
 This approach gives you more flexibility to organize your code
@@ -1409,7 +1410,7 @@ and a subclass `Train` that inherits from `Vehicle`:
 class Vehicle {
     var currentSpeed = 0.0
     func makeNoise() {
-        // do nothing - an arbitrary vehicle doesn't necessarily make a noise
+        // Do nothing: an arbitrary vehicle doesn't necessarily make a noise.
     }
 }
 
@@ -1446,7 +1447,7 @@ class Vehicle {
 
     @MainActor
     func makeNoise() {
-        // do nothing - an arbitrary vehicle doesn't necessarily make a noise
+        // Do nothing: an arbitrary vehicle doesn't necessarily make a noise.
     }
 }
 
@@ -1497,11 +1498,11 @@ Swift infers main-actor isolation on types that conform to `Togglable`,
 so all methods and properties of `Switch` are isolated to the main actor,
 including the `isOn` property and the `toggle` method.
 
-Swift infers isolation from protocols
-only when you write the conformance as part of the type's declaration.
+Swift only infers isolation from protocols
+when you write the conformance as part of the type's declaration.
 If you write the conformance in an extension,
-then isolation inference applies to
-only requirements that are part of that the extension.
+then isolation inference only applies to
+requirements that are part of that extension.
 For example, the following code
 implements a conformance of `Switch` to `Togglable` in an extension:
 
