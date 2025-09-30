@@ -1686,14 +1686,18 @@ protocol requirements can be used through type parameters or `any` types.
 
 #### Using Isolated Conformances
 
-A conformance requirement to `Sendable` allows generic code to send parameter
-values to concurrently-executing code.  If generic code accepts non-`Sendable`
-types, then the generic code can only use the input values from the current
-isolation domain. These generic APIs can safely accept isolated conformances
-and call protocol requirements as long as the caller is on the same global
-actor that the conformance is isolated to. The following code has a protocol
-`Dancer`, a class `Ballerina` with a main-actor isolated
-conformance to `Dancer`, and calls to the `Dancer.perform` requirement
+A conformance requirement to `Sendable`
+allows generic code to send parameter values to concurrently-executing code.
+If generic code accepts non-`Sendable` types,
+then the generic code can only use the input values
+from the current isolation domain.
+These generic APIs can safely accept isolated conformances
+and call protocol requirements
+as long as the caller is on the same global actor
+that the conformance is isolated to.
+The following code has a protocol `Dancer`,
+a class `Ballerina` with a main-actor isolated conformance to `Dancer`,
+and calls to the `Dancer.perform` requirement
 from a main-actor task and a concurrent task:
 
 ```swift
@@ -1819,7 +1823,8 @@ func performConcurrently<D: Dancer>(_ dancer: D) where D: Sendable {
 }
 ```
 
-The above code would admit data races if the conformance to `Dancer` was isolated,
+The above code would admit data races
+if the conformance to `Dancer` was isolated,
 because the implementation of `perform`
 may access global actor isolated state.
 To prevent data races,
