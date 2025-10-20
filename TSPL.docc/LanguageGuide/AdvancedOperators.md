@@ -152,7 +152,7 @@ The operator returns a new number whose bits are set to `1`
 where the input bits are different
 and are set to `0` where the input bits are the same:
 
-![](bitwiseXOR)
+![The input 0010100, with the fourth and sixth bits highlighted; the input 00000101, with the sixth and eigth bits highlighted; and the result 00010001.  The highlighted bits are 1 in only one input but not both, and 1 in the output.](bitwiseXOR)
 
 In the example below,
 the values of `firstBits` and `otherBits` each have a bit set to `1`
@@ -213,7 +213,7 @@ Green numbers are shifted,
 gray numbers are discarded,
 and pink zeros are inserted:
 
-![](bitshiftUnsigned)
+![A left shift with 11111111 as input; the leftmost 1 is gray and all others are green.  Its result shows 11111110, with a pink 0.  Arrows connect each bit in the input to a bit one to the left in the output. A right shift shows the same operation, but mirrored left-to-right.](bitshiftUnsigned)
 
 Here's how bit shifting looks in Swift code:
 
@@ -324,7 +324,7 @@ Positive numbers are stored in exactly the same way as for unsigned integers,
 counting upwards from `0`.
 Here's how the bits inside an `Int8` look for the number `4`:
 
-![](bitshiftSignedFour)
+![The value 00000100.  The leftmost bit is highlighted as the sign bit, and all other bits are value bits.](bitshiftSignedFour)
 
 The sign bit is `0` (meaning “positive”),
 and the seven value bits are just the number `4`,
@@ -338,12 +338,12 @@ so this means `2` to the power of `7`, or `128`.
 
 Here's how the bits inside an `Int8` look for the number `-4`:
 
-![](bitshiftSignedMinusFour)
+![The value 11111100.  The leftmost bit is highlighted as the sign bit, and all other bits are value bits.](bitshiftSignedMinusFour)
 
 This time, the sign bit is `1` (meaning “negative”),
 and the seven value bits have a binary value of `124` (which is `128 - 4`):
 
-![](bitshiftSignedMinusFourValue)
+![The value 11111100 with all seven bits highlighted as value bits.](bitshiftSignedMinusFourValue)
 
 This encoding for negative numbers is known as a *two's complement* representation.
 It may seem an unusual way to represent negative numbers,
@@ -354,7 +354,7 @@ simply by performing a standard binary addition of all eight bits
 (including the sign bit),
 and discarding anything that doesn't fit in the eight bits once you're done:
 
-![](bitshiftSignedAddition)
+![The bit patterns 11111100 for -4 and 11111111 for -1, lined up for addition.  The result is 11111011, representing -5.](bitshiftSignedAddition)
 
 Second, the two's complement representation also lets you
 shift the bits of negative numbers to the left and right like positive numbers,
