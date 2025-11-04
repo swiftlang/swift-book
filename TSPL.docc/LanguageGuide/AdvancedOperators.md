@@ -354,7 +354,7 @@ simply by performing a standard binary addition of all eight bits
 (including the sign bit),
 and discarding anything that doesn't fit in the eight bits once you're done:
 
-![The bit patterns 11111100 for -4 and 11111111 for -1, lined up for addition.  The result is 11111011, representing -5.](bitshiftSignedAddition)
+![The values 11111100 for -4 and 11111111 for -1, lined up for addition.  The result is 11111011, representing -5.](bitshiftSignedAddition)
 
 Second, the two's complement representation also lets you
 shift the bits of negative numbers to the left and right like positive numbers,
@@ -366,7 +366,7 @@ apply the same rules as for unsigned integers,
 but fill any empty bits on the left with the *sign bit*,
 rather than with a zero.
 
-![](bitshiftSigned)
+![On the left side, the value 11111111.  Its rightmost digit is grayed out, and discarded when shifting right.  Its leftmost digit is highlighted and duplicated when shifting right.  The result is 11111111.  On the lift side, the input value is 01111111 and the output is 00111111, with the same highlights.](bitshiftSigned)
 
 This action ensures that signed integers have the same sign after they're shifted to the right,
 and is known as an *arithmetic shift*.
@@ -459,7 +459,7 @@ as shown in the diagram below.
 The value that remains within the bounds of the `UInt8`
 after the overflow addition is `00000000`, or zero.
 
-![](overflowAddition)
+![The values 11111111 for 255 and 00000001 for 1, lined up for addition.  Both inputs have an extra 0 bit, out of bounds, to their left.  The result is 00000000, with 1 in the extra bit.](overflowAddition)
 
 Something similar happens when
 an unsigned integer is allowed to overflow in the negative direction.
