@@ -43,7 +43,7 @@ Swift supports all of the bitwise operators found in C, as described below.
 
 The *bitwise NOT operator* (`~`) inverts all bits in a number:
 
-![A diagram of NOT 00001111 --> 11110000.](bitwiseNOT)
+![The input 00001111, inverted to produce 11110000.](bitwiseNOT)
 
 The bitwise NOT operator is a prefix operator,
 and appears immediately before the value it operates on,
@@ -491,7 +491,9 @@ If you subtract `1` from `00000000` using the overflow subtraction operator (`&-
 the number will overflow and wrap around to `11111111`,
 or `255` in decimal.
 
-![](overflowUnsignedSubtraction)
+![The values 00000000 and 00000001 for 1, lined up for subtraction.  The result is 11111111 for 255.](overflowUnsignedSubtraction)
+
+<!-- XXX Why does this figure call out a sign bit?  UInt8 doesn’t have a sign bit. -->
 
 Overflow also occurs for signed integers.
 All addition and subtraction for signed integers is performed in bitwise fashion,
@@ -525,7 +527,7 @@ gives a binary value of `01111111`,
 which toggles the sign bit and gives positive `127`,
 the maximum positive value that an `Int8` can hold.
 
-![](overflowSignedSubtraction)
+![The values 10000000 for -128 and 00000001 for 1, lined up for subtraction.  The result is 01111111 for 127.](overflowSignedSubtraction)
 
 For both signed and unsigned integers,
 overflow in the positive direction
@@ -752,7 +754,7 @@ let combinedVector = vector + anotherVector
 This example adds together the vectors `(3.0, 1.0)` and `(2.0, 4.0)`
 to make the vector `(5.0, 5.0)`, as illustrated below.
 
-![](vectorAddition)
+![Three arrows, representing vectors on a coordinate plane.  The first blue arrow starts at the origin, moving right three and up one.  The second blue arrow starts at the blue arrow's end, moving right two and up four.  The green arrow adds together the blue arrows' vectors, starting at the first arrow's start and ending at the second arrow's end, moving right five and up five.](vectorAddition)
 
 ### Prefix and Postfix Operators
 
