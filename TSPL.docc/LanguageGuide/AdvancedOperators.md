@@ -493,8 +493,6 @@ or `255` in decimal.
 
 ![The values 00000000 and 00000001 for 1, lined up for subtraction.  The result is 11111111 for 255.](overflowUnsignedSubtraction)
 
-<!-- XXX Why does this figure call out a sign bit?  UInt8 doesn’t have a sign bit. -->
-
 Overflow also occurs for signed integers.
 All addition and subtraction for signed integers is performed in bitwise fashion,
 with the sign bit included as part of the numbers being added or subtracted,
