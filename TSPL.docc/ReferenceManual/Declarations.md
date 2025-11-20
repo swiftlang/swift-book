@@ -875,7 +875,7 @@ To make an in-out parameter instead,
 you apply the `inout` parameter modifier.
 
 ```swift
-func someFunction(a: inout Int) {
+func someFunction(_ a: inout Int) {
     a += 1
 }
 ```
