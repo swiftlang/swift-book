@@ -1042,6 +1042,61 @@ Most code can use the main actor instead of defining a new global actor.
 
 [`GlobalActor`]: https://developer.apple.com/documentation/swift/globalactor
 
+### implementation
+
+Apply this attribute to a declaration
+that provides a Swift implementation
+for a declaration that's imported from another language.
+
+For declarations that are defined in an Objective-C header,
+apply both the `objc` and `implementation` attributes
+to an extension in Swift that provides the implementations.
+For example,
+the following Objective-C header declares a class with one method:
+
+```objc
+NS_HEADER_AUDIT_BEGIN(nullability, sendability)
+@interface MyClass
+- (void)performSomeAction;
+@end
+NS_HEADER_AUDIT_END(nullability, sendability)
+```
+
+<!-- Omitted the header's conventional blank lines for compactness. -->
+
+The header file doesn't indicate that
+this interface is implemented in Swift.
+If you have an existing interface,
+you can use this attribute
+to replace its Objective-C implementation with a Swift one,
+without changing the header file.
+
+You implement the class and its method in Swift as follows:
+
+```swift
+@objc @implementation
+extension MyClass {
+    func performSomeAction() { ... }
+}
+```
+
+A member of the extension that matches a declaration in the header file
+is known as a *member implementation*.
+
+Member implementations
+must not be marked `final`,
+must not be marked `override`,
+and must have an access level of `open`, `public`, `package`, or `internal`.
+<!--
+XXX A bunch of nuance and exceptions to the above.
+Expand each of them into a paragraph.
+-->
+
+Every member of the extension
+must match a member declared in the Objective-C header,
+and every member declared in the Objective-C header
+must have a matching member implementation.
+
 ### inlinable
 
 Apply this attribute to a
