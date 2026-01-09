@@ -1051,6 +1051,10 @@ for a declaration that's imported from another language.
 For declarations that are defined in an Objective-C header,
 apply both the `objc` and `implementation` attributes
 to an extension in Swift that provides the implementations.
+This extension must not list any protocol conformances.
+The class it extents must be imported from Objective-C,
+not be a root class,
+and not use lightweight generics.
 For example,
 the following Objective-C header declares a class with one method:
 
@@ -1064,8 +1068,7 @@ NS_HEADER_AUDIT_END(nullability, sendability)
 
 <!-- Omitted the header's conventional blank lines for compactness. -->
 
-The header file doesn't indicate that
-this interface is implemented in Swift.
+The header file doesn't indicate that this interface is implemented in Swift.
 If you have an existing interface,
 you can use this attribute
 to replace its Objective-C implementation with a Swift one,
@@ -1077,25 +1080,89 @@ You implement the class and its method in Swift as follows:
 @objc @implementation
 extension MyClass {
     func performSomeAction() { ... }
-}
+}`
 ```
 
 A member of the extension that matches a declaration in the header file
 is known as a *member implementation*.
+Member implementations must meet the following requirements:
 
-Member implementations
-must not be marked `final`,
-must not be marked `override`,
-and must have an access level of `open`, `public`, `package`, or `internal`.
+- They must not be marked `final` or `override`.
+- They must have an access control level of
+  `open`, `public`, `package`, or `internal`.
+
 <!--
-XXX A bunch of nuance and exceptions to the above.
-Expand each of them into a paragraph.
+XXX incorporate requirements from https://github.com/swiftlang/swift-evolution/blob/main/proposals/0436-objc-implementation.md#rules-1
 -->
 
-Every member of the extension
+Every member implementation in the extension
 must match a member declared in the Objective-C header,
 and every member declared in the Objective-C header
-must have a matching member implementation.
+must have either a matching member implementation in Swift
+or an implementation in Objective-C.
+<!-- XXX TR: The SE proposal phases this as
+“every member declared in the Objective-C header
+must have a matching member implementation”
+which suggests you can't have the implementation in an Objective-C .m file.
+I'm assuming that's not the case because it would contradict
+the advice that you can migrate the implementation one method at a time.
+-->
+
+In addition to member implementations,
+you can also write the following in the extension,
+all of which must not match a declaration in the Objective-C header:
+
+ - Overrides for superclass members.
+
+- Helper members with a `fileprivate` or `private` access control level
+  that aren't marked `final`.
+  To access them from Objective-C,
+  either declare them in a header that's not visible to the Swift compiler
+  or access them using their selector.
+
+- Helper members  with `internal` or `private` access,
+  which are accessible only from other Swift code.
+  You mark these declarations `final`; they're `@nonobjc` by default.
+  For initializers, you mark the declaration `@nonobjc`.
+
+- APIs with `public` or `package` access,
+  which are only accessible to Swift clients.
+  You mark these declarations `final`; they're `@nonobjc` by default.
+  For initializers, you mark the declaration `@nonobjc`.
+
+<!--
+XXX TR: Please confirm discussion of inits.
+The proposohed solution and detailed design sections of the SE proposal
+frame these slightly differently.
+-->
+
+If you provide an argument to the `objc` attribute,
+the extension's members are placed in an Objective-C category with that name.
+For example, if the header contains the following:
+
+```objc
+@interface MyClass (SomeCategory)
+- (void)someCategoryMethod;
+@end
+```
+
+The Swift code can implement `someCategoryMethod()` as follows:
+
+```swift
+@objc(SomeCategory) @implementation
+extension MyClass {
+	func someCategoryMethod() { ... }
+}
+```
+
+
+<!--
+XXX Notes from reading the SE review thread:
+- Discuss factory inits.  Becca Royal-Gordan says you continue to implement those in Obj-C
+- No C-style functions at global scope — those can't be created with `@objc`.  There's a workaround with `@_cdecl @implementation` for now, and it's a future direction in the proposal.
+- The Obj-C class can't use lightweight generics.
+-->
+
 
 ### inlinable
 
