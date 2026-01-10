@@ -1085,14 +1085,24 @@ extension MyClass {
 
 A member of the extension that matches a declaration in the header file
 is known as a *member implementation*.
-Member implementations must meet the following requirements:
+To be considered as a match,
+a member implementation must meet the following requirements:
 
-- They must not be marked `final` or `override`.
-- They must have an access control level of
+- Its selector and Swift name must be the same as the declaration it implements.
+- Its error handling (`throws`) and concurrency (`async`)
+  must match the declaration it implements.
+- It must not be marked `final` or `override`.
+- It must have an access control level of
   `open`, `public`, `package`, or `internal`.
 
 <!--
-XXX incorporate requirements from https://github.com/swiftlang/swift-evolution/blob/main/proposals/0436-objc-implementation.md#rules-1
+XXX
+It must not have other traits
+that are incompatible with the member it implements,
+like an overload signature,
+@nonobjc/final attribute,
+class modifier,
+or mutability,
 -->
 
 Every member implementation in the extension
@@ -1112,7 +1122,7 @@ In addition to member implementations,
 you can also write the following in the extension,
 all of which must not match a declaration in the Objective-C header:
 
- - Overrides for superclass members.
+- Overrides for superclass members.
 
 - Helper members with a `fileprivate` or `private` access control level
   that aren't marked `final`.
@@ -1132,7 +1142,7 @@ all of which must not match a declaration in the Objective-C header:
 
 <!--
 XXX TR: Please confirm discussion of inits.
-The proposohed solution and detailed design sections of the SE proposal
+The proposed solution and detailed design sections of the SE proposal
 frame these slightly differently.
 -->
 
@@ -1154,7 +1164,6 @@ extension MyClass {
 	func someCategoryMethod() { ... }
 }
 ```
-
 
 <!--
 XXX Notes from reading the SE review thread:
