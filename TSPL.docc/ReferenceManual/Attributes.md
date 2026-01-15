@@ -1051,10 +1051,13 @@ for a declaration that's imported from another language.
 For declarations that are defined in an Objective-C header,
 apply both the `objc` and `implementation` attributes
 to an extension in Swift that provides the implementations.
-This extension must not list any protocol conformances.
-The class it extents must be imported from Objective-C,
+Other code in Swift treats these implementations
+as if they were implemented in Objective-C and imported into Swift.
+The class that the extension extends must be imported from Objective-C,
 not be a root class,
 and not use lightweight generics.
+The extension can't include any protocol conformances.
+All declarations in this extension are implicitly marked with the `objc` attribute.
 For example,
 the following Objective-C header declares a class with one method:
 
@@ -1068,19 +1071,13 @@ NS_HEADER_AUDIT_END(nullability, sendability)
 
 <!-- Omitted the header's conventional blank lines for compactness. -->
 
-The header file doesn't indicate that this interface is implemented in Swift.
-If you have an existing interface,
-you can use this attribute
-to replace its Objective-C implementation with a Swift one,
-without changing the header file.
-
 You implement the class and its method in Swift as follows:
 
 ```swift
 @objc @implementation
 extension MyClass {
     func performSomeAction() { ... }
-}`
+}
 ```
 
 A member of the extension that matches a declaration in the header file
@@ -1088,22 +1085,19 @@ is known as a *member implementation*.
 To be considered as a match,
 a member implementation must meet the following requirements:
 
-- Its selector and Swift name must be the same as the declaration it implements.
+- Its selector and Swift name be the same as the declaration it implements.
+  If needed, you can use the `objc(custom:selector:)` attribute in Swift
+  and the `NS_SWIFT_NAME(custom(_:name:))` attribute in Objective-C.
+- Its type matches the type of the declaration it implements,
+  Non-optional types in Objective-C can be implemented in Swift
+  either as non-optional or as an implicitly unwrapped optional.
 - Its error handling (`throws`) and concurrency (`async`)
-  must match the declaration it implements.
-- It must not be marked `final` or `override`.
-- It must have an access control level of
-  `open`, `public`, `package`, or `internal`.
-
-<!--
-XXX
-It must not have other traits
-that are incompatible with the member it implements,
-like an overload signature,
-@nonobjc/final attribute,
-class modifier,
-or mutability,
--->
+  matches the declaration it implements.
+- It isn't marked `final` or `override`.
+- Its access control level is `open`, `public`, `package`, or `internal`.
+- It doesn't have any other traits
+  that would be incompatible with the member it implements,
+  like the `nonobjc` attribute, `class` modifier, or mutability,
 
 Every member implementation in the extension
 must match a member declared in the Objective-C header,
@@ -1119,26 +1113,26 @@ the advice that you can migrate the implementation one method at a time.
 -->
 
 In addition to member implementations,
-you can also write the following in the extension,
-all of which must not match a declaration in the Objective-C header:
+you can also write the following declarations in the extension,
+which must not match a declaration in the Objective-C header:
 
 - Overrides for superclass members.
-
+  You mark these declarations with `override` as usual.
 - Helper members with a `fileprivate` or `private` access control level
   that aren't marked `final`.
   To access them from Objective-C,
   either declare them in a header that's not visible to the Swift compiler
   or access them using their selector.
-
 - Helper members  with `internal` or `private` access,
   which are accessible only from other Swift code.
-  You mark these declarations `final`; they're `@nonobjc` by default.
-  For initializers, you mark the declaration `@nonobjc`.
-
+  You mark these declarations `final`,
+  and they're implicitly marked with the `nonobjc` attribute.
+  For initializers, you apply the `nonobjc` attribute instead.
 - APIs with `public` or `package` access,
   which are only accessible to Swift clients.
-  You mark these declarations `final`; they're `@nonobjc` by default.
-  For initializers, you mark the declaration `@nonobjc`.
+  You mark these declarations `final`,
+  and they're implicitly marked with the `nonobjc` attribute.
+  For initializers, you apply the `nonobjc` attribute instead.
 
 <!--
 XXX TR: Please confirm discussion of inits.
@@ -1146,8 +1140,12 @@ The proposed solution and detailed design sections of the SE proposal
 frame these slightly differently.
 -->
 
+The extension can include declarations for stored properties and initializers,
+which is an exception to the rule that these can't be declared in extensions.
+
 If you provide an argument to the `objc` attribute,
-the extension's members are placed in an Objective-C category with that name.
+the extension's members are placed in an Objective-C category with that name,
+which must match an category declared in the Objective-C header file.
 For example, if the header contains the following:
 
 ```objc
@@ -1156,7 +1154,7 @@ For example, if the header contains the following:
 @end
 ```
 
-The Swift code can implement `someCategoryMethod()` as follows:
+The Swift code to implement `someCategoryMethod()` is as follows:
 
 ```swift
 @objc(SomeCategory) @implementation
@@ -1165,13 +1163,12 @@ extension MyClass {
 }
 ```
 
-<!--
-XXX Notes from reading the SE review thread:
-- Discuss factory inits.  Becca Royal-Gordan says you continue to implement those in Obj-C
-- No C-style functions at global scope — those can't be created with `@objc`.  There's a workaround with `@_cdecl @implementation` for now, and it's a future direction in the proposal.
-- The Obj-C class can't use lightweight generics.
--->
-
+Implementing an interface in Swift doesn't require any changes
+to the interface declared in the Objective-C header file.
+If you have an existing interface,
+you can use this attribute
+to replace its Objective-C implementation with a Swift one,
+without changing the header file.
 
 ### inlinable
 
