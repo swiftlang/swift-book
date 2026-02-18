@@ -96,12 +96,36 @@ In addition,
 identifiers that begin with two underscores
 are reserved for the Swift compiler and standard library.
 
-To use a reserved word as an identifier,
-put a backtick (\`) before and after it.
+There are some use cases where having more flexibility with
+identifiers will result in code that is easier to read, write, and
+maintain. Swift allows for identifiers to start and end with
+a backtick (\`) which have less restrictive naming requirements.
+
+An escaped identifier allows you to use
+a reserved word as an identifier,
+Escaped identifiers follow the same rules as identifiers, but
+are surrounded by backticks (\`) and allow for keywords to
+be used as identifiers.
 For example, `class` isn't a valid identifier,
 but `` `class` `` is valid.
 The backticks aren't considered part of the identifier;
 `` `x` `` and `x` have the same meaning.
+
+A raw identifier is also surrounded by backticks, but
+allows for characters that are not permitted in an escaped identifier.
+
+A raw identifier may contain any Unicode scalar value except the following:
+- Backtick (`)
+- Backslash (\)
+- Carriage return (U+000D) or newline (U+000A)
+- NUL character (U+0000)
+
+Raw identifiers may contain whitespace,
+characters with the `Unicode.Scalar.Properties.isWhitespace` property,
+but may not consist of only whitespace.
+
+Raw identifiers may contain operators (see <doc:LexicalStructure#Operators>),
+but may not consist of only operators. 
 
 <!--
 The paragraph above produces a link-resolution warning
@@ -140,7 +164,8 @@ https://github.com/swiftlang/swift-markdown/issues/93
 > Grammar of an identifier:
 >
 > *identifier* → *identifier-head* *identifier-characters*_?_ \
-> *identifier* → **`` ` ``** *identifier-head* *identifier-characters*_?_ **`` ` ``** \
+> *identifier* → *escaped-identifier* \
+> *identifier* → *raw-identifier* \
 > *identifier* → *implicit-parameter-name* \
 > *identifier* → *property-wrapper-projection* \
 > *identifier-list* → *identifier* | *identifier* **`,`** *identifier-list*
@@ -169,6 +194,17 @@ https://github.com/swiftlang/swift-markdown/issues/93
 >
 > *implicit-parameter-name* → **`$`** *decimal-digits* \
 > *property-wrapper-projection* → **`$`** *identifier-characters*
+>
+> *escaped-identifier* → **`` ` ``** *identifier-head* *identifier-characters*_?_ **`` ` ``** \
+>
+> *raw-identifier* → **`` ` ``** *raw-identifier-characters* **`` ` ``** \
+>
+> *raw-identifier-character* → Any Unicode scalar value except  **`` ` ``**,  **`\`**, U+0000, U+000A, or U+000D
+> *raw-identifier-characters* → *raw-identifier-character* *raw-identifier-characters*_?_
+> *raw-identifier-characters* → raw-identifier-whitespace
+> *raw-identifier-characters* → operator
+> *raw-identifier-whitespace* → inline-spaces, U+2029, or U+3000
+
 
 ## Keywords and Punctuation
 
