@@ -1750,6 +1750,50 @@ that tries to adopt `SomeClassOnlyProtocol`.
   TODO: a Cacheable protocol might make a good example here?
 -->
 
+You can also name a specific class in a protocol's inheritance list
+to require that all conforming types are subclasses of that class.
+
+```swift
+class Renderer {
+    func render() {}
+}
+
+protocol Widget: Renderer {
+    var title: String { get }
+}
+
+class ButtonWidget: Renderer, Widget {
+    var title: String
+    init(title: String) { self.title = title }
+}
+```
+
+<!--
+  - test: `classNameInProtocol`
+
+  ```swifttest
+  -> class Renderer {
+        func render() {}
+     }
+
+  -> protocol Widget: Renderer {
+        var title: String { get }
+     }
+
+  -> class ButtonWidget: Renderer, Widget {
+        var title: String
+        init(title: String) { self.title = title }
+     }
+  ```
+-->
+
+In the example above, `Widget` can only be adopted by subclasses of `Renderer`.
+This is more restrictive than using `AnyObject`:
+it limits conformance to a specific class hierarchy,
+not just any class type.
+Use this when the protocol's implementation
+depends on the concrete behavior of a particular base class.
+
 ## Protocol Composition
 
 It can be useful to require a type to conform to multiple protocols at the same time.
