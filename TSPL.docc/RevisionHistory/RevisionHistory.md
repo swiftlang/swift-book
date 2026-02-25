@@ -2,6 +2,11 @@
 
 Review the recent changes to this book.
 
+**2026-03-09**
+
+- Updated for Swift 6.3.
+- Minor corrections and additions throughout.
+
 **2025-12-12**
 
 - Updated for Swift 6.2.3.
