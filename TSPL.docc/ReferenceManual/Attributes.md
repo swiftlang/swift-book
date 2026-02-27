@@ -1191,6 +1191,32 @@ you can use this attribute
 to replace its Objective-C implementation with a Swift one,
 without changing the header file.
 
+<!-- XXX begin Matilda's additions -->
+
+Apply this attribute to a declaration to provide an implementation
+for a declaration that has been imported from another language.
+
+This attribute should be used alongside another attribute
+specifying the other language, such as @objc or @c.
+
+The compiler will try to match the affected declarations to
+imported declarations, and will emit an error if a good match
+isn't found.
+
+```
+// C header
+int cImplMirror(int value);
+```
+
+```
+// Swift sources
+@c @implementation
+func cImplMirror(_ value: CInt) -> CInt { return value }
+```
+
+This attribute cannot necessarily be used with all declarations
+that can be used in another language.
+
 ### inlinable
 
 Apply this attribute to a
