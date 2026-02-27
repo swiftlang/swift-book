@@ -1423,7 +1423,7 @@ Applying this attribute also implies the `objc` attribute.
 ### objc
 
 Apply this attribute to any declaration that can be represented in Objective-C ---
-for example, nonnested classes, protocols,
+for example, global functions, nonnested classes, protocols,
 nongeneric enumerations (constrained to integer raw-value types),
 properties and methods (including getters and setters) of classes,
 protocols and optional members of a protocol,
@@ -1468,7 +1468,7 @@ which consists of an identifier.
 The identifier specifies the name to be exposed to Objective-C
 for the entity that the `objc` attribute applies to.
 You can use this argument to name
-classes, enumerations, enumeration cases, protocols,
+global functions, classes, enumerations, enumeration cases, protocols,
 methods, getters, setters, and initializers.
 If you specify the Objective-C name
 for a class, protocol, or enumeration,
