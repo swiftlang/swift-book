@@ -505,6 +505,27 @@ that meet the following criteria can be back deployed:
 - The implementation satisfies the requirements for an inlinable function,
   described in <doc:Attributes#inlinable>.
 
+### c
+
+Apply this attribute to any declaration that can be represented in C ---
+for example, global functions, and
+nongeneric enumerations (constrained to integer raw-value types).
+The `c` attribute tells the compiler
+that a declaration is available to use in C code.
+
+If you apply the `c` attribute to an enumeration,
+each enumeration case is exposed to C code
+as the concatenation of the enumeration name and the case name.
+The first letter of the case name is capitalized.
+For example, a case named `venus` in a Swift `Planet` enumeration
+is exposed to C code as a case named `PlanetVenus`.
+
+The `c` attribute optionally accepts a single attribute argument,
+which consists of an identifier.
+The identifier specifies the name to be exposed to Objective-C
+for the entity that the `c` attribute applies to.
+If you omit the argument, the name used in C code matches the Swift base name.
+
 ### discardableResult
 
 Apply this attribute to a function or method declaration
