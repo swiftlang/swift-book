@@ -1914,7 +1914,7 @@ discussed in <doc:TheBasics#Error-Handling>
 and <doc:TheBasics#Assertions-and-Preconditions> below.
 However, in some cases,
 the *only* safe way to handle an error is to stop execution.
-If you need to guarantee that a service never unexpected stops,
+If you need to guarantee that a service never unexpectedly stops,
 incorporate fault tolerance into its overall architecture,
 so it can recover from any of its components stopping unexpectedly.
 
