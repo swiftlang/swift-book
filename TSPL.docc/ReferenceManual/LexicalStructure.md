@@ -111,22 +111,6 @@ but `` `class` `` is valid.
 The backticks aren't considered part of the identifier;
 `` `x` `` and `x` have the same meaning.
 
-A raw identifier is also surrounded by backticks, but
-allows for characters that are not permitted in an escaped identifier.
-
-A raw identifier may contain any Unicode scalar value except the following:
-- Backtick (`)
-- Backslash (\)
-- Carriage return (U+000D) or newline (U+000A)
-- NUL character (U+0000)
-
-Raw identifiers may contain whitespace,
-characters with the `Unicode.Scalar.Properties.isWhitespace` property,
-but may not consist of only whitespace.
-
-Raw identifiers may contain operators (see <doc:LexicalStructure#Operators>),
-but may not consist of only operators. 
-
 <!--
 The paragraph above produces a link-resolution warning
 because of a known issue with ` in code voice.
@@ -134,6 +118,29 @@ because of a known issue with ` in code voice.
 https://github.com/swiftlang/swift-book/issues/71
 https://github.com/swiftlang/swift-markdown/issues/93
 -->
+
+<!--
+XXX TR: Is there any developer-facing reason
+that we need to distinguish escaped identifiers from raw identifiers?
+They have the same syntax,
+so it seems the only difference is what characters they contain.
+-->
+A raw identifier is also surrounded by backticks,
+but allows you to include characters
+that you can't write in an escaped identifier.
+A raw identifier can contain any Unicode scalar value except the following:
+
+- Backtick (`` ` ``)
+- Backslash (`\`)
+- Carriage return (U+000D) or line feed (U+000A)
+- Null (U+0000)
+
+Raw identifiers can contain whitespace,
+characters with the `Unicode.Scalar.Properties.isWhitespace` property,
+but can't consist of only whitespace.
+Raw identifiers can contain operator characters,
+as described in <doc:LexicalStructure#Operators>,
+but can't consist of only operator characterss.
 
 Inside a closure with no explicit parameter names,
 the parameters are implicitly named `$0`, `$1`, `$2`, and so on.
@@ -201,10 +208,6 @@ https://github.com/swiftlang/swift-markdown/issues/93
 >
 > *raw-identifier-character* → Any Unicode scalar value except  **`` ` ``**,  **`\`**, U+0000, U+000A, or U+000D
 > *raw-identifier-characters* → *raw-identifier-character* *raw-identifier-characters*_?_
-> *raw-identifier-characters* → raw-identifier-whitespace
-> *raw-identifier-characters* → operator
-> *raw-identifier-whitespace* → inline-spaces, U+2029, or U+3000
-
 
 ## Keywords and Punctuation
 
