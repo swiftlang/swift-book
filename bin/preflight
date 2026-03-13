@@ -47,6 +47,11 @@ then
     exit_status=1
 fi
 
+# Confirm cmark is installed.  Normally ERR_EXIT and PIPE_FAIL abort the
+# script for a "command not found" error, but not in this case of piping
+# to a while loop.
+which cmark > /dev/null
+
 echo "Checking links..."
 cmark --to xml TSPL.docc/*/*.md |
 xpath -q -n -e '//link/@destination' |
