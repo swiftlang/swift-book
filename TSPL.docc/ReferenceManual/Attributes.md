@@ -100,10 +100,12 @@ indicates the macro's role:
 - term Body macros:
   Write `body` as the first argument to this attribute.
   The type that implements the macro conforms to the `BodyMacro` protocol.
-  These macros modify or replace the body of the function that they are attached to.
-  If the function has no body,
-  the macro can generate one from scratch.
-  Only one body macro is allowed on a function at a time.
+  These macros can generate, modify, or replace
+  the body of the function or accessor that they're attached to.
+  You can write at most one body macro on any given function.
+  If an original function body is provided,
+  it must be syntactically correct,
+  but it isn’t type checked until after the macro is expanded.
 
 The peer and member macro roles require a `names:` argument,
 listing the names of the symbols that the macro generates.
