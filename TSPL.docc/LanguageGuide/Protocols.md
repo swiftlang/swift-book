@@ -597,7 +597,7 @@ see <doc:Initialization#Required-Initializers>.
 
 > Note: You don't need to mark protocol initializer implementations with the `required` modifier
 > on classes that are marked with the `final` modifier,
-> because final classes can't subclassed.
+> because final classes can't be subclassed.
 > For more about the `final` modifier, see <doc:Inheritance#Preventing-Overrides>.
 
 <!--
