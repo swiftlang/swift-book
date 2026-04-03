@@ -2,7 +2,7 @@
 
 # This source file is part of the Swift.org open source project
 #
-# Copyright (c) 2023 Apple Inc. and the Swift project authors
+# Copyright (c) 2023-2026 Apple Inc. and the Swift project authors
 # Licensed under Apache License v2.0 with Runtime Library Exception
 #
 # See https://swift.org/LICENSE.txt for license information
@@ -24,25 +24,7 @@ cd "$(git rev-parse --show-toplevel)"
 
 # Summarize the formal grammar at the end of the reference.
 summary_chapter="TSPL.docc/ReferenceManual/SummaryOfTheGrammar.md"
-if [[ -f "$summary_chapter" ]]
-then
-       echo "Summary of the grammar already exists"
-       exit 1
-fi
-{
-	echo "# Summary of the Grammar"
-	echo
-	echo "Read the whole formal grammar."
-	echo
-	awk -f bin/extract_grammar.awk TSPL.docc/ReferenceManual/LexicalStructure.md
-	awk -f bin/extract_grammar.awk TSPL.docc/ReferenceManual/Types.md
-	awk -f bin/extract_grammar.awk TSPL.docc/ReferenceManual/Expressions.md
-	awk -f bin/extract_grammar.awk TSPL.docc/ReferenceManual/Statements.md
-	awk -f bin/extract_grammar.awk TSPL.docc/ReferenceManual/Declarations.md
-	awk -f bin/extract_grammar.awk TSPL.docc/ReferenceManual/Attributes.md
-	awk -f bin/extract_grammar.awk TSPL.docc/ReferenceManual/Patterns.md
-	awk -f bin/extract_grammar.awk TSPL.docc/ReferenceManual/GenericParametersAndArguments.md
-} > "$summary_chapter"
+bin/generate-grammar
 
 # The published version of the book gets the swift.org header.
 cp -n TSPL.docc/header-publish.html TSPL.docc/header.html
