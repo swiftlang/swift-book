@@ -485,7 +485,7 @@ func `repeat`<T: Shape>(shape: T, count: Int) -> some Collection {
 In this case,
 the underlying type of the return value
 varies depending on `T`:
-Whatever shape is passed it,
+Whatever shape is passed in,
 `repeat(shape:count:)` creates and returns an array of that shape.
 Nevertheless,
 the return value always has the same underlying type of `[T]`,
