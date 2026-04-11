@@ -542,7 +542,7 @@ The values of these properties are of the appropriate-sized number type
 and can therefore be used in expressions alongside other values of the same type.
 
 Calculations that produce out-of-bounds results,
-like a number larger that the `max` property,
+like a number larger than the `max` property,
 stop the program's execution instead of storing an invalid result.
 You can explicitly make the operation overflow instead,
 as described in <doc:AdvancedOperators#Overflow-Operators>.
