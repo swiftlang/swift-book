@@ -30,7 +30,7 @@ checks whether a value is missing before using the value,
 and non-optional values are guaranteed to never be missing.
 
 Swift is a safe language,
-which means it makes it easier for you find and fix several categories of bugs
+which means it makes it easier for you to find and fix several categories of bugs
 as early as possible during the development process,
 and lets you guarantee that certain kinds of bugs can't happen.
 Type safety enables you to be clear about
