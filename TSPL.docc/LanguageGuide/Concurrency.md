@@ -734,16 +734,18 @@ The code above makes several changes from the previous version:
 [`Task.isCancelled` instance]: https://developer.apple.com/documentation/swift/task/iscancelled-swift.property
 
 For work that needs immediate notification of cancellation,
-use the [`Task.withTaskCancellationHandler(operation:onCancel:isolation:)`][] method.
+use the [`withTaskCancellationHandler(operation:onCancel:isolation:)`][] function.
 For example:
 
-[`Task.withTaskCancellationHandler(operation:onCancel:isolation:)`]: https://developer.apple.com/documentation/swift/withtaskcancellationhandler(operation:oncancel:isolation:)
+[`withTaskCancellationHandler(operation:onCancel:isolation:)`]: https://developer.apple.com/documentation/swift/withtaskcancellationhandler(operation:oncancel:isolation:)
 
 ```swift
-let task = await Task.withTaskCancellationHandler {
-    // ...
-} onCancel: {
-    print("Canceled!")
+let task = Task {
+    await withTaskCancellationHandler {
+        // ...
+    } onCancel: {
+        print("Canceled!")
+    }
 }
 
 // ... some time later...
