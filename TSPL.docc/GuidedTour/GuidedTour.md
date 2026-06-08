@@ -441,7 +441,7 @@ print(greeting)
 
 > Experiment: Change `optionalName` to `nil`.
 > What greeting do you get?
-> Add an `else` clause that sets a different greeting
+> Add an `else` clause that sets a different greeting.
 > if `optionalName` is `nil`.
 
 If the optional value is `nil`,
