@@ -1755,7 +1755,9 @@ to require that all conforming types are subclasses of that class.
 
 ```swift
 class Renderer {
-    func render(_ text: String) { print(text) }
+    func render(_ text: String) {
+        print(text)
+    }
 }
 
 protocol Widget: Renderer {
@@ -1763,12 +1765,16 @@ protocol Widget: Renderer {
 }
 
 extension Widget {
-    func display() { render(title) }
+    func display() {
+        render(title)
+    }
 }
 
 class ButtonWidget: Renderer, Widget {
     var title: String
-    init(title: String) { self.title = title }
+    init(title: String) {
+        self.title = title
+    }
 }
 
 let button = ButtonWidget(title: "OK")
@@ -1781,7 +1787,9 @@ button.display()
 
   ```swifttest
   -> class Renderer {
-        func render(_ text: String) { print(text) }
+        func render(_ text: String) {
+            print(text)
+        }
      }
 
   -> protocol Widget: Renderer {
@@ -1789,12 +1797,16 @@ button.display()
      }
 
   -> extension Widget {
-        func display() { render(title) }
+        func display() {
+            render(title)
+        }
      }
 
   -> class ButtonWidget: Renderer, Widget {
         var title: String
-        init(title: String) { self.title = title }
+        init(title: String) {
+            self.title = title
+        }
      }
 
   -> let button = ButtonWidget(title: "OK")
