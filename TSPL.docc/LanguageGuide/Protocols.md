@@ -1773,7 +1773,7 @@ class ButtonWidget: Renderer, Widget {
 
 let button = ButtonWidget(title: "OK")
 button.display()
-// Prints "OK"
+// Prints "OK".
 ```
 
 <!--
