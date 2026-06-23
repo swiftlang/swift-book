@@ -2483,7 +2483,7 @@ directly in the protocol in which it's declared.
 The getter and setter requirements can be satisfied by a conforming type in a variety of ways.
 If a property declaration includes both the `get` and `set` keywords,
 a conforming type can implement it with a stored variable property
-or a computed property that's both readable and writeable
+or a computed property that's both readable and writable
 (that is, one that implements both a getter and a setter). However,
 that property declaration can't be implemented as a constant property
 or a read-only computed property. If a property declaration includes
