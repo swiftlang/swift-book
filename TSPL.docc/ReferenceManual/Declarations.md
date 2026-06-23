@@ -2437,6 +2437,34 @@ can likewise be adopted only by class types.
 > the `AnyObject` requirement is implicitly applied to that protocol;
 > there’s no need to mark the protocol with the `AnyObject` requirement explicitly.
 
+You can also name a specific class in the *inherited protocols* list
+to restrict adoption of the protocol to subclasses of that class.
+For example, the following protocol can be adopted only by subclasses of `SomeBaseClass`:
+
+```swift
+class SomeBaseClass { /* ... */ }
+protocol SomeRefinedProtocol: SomeBaseClass {
+    /* Protocol members go here */
+}
+```
+
+<!--
+  - test: `protocol-declaration-superclass`
+
+  ```swifttest
+  -> class SomeBaseClass {}
+  -> protocol SomeRefinedProtocol: SomeBaseClass {
+         /* Protocol members go here */
+     }
+  ```
+-->
+
+This is more restrictive than using `AnyObject`
+because it limits conformance to a specific class hierarchy
+rather than to any class type.
+For more information,
+see <doc:Protocols#Class-Only-Protocols>.
+
 Protocols are named types, and thus they can appear in all the same places
 in your code as other named types, as discussed in <doc:Protocols#Protocols-as-Types>.
 However,
