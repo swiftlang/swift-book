@@ -61,6 +61,7 @@
 - <doc:Attributes>
 - <doc:Patterns>
 - <doc:GenericParametersAndArguments>
+- <doc:DataRaceSafety>
 - <doc:SummaryOfTheGrammar>
 
 <!--
