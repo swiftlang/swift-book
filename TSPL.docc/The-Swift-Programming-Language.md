@@ -1,5 +1,7 @@
 # The Swift Programming Language (6.3 beta)
 
+Write safe, fast, expressive code with a modern, general-purpose language.
+
 @Metadata {
   @TechnologyRoot
 }
