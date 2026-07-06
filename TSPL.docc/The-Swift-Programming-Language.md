@@ -1,4 +1,4 @@
-# The Swift Programming Language (6.3)
+# The Swift Programming Language (6.4 beta)
 
 @Metadata {
   @TechnologyRoot
