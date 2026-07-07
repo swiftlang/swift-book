@@ -1087,7 +1087,8 @@ The class that the extension extends must be imported from Objective-C,
 not be a root class,
 and not use lightweight generics.
 The extension can't include any protocol conformances.
-All declarations in this extension are implicitly marked with the `objc` attribute.
+All declarations in this extension
+are implicitly marked with the `objc` attribute.
 For example,
 the following Objective-C header declares a class with one method:
 
@@ -1168,7 +1169,7 @@ which must not match a declaration in the Objective-C header:
   To access them from Objective-C,
   either declare them in a header that's not visible to the Swift compiler
   or access them using their selector.
-- Helper members  with `internal` or `private` access,
+- Helper members  with `internal`, `fileprivate`, or `private` access,
   which are accessible only from other Swift code.
   You mark these declarations `final`,
   and they're implicitly marked with the `nonobjc` attribute.
@@ -1209,6 +1210,9 @@ apply both the `c` and `implementation` attributes
 to an declaration in Swift that provides the implementation.
 Other code in Swift treats these implementations
 as if they were implemented in C and imported into Swift.
+The implementation in Swift
+needs to have the same name and type
+as an imported C implementation of that declaration.
 For example,
 the following C header declares a global function:
 
@@ -1224,8 +1228,6 @@ func myFunction(_ value: CInt) -> CInt {
     return value
 }
 ```
-
-XXX Add a list of name-matching requirements
 
 ### inlinable
 
