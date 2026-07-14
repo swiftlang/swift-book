@@ -97,6 +97,16 @@ indicates the macro's role:
   on an extension, a type alias, or a type that's nested inside a function,
   or use an extension macro to add an extension that has a peer macro.
 
+- term Body macros:
+  Write `body` as the first argument to this attribute.
+  The type that implements the macro conforms to the `BodyMacro` protocol.
+  These macros can generate, modify, or replace
+  the body of the function or accessor that they're attached to.
+  You can write at most one body macro on any given function.
+  If an original function body is provided,
+  it must be syntactically correct,
+  but it isn’t type checked until after the macro is expanded.
+
 The peer and member macro roles require a `names:` argument,
 listing the names of the symbols that the macro generates.
 The accessor macro role requires a `names:` argument if the
