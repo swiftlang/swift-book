@@ -1951,28 +1951,36 @@ Both `12` and `24` are `Int`,
 `0.5` and `1.0` are `Double`,
 and `8` and `16` are `Int8`.
 
-There are two types of parameter packs: type packs and value packs. The type
-packs are made of type parameters, while value packs are made of values.
+There are two types of parameter packs:
+type packs and value packs.
+The type packs are made of type parameters,
+while value packs are made of values.
 
-At the call site of `double`, the type of the pack `T` will be substituted
-for the type pack `{Int, Double, Int8}`. The type of the type pack is derived
-from the value pack `12, 0.5, 8 as Int8` passed at the call site. This
-guarantees that the corresponding types and values appear at the same
-positions in their respective packs.
+At the call site of `double`,
+the type of the pack `T` will be substituted
+for the type pack `{Int, Double, Int8}`.
+The type of the type pack is derived from
+the value pack `12, 0.5, 8 as Int8` passed at the call site.
+This guarantees that the corresponding types and values
+appear at the same positions in their respective packs.
 
-The `double` function doubles each element of the parameter pack by applying
-the `repeat` statement to each element of the value pack multiplied by 2.
-The `repeat` statement applied to a value pack denotes a "repetition pattern",
+The `double` function doubles each element of the parameter pack
+by applying the `repeat` statement
+to each element of the value pack multiplied by 2.
+The `repeat` statement applied to a value pack
+denotes a "repetition pattern",
 which is a pattern that will be repeated for every value in the pack.
 
-Repetition is a great way to apply a simple transformation on each element
-of the parameter pack. It effectively performs iteration on the value pack,
-but in a clean and concise way. However, there are cases where your code either
-demands a piece of other state to be updated on each iteration, or you want the
-iteration to stop when a certain condition is met.
+Repetition is a great way to apply
+a simple transformation on each element of the parameter pack.
+It effectively performs iteration on the value pack,
+but in a clean and concise way.
+However, there are cases where your code either
+demands a piece of other state to be updated on each iteration,
+or you want the iteration to stop when a certain condition is met.
 
-Similarly to collections, value packs support iteration with a `for`-`in repeat`
-loop.
+Similarly to collections,
+value packs support iteration with a `for`-`in repeat` loop.
 
 ```swift
 func allEmpty<each T>(_ array: repeat [each T]) -> Bool {
@@ -1984,16 +1992,21 @@ func allEmpty<each T>(_ array: repeat [each T]) -> Bool {
 }
 ```
 
-In the code above, the `allEmpty` function is generic over a type parameter
-pack `each T`, and takes a value parameter pack `array`, the type of which is
-declared using `repeat [each T]` pack expansion, where `[each T]` is the
-repetition pattern.
+In the code above,
+the `allEmpty` function is generic over a type parameter pack `each T`,
+and takes a value parameter pack `array`,
+the type of which is declared using `repeat [each T]` pack expansion,
+where `[each T]` is the repetition pattern.
 
-The `for`-`in repeat` loop gives an opportunity to access elements of the value
-pack on each iteration using a local variable. In this case, the local variable
-`a` represents the value stored in the value pack on a given iteration. Using
-`for`-`in repeat` loop gives you an opportunity to stop the iteration early—in
-this case, the iteration will stop once a non-empty array is found.
+The `for`-`in repeat` loop
+gives an opportunity to access elements of the value pack
+on each iteration using a local variable.
+In this case, the local variable `a`
+represents the value stored in the value pack on a given iteration.
+Using `for`-`in repeat` loop
+gives you an opportunity to stop the iteration early ---
+in this case,
+the iteration will stop once a non-empty array is found.
 
 Here's how you might use the `allEmpty` function:
 
@@ -2002,31 +2015,36 @@ print(allEmpty(["One", "Two"], [1], [true, false], []))
 // False
 ```
 
-Using the `for`-`in repeat` loop is useful in cases where you want more control
-over the pack iteration—stop the evaluation early for performance, or mutate
-some other state on each iteration.
+Using the `for`-`in repeat` loop is useful
+in cases where you want more control over the pack iteration ---
+stop the evaluation early for performance,
+or mutate some other state on each iteration.
 
-Note that both approaches for iterating over the pack are fine! Choose one that
-fits your use-case the most.
+Note that both approaches for iterating over the pack are fine!
+Choose one that fits your use-case the most.
 
-> Note: Use singular naming convention when naming your parameter packs.
+> Note:
+> Use singular naming convention when naming your parameter packs.
 
-Parameter packs can contain zero or more arguments. If you need to
-require one or more, use a regular generic argument together with the type
-pack argument:
+Parameter packs can contain zero or more arguments.
+If you need to require one or more,
+use a regular generic argument together with the type pack argument:
 
 ```swift
 func requireOneOrMore<T, each U>(element: (T, repeat each U)) { }
 ```
 
-The function above can now be called with at least one value passed into the
-`element` parameter, required by the `T` generic argument.
+The function above can now be called
+with at least one value passed into the `element` parameter,
+required by the `T` generic argument.
 
-Repetition patterns can be applied to so many types! In the the `nonEmpty`
-example above, the `array` parameter's type is declared with `repeat [each T]`,
+Repetition patterns can be applied to so many types!
+In the the `nonEmpty` example above,
+the `array` parameter's type is declared with `repeat [each T]`,
 expanding into multiple array types.
 
-A more complex type can include `each` multiple times. For example:
+A more complex type can include `each` multiple times.
+For example:
 
 ```swift
 func evaluateAll<each V, each E: Error>(
@@ -2036,15 +2054,19 @@ func evaluateAll<each V, each E: Error>(
 }
 ```
 
-The above `evaluateAll` function is generic over two different type packs,
-`V` and `E`. The type of `result` is declared using the `Result` type that
-takes 2 generic parameters. `repeat Result<each V, each E>` expands the
-type of the `result` parameter to be a type pack where the expansion of
-`each V` and `each E` is required to be of the same size, meaning the
-number of types both packs expand to are guaranteed to be equal.
+The above `evaluateAll` function is generic over
+two different type packs, `V` and `E`.
+The type of `result` is declared using
+the `Result` type that takes 2 generic parameters.
+`repeat Result<each V, each E>`
+expands the type of the `result` parameter
+to be a type pack where the expansion of `each V`
+and `each E` is required to be of the same size,
+meaning the number of types both packs expand to
+are guaranteed to be equal.
 
-You can also vary the return types of your function based on the parameter
-types:
+You can also vary the return types of your function
+based on the parameter types:
 
 ```swift
 protocol RequestProtocol {
@@ -2062,36 +2084,47 @@ struct Evaluator<each Request: RequestProtocol> {
 }
 ```
 
-In the above code example, the protocol `RequestProtocol` requires a function
-`evaluate` that, given an input of an associated type `Input`, returns the
-other associated type `Output`.
+In the above code example,
+the protocol `RequestProtocol` requires a function `evaluate` that,
+given an input of an associated type `Input`,
+returns the other associated type `Output`.
 
-The `Evaluator` struct is generic over the `Request` type, which is a parameter
-pack. Like with regular generics, parameter packs support type constraints—each
-element in the `Request` type pack has to conform to the `RequestProtocol`
-protocol.
+The `Evaluator` struct is generic over the `Request` type,
+which is a parameter pack.
+Like with regular generics,
+parameter packs support type constraints ---
+each element in the `Request` type pack
+has to conform to the `RequestProtocol` protocol.
 
-The `item` property stores the elements of the `Request` parameter
-pack in a tuple.
+The `item` property stores
+the elements of the `Request` parameter pack in a tuple.
 
-The `query` methods operates on an `input` argument of
-`repeat (each Request).Input` type. Because each element of the `Request`
-type pack conforms to `RequestProtocol`, the implementation of `query` is able
-to call the protocol requirement `evaluate`, using the elements of the `input`
-parameter pack as its input. As a result, a new pack containing
-`RequestProtocol.Output` type is produced.
+The `query` methods operates on
+an `input` argument of `repeat (each Request).Input` type.
+Because each element of the `Request` type pack
+conforms to `RequestProtocol`,
+the implementation of `query` is able to call
+the protocol requirement `evaluate`,
+using the elements of the `input` parameter pack as its input.
+As a result,
+a new pack containing `RequestProtocol.Output` type is produced.
 
-You don't always write `repeat each` one after the other. The part to repeat
-is marked `repeat` and the location of the element from the pack is marked
-`each`. In this example, the `repeat`
-keyword applied in front of `(each item).evaluate(each input)` call
-calls `evaluate` function on each pair of elements from `item` and `input`
-value packs, respectively. Again, such construction guarantees that `item`
-and `input` packs have to be of the same length. As a result, the tuple
-returned by `query` also has the same length.
+You don't always write `repeat each` one after the other.
+The part to repeat is marked `repeat`
+and the location of the element from the pack is marked `each`.
+In this example,
+the `repeat` keyword applied in front of
+`(each item).evaluate(each input)` call
+calls `evaluate` function on each pair of elements
+from `item` and `input` value packs, respectively.
+Again, such construction guarantees that `item`
+and `input` packs have to be of the same length.
+As a result,
+the tuple returned by `query` also has the same length.
 
-You can also use trailing `where` clause with parameter packs in more complex
-cases. For example, consider the following type:
+You can also use trailing `where` clause
+with parameter packs in more complex cases.
+For example, consider the following type:
 
 ```swift
 struct Container<each Element> {
@@ -2099,19 +2132,24 @@ struct Container<each Element> {
 }
 ```
 
-With the `where` clause, it is easy to conditionally constrain the type to
-conform to protocols using the types in the `Element` parameter pack:
+With the `where` clause,
+it is easy to conditionally constrain the type
+to conform to protocols using the types in the `Element` parameter pack:
 
 ```swift
 extension Container: Sendable where repeat each Element: Sendable {}
 ```
 
-In the code above, `Container` conditionally conforms to `Sendable` when each
-element of the type parameter pack `Element` conforms to `Sendable`, making it
-usable in contexts requiring sendability.
+In the code above,
+`Container` conditionally conforms to `Sendable`
+when each element of the type parameter pack `Element`
+conforms to `Sendable`,
+making it usable in contexts requiring sendability.
 
-The types that appear in a type parameter pack must be constrained if its
-expansion is used as a constrained generic type parameter. For example,
+The types that appear in a type parameter pack
+must be constrained if its expansion
+is used as a constrained generic type parameter.
+For example,
 types such as `Set` require its generic argument to conform to `Hashable`,
 so each element of the parameter pack needs to be constrained:
 
@@ -2121,8 +2159,9 @@ struct Container<each Element: Hashable> {
 }
 ```
 
-Using all of the concepts above, parameter packs provide powerful capabilities
-in your code. Let's consider a more advanced example of using parameter packs,
+Using all of the concepts above,
+parameter packs provide powerful capabilities in your code.
+Let's consider a more advanced example of using parameter packs,
 and start off by declaring the following protocol:
 
 ```swift
@@ -2132,13 +2171,17 @@ protocol ValueProducer {
 }
 ```
 
-The above protocol `ValueProducer` requires the `evaluate()` method that’s
-return type is the associated type `Value` that conforms to `Codable` protocol.
+The above protocol `ValueProducer`
+requires the `evaluate()` method
+that’s return type is the associated type `Value`
+that conforms to `Codable` protocol.
 
-For example, suppose you get a parameter pack of values of type
-`Result<ValueProducer, Error>`, and you need to iterate only over the success
-elements and call the `evaluate()` method on its value. Also, suppose you need
-to save the result of each call into an array.
+For example,
+suppose you get a parameter pack
+of values of type `Result<ValueProducer, Error>`,
+and you need to iterate only over the success elements
+and call the `evaluate()` method on its value.
+Also, suppose you need to save the result of each call into an array.
 
 ```swift
 func evaluateAll<each V: ValueProducer, each E: Error>(result: repeat Result<each V, each E>) -> [any Codable] {
@@ -2151,13 +2194,17 @@ func evaluateAll<each V: ValueProducer, each E: Error>(result: repeat Result<eac
 }
 ```
 
-In the body of `evaluateAll`, you can use the `for`-`in repeat` loop
-for performing an operation while
-iterating over the values stored in the `result` value pack. Note that you
-can use a familiar `for case` pattern to only iterate over the `.success`
-case of the `Result` enum. You can bind the value using the `valueProducer`
-variable. Finally, on each iteration, you can append the result of the call
-to the `evaluate()` method to the `evaluated` array, which gets returned
+In the body of `evaluateAll`,
+you can use the `for`-`in repeat` loop
+for performing an operation
+while iterating over the values stored in the `result` value pack.
+Note that you can use a familiar `for case` pattern
+to only iterate over the `.success` case of the `Result` enum.
+You can bind the value using the `valueProducer` variable.
+Finally, on each iteration,
+you can append the result of the call to the `evaluate()` method
+to the `evaluated` array,
+which gets returned
 from the function.
 
 ## Generic Subscripts
