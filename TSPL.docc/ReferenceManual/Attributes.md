@@ -24,6 +24,12 @@ and how it applies to a particular declaration.
 These *attribute arguments* are enclosed in parentheses,
 and their format is defined by the attribute they belong to.
 
+Attached macros and property wrappers also use attribute syntax.
+For information about how macros expand,
+see <doc:Expressions#Macro-Expansion-Expression>.
+For information about property wrappers,
+see <doc:Attributes#propertyWrapper>.
+
 ## Declaration Attributes
 
 You can apply a declaration attribute to declarations only.
@@ -40,7 +46,7 @@ If there's a stable URL we can use, make the macro protocols below links.
 -->
 
 The first argument to this attribute
-indicates the macros role:
+indicates the macro's role:
 
 - term Peer macros:
   Write `peer` as the first argument to this attribute.
@@ -74,14 +80,42 @@ indicates the macros role:
   These macros add accessors to the stored property they're attached to,
   turning it into a computed property.
 
-- term Conformance macros:
-  Write `conformance` as the first argument to this attribute.
-  The type that implements the macro conforms to the `ConformanceMacro` protocol.
-  These macros add protocol conformance to the type they're attached to.
+- term Extension macros:
+  Write `extension` as the first argument to this attribute.
+  The type that implements the macro conforms to the `ExtensionMacro` protocol.
+  These macros can add protocol conformance,
+  a `where` clause,
+  and new declarations that are members of the type the macro is attached to.
+  If the macro adds protocol conformances,
+  include the `conformances:` argument and specify those protocols.
+  The conformance list contains protocol names,
+  type aliases that refer to conformance list items,
+  or protocol compositions of conformance list items.
+  An extension macro on a nested type
+  expands to an extension at the top level of that file.
+  You can't write an extension macro
+  on an extension, a type alias, or a type that's nested inside a function,
+  or use an extension macro to add an extension that has a peer macro.
 
-The peer, member, and accessor macro roles require a `named:` argument,
+- term Body macros:
+  Write `body` as the first argument to this attribute.
+  The type that implements the macro conforms to the `BodyMacro` protocol.
+  These macros can generate, modify, or replace
+  the body of the function or accessor that they're attached to.
+  You can write at most one body macro on any given function.
+  If an original function body is provided,
+  it must be syntactically correct,
+  but it isn’t type checked until after the macro is expanded.
+
+The peer and member macro roles require a `names:` argument,
 listing the names of the symbols that the macro generates.
-When a macro declaration includes the `named:` argument,
+The accessor macro role requires a `names:` argument if the
+macro generates a `willSet` or `didSet` property observer. An
+accessor macro that generates property observers can't add
+other accessors, because observers only apply to stored properties.
+The extension macro role also requires a `names:` argument
+if the macro adds declarations inside the extension.
+When a macro declaration includes the `names:` argument,
 the macro implementation must generate
 only symbol with names that match that list.
 That said,
@@ -99,7 +133,7 @@ The value for that argument is a list of one or more of the following:
   where *prefix* is prepended to the symbol name,
   for a name that starts with a fixed string.
 
-- `suffixed(<#suffix#>`
+- `suffixed(<#suffix#>)`
   where *suffix* is appended to the symbol name,
   for a name that ends with a fixed string.
 
@@ -134,6 +168,7 @@ These arguments begin with one of the following platform or language names:
 - `tvOS`
 - `tvOSApplicationExtension`
 - `visionOS`
+- `visionOSApplicationExtension`
 - `swift`
 
 <!--
@@ -189,8 +224,80 @@ including important milestones.
   obsoleted: <#version number#>
   ```
   The *version number* consists of one to three positive integers, separated by periods.
+
+- The `noasync` argument indicates that
+  the declared symbol can't be used directly
+  in an asynchronous context.
+
+  Because Swift concurrency can resume on a different thread
+  after a potential suspension point,
+  using elements like thread-local storage, locks, mutexes, or semaphores
+  across suspension points can lead to incorrect results.
+
+  To avoid this problem,
+  add an `@available(*, noasync)` attribute to the symbol's declaration:
+
+  ```swift
+  extension pthread_mutex_t {
+
+    @available(*, noasync)
+    mutating func lock() {
+        pthread_mutex_lock(&self)
+    }
+
+    @available(*, noasync)
+    mutating func unlock() {
+        pthread_mutex_unlock(&self)
+    }
+  }
+  ```
+
+  This attribute raises a compile-time error
+  when someone uses the symbol in an asynchronous context.
+  You can also use the `message` argument to provide additional information
+  about the symbol.
+
+  ```swift
+  @available(*, noasync, message: "Migrate locks to Swift concurrency.")
+  mutating func lock() {
+    pthread_mutex_lock(&self)
+  }
+  ```
+
+  If you can guarantee that your code
+  uses a potentially unsafe symbol in a safe manner,
+  you can wrap it in a synchronous function and call that function
+  from an asynchronous context.
+
+  ```swift
+
+  // Provide a synchronous wrapper around methods with a noasync declaration.
+  extension pthread_mutex_t {
+    mutating func withLock(_ operation: () -> ()) {
+      self.lock()
+      operation()
+      self.unlock()
+    }
+  }
+
+  func downloadAndStore(key: Int,
+                      dataStore: MyKeyedStorage,
+                      dataLock: inout pthread_mutex_t) async {
+    // Safely call the wrapper in an asynchronous context.
+    dataLock.withLock {
+      dataStore[key] = downloadContent()
+    }
+  }
+  ```
+
+  You can use the `noasync` argument on most declarations;
+  however, you can't use it when declaring deinitializers.
+  Swift must be able to call a class's deinitializers from any context,
+  both synchronous and asynchronous.
+
 - The `message` argument provides a textual message that the compiler displays
-  when emitting a warning or error about the use of a deprecated or obsoleted declaration.
+  when emitting a warning or error about the use
+  of a declaration marked `deprecated`, `obsoleted`, or `noasync`.
   It has the following form:
 
   ```swift
@@ -223,7 +330,6 @@ including important milestones.
   }
   ```
 
-
   <!--
     - test: `renamed1`
 
@@ -245,7 +351,6 @@ including important milestones.
   typealias MyProtocol = MyRenamedProtocol
   ```
 
-
   <!--
     - test: `renamed2`
 
@@ -254,7 +359,7 @@ including important milestones.
     -> protocol MyRenamedProtocol {
            // protocol definition
        }
-    ---
+
     -> @available(*, unavailable, renamed: "MyRenamedProtocol")
        typealias MyProtocol = MyRenamedProtocol
     ```
@@ -339,6 +444,77 @@ struct MyStruct {
   ```
 -->
 
+### backDeployed
+
+Apply this attribute to a function, method, subscript, or computed property
+to include a copy of the symbol's implementation
+in programs that call or access the symbol.
+You use this attribute to annotate symbols that ship as part of a platform,
+like the APIs that are included with an operating system.
+This attribute marks symbols that can be made available retroactively
+by including a copy of their implementation in programs that access them.
+Copying the implementation is also known as *emitting into the client*.
+
+This attribute takes a `before:` argument,
+specifying the first version of platforms that provide this symbol.
+These platform versions have the same meaning
+as the platform version you specify for the `available` attribute.
+Unlike the `available` attribute,
+the list can't contain an asterisk (`*`) to refer to all versions.
+For example, consider the following code:
+
+```swift
+@available(iOS 16, *)
+@backDeployed(before: iOS 17)
+func someFunction() { /* ... */ }
+```
+
+In the example above,
+the iOS SDK provides `someFunction()` starting in iOS 17.
+In addition,
+the SDK makes `someFunction()` available on iOS 16 using back deployment.
+
+When compiling code that calls this function,
+Swift inserts a layer of indirection that finds the function's implementation.
+If the code is run using a version of the SDK that includes this function,
+the SDK's implementation is used.
+Otherwise, the copy included in the caller is used.
+In the example above,
+calling `someFunction()` uses the implementation from the SDK
+when running on iOS 17 or later,
+and when running on iOS 16
+it uses the copy of `someFunction()` that's included in the caller.
+
+> Note:
+> When the caller's minimum deployment target
+> is the same as or greater than
+> the first version of the SDK that includes the symbol,
+> the compiler can optimize away the runtime check
+> and call the SDK's implementation directly.
+> In this case,
+> if you access the back-deployed symbol directly,
+> the compiler can also omit
+> the copy of the symbol's implementation from the client.
+
+<!--
+Stripping out the copy emitted into the client
+depends on a chain of optimizations that must all take place --
+inlining the thunk,
+constant-folding the availability check,
+and stripping the emitted copy as dead code --
+and the details could change over time,
+so we don't guarantee in docs that it always happens.
+-->
+
+Functions, methods, subscripts, and computed properties
+that meet the following criteria can be back deployed:
+
+- The declaration is `public` or `@usableFromInline`.
+- For class instance methods and class type methods,
+  the method is marked `final` and isn't marked `@objc`.
+- The implementation satisfies the requirements for an inlinable function,
+  described in <doc:Attributes#inlinable>.
+
 ### discardableResult
 
 Apply this attribute to a function or method declaration
@@ -373,10 +549,10 @@ let dial = TelephoneExchange()
 
 // Use a dynamic method call.
 dial(4, 1, 1)
-// Prints "Get Swift help on forums.swift.org"
+// Prints "Get Swift help on forums.swift.org".
 
 dial(8, 6, 7, 5, 3, 0, 9)
-// Prints "Unrecognized number"
+// Prints "Unrecognized number".
 
 // Call the underlying method directly.
 dial.dynamicallyCall(withArguments: [4, 1, 1])
@@ -396,16 +572,16 @@ dial.dynamicallyCall(withArguments: [4, 1, 1])
              }
          }
      }
-  ---
+
   -> let dial = TelephoneExchange()
-  ---
+
   -> // Use a dynamic method call.
   -> dial(4, 1, 1)
   <- Get Swift help on forums.swift.org
-  ---
+
   -> dial(8, 6, 7, 5, 3, 0, 9)
   <- Unrecognized number
-  ---
+
   -> // Call the underlying method directly.
   -> dial.dynamicallyCall(withArguments: [4, 1, 1])
   << Get Swift help on forums.swift.org
@@ -456,7 +632,7 @@ print(repeatLabels(a: 1, b: 2, c: 3, b: 2, a: 1))
                  .joined(separator: "\n")
          }
      }
-  ---
+
   -> let repeatLabels = Repeater()
   -> print(repeatLabels(a: 1, b: 2, c: 3, b: 2, a: 1))
   </ a
@@ -563,12 +739,12 @@ let s = DynamicStruct()
 // Use dynamic member lookup.
 let dynamic = s.someDynamicMember
 print(dynamic)
-// Prints "325"
+// Prints "325".
 
 // Call the underlying subscript directly.
 let equivalent = s[dynamicMember: "someDynamicMember"]
 print(dynamic == equivalent)
-// Prints "true"
+// Prints "true".
 ```
 
 <!--
@@ -584,12 +760,12 @@ print(dynamic == equivalent)
          }
      }
   -> let s = DynamicStruct()
-  ---
+
   // Use dynamic member lookup.
   -> let dynamic = s.someDynamicMember
   -> print(dynamic)
   <- 325
-  ---
+
   // Call the underlying subscript directly.
   -> let equivalent = s[dynamicMember: "someDynamicMember"]
   -> print(dynamic == equivalent)
@@ -623,7 +799,7 @@ print(wrapper.x)
 
   ```swifttest
   -> struct Point { var x, y: Int }
-  ---
+
   -> @dynamicMemberLookup
      struct PassthroughWrapper<Value> {
          var value: Value
@@ -631,13 +807,35 @@ print(wrapper.x)
              get { return value[keyPath: member] }
          }
      }
-  ---
+
   -> let point = Point(x: 381, y: 431)
   -> let wrapper = PassthroughWrapper(value: point)
   -> print(wrapper.x)
   << 381
   ```
 -->
+
+### export
+
+Apply this attribute to a function or method declaration
+to control how its definition is exported to client modules.
+Include one of the following arguments,
+indicating what aspect of the declaration to export:
+
+- The `interface` argument specifies that
+  only the interface is exported to clients,
+  in the form of a callable symbol.
+  The definition (function body) isn't available to clients
+  for inlining, optimization, or any other purpose.
+  Use this argument to hide the implementation from clients.
+
+- The `implementation` argument specifies that
+  only the definition (function body) is exported to clients.
+  There's no symbol for this function emitted into the binary,
+  and clients are responsible for emitting a copy of the definition
+  wherever it's required.
+  Use this argument to introduce a new function or method
+  without affecting the Application Binary Interface (ABI).
 
 ### freestanding
 
@@ -660,7 +858,7 @@ Or are those supported today?
 I see #error and #warning as @freestanding(declaration)
 in the stdlib already:
 
-https://github.com/apple/swift/blob/main/stdlib/public/core/Macros.swift#L102
+https://github.com/swiftlang/swift/blob/main/stdlib/public/core/Macros.swift#L102
 -->
 
 ### frozen
@@ -674,10 +872,6 @@ an enumeration's cases
 or a structure's stored instance properties.
 These changes are allowed on nonfrozen types,
 but they break ABI compatibility for frozen types.
-
-> Note: When the compiler isn't in library evolution mode,
-> all structures and enumerations are implicitly frozen,
-> and this attribute is ignored.
 
 <!--
   - test: `can-use-frozen-without-evolution`
@@ -835,6 +1029,29 @@ Applying this attribute also implies the `objc` attribute.
   which we will want to link to, once it's written.
 -->
 
+### globalActor
+
+Apply this attribute to an actor, structure, enumeration, or final class.
+The type must define a static property named `shared`,
+which provides a shared instance of an actor.
+
+A global actor generalizes the concept of actor isolation
+to state that's spread out in several different places in code ---
+such as multiple types, files, and modules ---
+and makes it possible to safely access global variables from concurrent code.
+The actor that the global actor provides
+as the value of its `shared` property
+serializes access to all this state.
+You can also use a global actor to model constraints in concurrent code
+like code that all needs to execute on the same thread.
+
+Global actors implicitly conform to the [`GlobalActor`][] protocol.
+The main actor is a global actor provided by the standard library,
+as discussed in <doc:Concurrency#The-Main-Actor>.
+Most code can use the main actor instead of defining a new global actor.
+
+[`GlobalActor`]: https://developer.apple.com/documentation/swift/globalactor
+
 ### inlinable
 
 Apply this attribute to a
@@ -846,7 +1063,7 @@ The compiler is allowed to replace calls to an inlinable symbol
 with a copy of the symbol's implementation at the call site.
 
 Inlinable code
-can interact with `public` symbols declared in any module,
+can interact with `open` and `public` symbols declared in any module,
 and it can interact with `internal` symbols
 declared in the same module
 that are marked with the `usableFromInline` attribute.
@@ -1030,8 +1247,14 @@ for a method marked with the `objc` attribute.
 
 ### NSApplicationMain
 
+> Deprecated:
+> This attribute is deprecated;
+> use the <doc:Attributes#main> attribute instead.
+> In Swift 6,
+> using this attribute produces a compile-time error.
+
 Apply this attribute to a class
-to indicate that it's the application delegate.
+to indicate that it's the app delegate.
 Using this attribute is equivalent to calling the
 `NSApplicationMain(_:_:)` function.
 
@@ -1206,6 +1429,60 @@ can increase your binary size and adversely affect performance.
   because of the larger symbol table slowing dyld down.
 -->
 
+### preconcurrency
+
+Apply this attribute to a declaration,
+to suppress strict concurrency checking.
+You can apply this attribute
+to the following kinds of declarations:
+
+- Imports
+- Structures, classes, and actors
+- Enumerations and enumeration cases
+- Protocols
+- Variables and constants
+- Subscripts
+- Initializers
+- Functions
+
+On an import declaration,
+this attribute reduces the strictness of concurrency checking
+for code that uses types from the imported module.
+Specifically,
+types from the imported module
+that aren't explicitly marked as nonsendable
+can be used in a context that requires sendable types.
+
+On other declarations,
+this attribute reduces the strictness of concurrency checking
+for code that uses the symbol being declared.
+When you use this symbol in a scope that has minimal concurrency checking,
+concurrency-related constraints specified by that symbol,
+such as `Sendable` requirements or global actors,
+aren't checked.
+
+You can use this attribute as follows,
+to aid in migrating code to strict concurrency checking:
+
+1. Enable strict checking.
+1. Annotate imports with the `preconcurrency` attribute
+   for modules that haven't enabled strict checking.
+1. After migrating a module to strict checking,
+   remove the `preconcurrency` attribute.
+   The compiler warns you about
+   any places where the `preconcurrency` attribute on an import
+   no longer has an effect and should be removed.
+
+For other declarations,
+add the `preconcurrency` attribute
+when you add concurrency-related constraints to the declaration,
+if you still have clients
+that haven't migrated to strict checking.
+Remove the `preconcurrency` attribute after all your clients have migrated.
+
+Declarations from Objective-C are always imported
+as if they were marked with the `preconcurrency` attribute.
+
 ### propertyWrapper
 
 Apply this attribute to a class, structure, or enumeration declaration
@@ -1344,14 +1621,14 @@ struct SomeStruct {
              self.someValue = custom
          }
      }
-  ---
+
   -> struct SomeStruct {
   ->     // Uses init()
   ->     @SomeWrapper var a: Int
-  ---
+
   ->     // Uses init(wrappedValue:)
   ->     @SomeWrapper var b = 10
-  ---
+
   ->     // Both use init(wrappedValue:custom:)
   ->     @SomeWrapper(custom: 98.7) var c = 30
   ->     @SomeWrapper(wrappedValue: 30, custom: 98.7) var d
@@ -1425,7 +1702,7 @@ s.$x.wrapper  // WrapperWithProjection value
   -> struct SomeProjection {
          var wrapper: WrapperWithProjection
   }
-  ---
+
   -> struct SomeStruct {
   ->     @WrapperWithProjection var x = 123
   -> }
@@ -1441,7 +1718,7 @@ s.$x.wrapper  // WrapperWithProjection value
 
 ### resultBuilder
 
-Apply this attribute to a class, structure, enumeration
+Apply this attribute to a class, structure, or enumeration
 to use that type as a result builder.
 A *result builder* is a type
 that builds a nested data structure step by step.
@@ -1542,11 +1819,10 @@ The additional result-building methods are as follows:
   or to perform other postprocessing on a result before returning it.
 
 - term `static func buildLimitedAvailability(_ component: Component) -> Component`:
-  Builds a partial result that propagates or erases type information
-  outside a compiler-control statement
+  Builds a partial result that erases type information.
+  You can implement this method to prevent type information
+  from propagating outside a compiler-control statement
   that performs an availability check.
-  You can use this to erase type information
-  that varies between the conditional branches.
 
 For example, the code below defines a simple result builder
 that builds an array of integers.
@@ -1630,7 +1906,6 @@ into code that calls the static methods of the result builder type:
   var manualNumber = ArrayBuilder.buildExpression(10)
   ```
 
-
   <!--
     - test: `array-result-builder`
 
@@ -1645,9 +1920,14 @@ into code that calls the static methods of the result builder type:
   You can define an overload of `buildExpression(_:)`
   that takes an argument of type `()` to handle assignments specifically.
 - A branch statement that checks an availability condition
-  becomes a call to the `buildLimitedAvailability(_:)` method.
+  becomes a call to the `buildLimitedAvailability(_:)` method,
+  if that method is implemented.
+  If you don't implement `buildLimitedAvailability(_:)`,
+  then branch statements that check availability
+  use the same transformations as other branch statements.
   This transformation happens before the transformation into a call to
   `buildEither(first:)`, `buildEither(second:)`, or `buildOptional(_:)`.
+
   You use the `buildLimitedAvailability(_:)` method to erase type information
   that changes depending on which branch is taken.
   For example,
@@ -1664,8 +1944,8 @@ into code that calls the static methods of the result builder type:
       func draw() -> String { return content }
   }
   struct Line<D: Drawable>: Drawable {
-        var elements: [D]
-        func draw() -> String {
+      var elements: [D]
+      func draw() -> String {
           return elements.map { $0.draw() }.joined(separator: "")
       }
   }
@@ -1722,7 +2002,7 @@ into code that calls the static methods of the result builder type:
 
   To solve this problem,
   implement a `buildLimitedAvailability(_:)` method
-  to erase type information.
+  to erase type information by returning a type that's always available.
   For example, the code below builds an `AnyDrawable` value
   from its availability check.
 
@@ -1732,7 +2012,7 @@ into code that calls the static methods of the result builder type:
       func draw() -> String { return content.draw() }
   }
   extension DrawingBuilder {
-      static func buildLimitedAvailability(_ content: Drawable) -> AnyDrawable {
+      static func buildLimitedAvailability(_ content: some Drawable) -> AnyDrawable {
           return AnyDrawable(content: content)
       }
   }
@@ -1793,7 +2073,6 @@ into code that calls the static methods of the result builder type:
   }
   ```
 
-
   <!--
     - test: `array-result-builder`
 
@@ -1810,7 +2089,7 @@ into code that calls the static methods of the result builder type:
        }
     << Building second... [32]
     << Building first... [32]
-    ---
+
     -> var manualConditional: [Int]
     -> if someNumber < 12 {
            let partialResult = ArrayBuilder.buildExpression(31)
@@ -1849,7 +2128,6 @@ into code that calls the static methods of the result builder type:
   var manualOptional = ArrayBuilder.buildOptional(partialResult)
   ```
 
-
   <!--
     - test: `array-result-builder`
 
@@ -1858,7 +2136,7 @@ into code that calls the static methods of the result builder type:
            if (someNumber % 2) == 1 { 20 }
        }
     << Building optional... Optional([20])
-    ---
+
     -> var partialResult: [Int]? = nil
     -> if (someNumber % 2) == 1 {
            partialResult = ArrayBuilder.buildExpression(20)
@@ -1868,7 +2146,87 @@ into code that calls the static methods of the result builder type:
     >> assert(builderOptional == manualOptional)
     ```
   -->
-- A code block or `do` statement
+- If the result builder implements
+  the `buildPartialBlock(first:)`
+  and `buildPartialBlock(accumulated:next:)` methods,
+  a code block or `do` statement becomes a call to those methods.
+  The first statement inside of the block
+  is transformed to become an argument
+  to the `buildPartialBlock(first:)` method,
+  and the remaining statements become nested calls
+  to the `buildPartialBlock(accumulated:next:)` method.
+  For example, the following declarations are equivalent:
+
+  ```swift
+  struct DrawBoth<First: Drawable, Second: Drawable>: Drawable {
+      var first: First
+      var second: Second
+      func draw() -> String { return first.draw() + second.draw() }
+  }
+
+  @resultBuilder
+  struct DrawingPartialBlockBuilder {
+      static func buildPartialBlock<D: Drawable>(first: D) -> D {
+          return first
+      }
+      static func buildPartialBlock<Accumulated: Drawable, Next: Drawable>(
+          accumulated: Accumulated, next: Next
+      ) -> DrawBoth<Accumulated, Next> {
+          return DrawBoth(first: accumulated, second: next)
+      }
+  }
+
+  @DrawingPartialBlockBuilder var builderBlock: some Drawable {
+      Text("First")
+      Line(elements: [Text("Second"), Text("Third")])
+      Text("Last")
+  }
+
+  let partialResult1 = DrawingPartialBlockBuilder.buildPartialBlock(first: Text("first"))
+  let partialResult2 = DrawingPartialBlockBuilder.buildPartialBlock(
+      accumulated: partialResult1,
+      next: Line(elements: [Text("Second"), Text("Third")])
+  )
+  let manualResult = DrawingPartialBlockBuilder.buildPartialBlock(
+      accumulated: partialResult2,
+      next: Text("Last")
+  )
+  ```
+
+  <!--
+    - test: `drawing-partial-block-builder`
+
+    ```swifttest
+    -> @resultBuilder
+    -> struct DrawingPartialBlockBuilder {
+           static func buildPartialBlock<D: Drawable>(first: D) -> D {
+               return first
+           }
+           static func buildPartialBlock<Accumulated: Drawable, Next: Drawable>(
+               accumulated: Accumulated, next: Next
+           ) -> DrawBoth<Accumulated, Next> {
+               return DrawBoth(first: accumulated, second: next)
+           }
+       }
+    -> @DrawingPartialBlockBuilder var builderBlock: some Drawable {
+          Text("First")
+          Line(elements: [Text("Second"), Text("Third")])
+          Text("Last")
+       }
+
+    -> let partialResult1 = DrawingPartialBlockBuilder.buildPartialBlock(first: Text("first"))
+    -> let partialResult2 = DrawingPartialBlockBuilder.buildPartialBlock(
+          accumulated: partialResult1,
+          next: Line(elements: [Text("Second"), Text("Third")])
+       )
+       let manualResult = DrawingPartialBlockBuilder.buildPartialBlock(
+           accumulated: partialResult2,
+           next: Text("Last")
+       )
+    >> assert(type(of: builderBlock) == type(of: manualResult))
+    ```
+  -->
+- Otherwise, a code block or `do` statement
   becomes a call to the `buildBlock(_:)` method.
   Each of the statements inside of the block is transformed,
   one at a time,
@@ -1889,7 +2247,6 @@ into code that calls the static methods of the result builder type:
   )
   ```
 
-
   <!--
     - test: `array-result-builder`
 
@@ -1899,7 +2256,7 @@ into code that calls the static methods of the result builder type:
            200
            300
        }
-    ---
+
     -> var manualBlock = ArrayBuilder.buildBlock(
            ArrayBuilder.buildExpression(100),
            ArrayBuilder.buildExpression(200),
@@ -1930,7 +2287,6 @@ into code that calls the static methods of the result builder type:
   let manualArray = ArrayBuilder.buildArray(temporary)
   ```
 
-
   <!--
     - test: `array-result-builder`
 
@@ -1940,7 +2296,7 @@ into code that calls the static methods of the result builder type:
                100 + i
            }
        }
-    ---
+
     -> var temporary: [[Int]] = []
     -> for i in 5...7 {
            let partialResult = ArrayBuilder.buildExpression(100 + i)
@@ -1955,7 +2311,7 @@ into code that calls the static methods of the result builder type:
   This transformation is always last.
 
 <!--
-  - test: `result-builder-limited-availability-broken, result-builder-limited-availability-ok`
+  - test: `result-builder-limited-availability-broken, result-builder-limited-availability-ok`, `drawing-partial-result-builder`
 
   ```swifttest
   -> protocol Drawable {
@@ -1976,7 +2332,7 @@ into code that calls the static methods of the result builder type:
          var content: Drawable
          func draw() -> String { return content.draw() }
      }
-  ---
+
   -> @resultBuilder
      struct DrawingBuilder {
          static func buildBlock<D: Drawable>(_ components: D...) -> Line<D> {
@@ -2044,11 +2400,11 @@ into code that calls the static methods of the result builder type:
          func draw() -> String { return content.draw() }
      }
   -> extension DrawingBuilder {
-         static func buildLimitedAvailability(_ content: Drawable) -> AnyDrawable {
+         static func buildLimitedAvailability(_ content: some Drawable) -> AnyDrawable {
              return AnyDrawable(content: content)
          }
      }
-  ---
+
   -> @DrawingBuilder var typeErasedDrawing: Drawable {
          if #available(macOS 99, *) {
              FutureText("Inside.future")
@@ -2124,7 +2480,7 @@ You can apply that attribute in the following places:
 Applying a result builder attribute doesn't impact ABI compatibility.
 Applying a result builder attribute to a parameter
 makes that attribute part of the function's interface,
-which can effect source compatibility.
+which can affect source compatibility.
 
 ### requires_stored_property_inits
 
@@ -2170,8 +2526,14 @@ The imported module must be compiled with testing enabled.
 
 ### UIApplicationMain
 
+> Deprecated:
+> This attribute is deprecated;
+> use the <doc:Attributes#main> attribute instead.
+> In Swift 6,
+> using this attribute produces a compile-time error.
+
 Apply this attribute to a class
-to indicate that it's the application delegate.
+to indicate that it's the app delegate.
 Using this attribute is equivalent to calling the
 `UIApplicationMain` function and
 passing this class's name as the name of the delegate class.
@@ -2382,12 +2744,6 @@ see <doc:Statements#Switching-Over-Future-Enumeration-Cases>.
 > *balanced-token* → **`{`** *balanced-tokens*_?_ **`}`** \
 > *balanced-token* → Any identifier, keyword, literal, or operator \
 > *balanced-token* → Any punctuation except  **`(`**,  **`)`**,  **`[`**,  **`]`**,  **`{`**, or  **`}`**
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

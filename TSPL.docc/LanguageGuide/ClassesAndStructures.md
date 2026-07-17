@@ -197,7 +197,7 @@ separated by a period (`.`), without any spaces:
 
 ```swift
 print("The width of someResolution is \(someResolution.width)")
-// Prints "The width of someResolution is 0"
+// Prints "The width of someResolution is 0".
 ```
 
 <!--
@@ -218,7 +218,7 @@ such as the `width` property in the `resolution` property of a `VideoMode`:
 
 ```swift
 print("The width of someVideoMode is \(someVideoMode.resolution.width)")
-// Prints "The width of someVideoMode is 0"
+// Prints "The width of someVideoMode is 0".
 ```
 
 <!--
@@ -235,7 +235,7 @@ You can also use dot syntax to assign a new value to a variable property:
 ```swift
 someVideoMode.resolution.width = 1280
 print("The width of someVideoMode is now \(someVideoMode.resolution.width)")
-// Prints "The width of someVideoMode is now 1280"
+// Prints "The width of someVideoMode is now 1280".
 ```
 
 <!--
@@ -306,7 +306,7 @@ This means that any structure and enumeration instances you create ---
 and any value types they have as properties ---
 are always copied when they're passed around in your code.
 
-> Note: Collections defined by the standard library
+> Note: Collections defined by the Swift standard library
 > like arrays, dictionaries, and strings
 > use an optimization to reduce the performance cost of copying.
 > Instead of making a copy immediately,
@@ -367,7 +367,7 @@ shows that it has indeed changed to be `2048`:
 
 ```swift
 print("cinema is now \(cinema.width) pixels wide")
-// Prints "cinema is now 2048 pixels wide"
+// Prints "cinema is now 2048 pixels wide".
 ```
 
 <!--
@@ -384,7 +384,7 @@ still has the old value of `1920`:
 
 ```swift
 print("hd is still \(hd.width) pixels wide")
-// Prints "hd is still 1920 pixels wide"
+// Prints "hd is still 1920 pixels wide".
 ```
 
 <!--
@@ -422,8 +422,8 @@ currentDirection.turnNorth()
 
 print("The current direction is \(currentDirection)")
 print("The remembered direction is \(rememberedDirection)")
-// Prints "The current direction is north"
-// Prints "The remembered direction is west"
+// Prints "The current direction is north".
+// Prints "The remembered direction is west".
 ```
 
 <!--
@@ -439,7 +439,7 @@ print("The remembered direction is \(rememberedDirection)")
   -> var currentDirection = CompassPoint.west
   -> let rememberedDirection = currentDirection
   -> currentDirection.turnNorth()
-  ---
+
   -> print("The current direction is \(currentDirection)")
   -> print("The remembered direction is \(rememberedDirection)")
   <- The current direction is north
@@ -522,7 +522,7 @@ from the underlying `VideoMode` instance:
 
 ```swift
 print("The frameRate property of tenEighty is now \(tenEighty.frameRate)")
-// Prints "The frameRate property of tenEighty is now 30.0"
+// Prints "The frameRate property of tenEighty is now 30.0".
 ```
 
 <!--
@@ -694,7 +694,7 @@ but isn't a direct pointer to an address in memory,
 and doesn't require you to write an asterisk (`*`)
 to indicate that you are creating a reference.
 Instead, these references are defined like any other constant or variable in Swift.
-The standard library provides pointer and buffer types
+The Swift standard library provides pointer and buffer types
 that you can use if you need to interact with pointers directly ---
 see [Manual Memory Management](https://developer.apple.com/documentation/swift/swift_standard_library/manual_memory_management).
 
@@ -709,12 +709,6 @@ see [Manual Memory Management](https://developer.apple.com/documentation/swift/s
 <!--
   QUESTION: what's the deal with tuples and reference types / value types?
 -->
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

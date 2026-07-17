@@ -269,7 +269,7 @@ case .right:
 case nil:
     print("Keep going straight")
 }
-// Prints "Turn left"
+// Prints "Turn left".
 ```
 
 <!--
@@ -328,7 +328,7 @@ if case let x? = someOptional {
         print(x)
      }
   << 42
-  ---
+
   -> // Match using an optional pattern.
   -> if case let x? = someOptional {
         print(x)
@@ -411,7 +411,7 @@ case labels.
 
 The expression represented by the expression pattern
 is compared with the value of an input expression
-using the Swift standard library `~=` operator.
+using the pattern-matching operator (`~=`) from the Swift standard library.
 The matches succeeds
 if the `~=` operator returns `true`. By default, the `~=` operator compares
 two values of the same type using the `==` operator.
@@ -488,12 +488,6 @@ default:
 > Grammar of an expression pattern:
 >
 > *expression-pattern* → *expression*
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

@@ -33,8 +33,7 @@ the term *declaration* covers both declarations and definitions.
 > *declaration* → *subscript-declaration* \
 > *declaration* → *macro-declaration* \
 > *declaration* → *operator-declaration* \
-> *declaration* → *precedence-group-declaration* \
-> *declarations* → *declaration* *declarations*_?_
+> *declaration* → *precedence-group-declaration*
 
 ## Top-Level Code
 
@@ -59,11 +58,11 @@ The Swift code you compile to make an executable
 can contain at most one of the following approaches
 to mark the top-level entry point,
 regardless of how the code is organized into files and modules:
+a file that contains top-level executable code,
+a `main.swift` file,
 the `main` attribute,
 the `NSApplicationMain` attribute,
-the `UIApplicationMain` attribute,
-a `main.swift` file,
-or a file that contains top-level executable code.
+or the `UIApplicationMain` attribute.
 
 > Grammar of a top-level declaration:
 >
@@ -156,6 +155,24 @@ as long as it's guaranteed to have a value set
 before the first time its value is read.
 If the compiler can prove that the constant's value is never read,
 the constant isn't required to have a value set at all.
+This analysis is called *definite initialization* ---
+the compiler proves that a value is definitely set before being read.
+
+> Note:
+> Definite initialization
+> can't construct proofs that require domain knowledge,
+> and its ability to track state across conditionals has a limit.
+> If you can determine that constant always has a value set,
+> but the compiler can't prove this is the case,
+> try simplifying the code paths that set the value,
+> or use a variable declaration instead.
+
+<!--
+In the most general case,
+DI reduces to the halting problem,
+as shown by Rice's theorem.
+-->
+
 When a constant declaration occurs in the context of a class or structure
 declaration, it's considered a *constant property*.
 Constant declarations aren't computed properties and therefore don't have getters
@@ -277,6 +294,9 @@ That said, if no initializer *expression* is present,
 the variable declaration must include an explicit type annotation (`:` *type*).
 
 As with constant declarations,
+if a variable declaration omits the initializer *expression*,
+the variable must have a value set before the first time it is read.
+Also like constant declarations,
 if the *variable name* is a tuple pattern,
 the name of each item in the tuple is bound to the corresponding value
 in the initializer *expression*.
@@ -431,9 +451,9 @@ class New: Superclass {
 }
 let new = New()
 new.x = 100
-// Prints "Setter was called"
-// Prints "Getter was called"
-// Prints "New value 100"
+// Prints "Setter was called".
+// Prints "Getter was called".
+// Prints "New value 100".
 
 // This subclass refers to oldValue in its observer, so the superclass's
 // getter is called once before the setter, and again to print the value.
@@ -444,10 +464,10 @@ class NewAndOld: Superclass {
 }
 let newAndOld = NewAndOld()
 newAndOld.x = 200
-// Prints "Getter was called"
-// Prints "Setter was called"
-// Prints "Getter was called"
-// Prints "Old value 12 - new value 200"
+// Prints "Getter was called".
+// Prints "Setter was called".
+// Prints "Getter was called".
+// Prints "Old value 12 - new value 200".
 ```
 
 <!--
@@ -461,7 +481,7 @@ newAndOld.x = 200
              set { print("Setter was called"); xValue = newValue }
          }
      }
-  ---
+
   // This subclass doesn't refer to oldValue in its observer, so the
   // superclass's getter is called only once to print the value.
   -> class New: Superclass {
@@ -474,7 +494,7 @@ newAndOld.x = 200
   <- Setter was called
   <- Getter was called
   <- New value 100
-  ---
+
   // This subclass refers to oldValue in its observer, so the superclass's
   // getter is called once before the setter, and again to print the value.
   -> class NewAndOld: Superclass {
@@ -587,7 +607,7 @@ var dictionary2: Dictionary<String, Int> = [:]
 
   ```swifttest
   -> typealias StringDictionary<Value> = Dictionary<String, Value>
-  ---
+
   // The following dictionaries have the same type.
   -> var dictionary1: StringDictionary<Int> = [:]
   -> var dictionary2: Dictionary<String, Int> = [:]
@@ -668,7 +688,7 @@ func sum<T: Sequence>(_ sequence: T) -> Int where T.Element == Int {
          associatedtype Iterator: IteratorProtocol
          typealias Element = Iterator.Element
      }
-  ---
+
   -> func sum<T: Sequence>(_ sequence: T) -> Int where T.Element == Int {
          // ...
   >>     return 9000
@@ -831,7 +851,44 @@ repeatGreeting("Hello, world!", count: 2) //  count is labeled, greeting is not
   ```
 -->
 
-### In-Out Parameters
+### Parameter Modifiers
+
+A *parameter modifier* changes how an argument is passed to the function.
+
+```swift
+<#argument label#> <#parameter name#>: <#parameter modifier#> <#parameter type#>
+```
+
+To use a parameter modifier,
+write `inout`, `borrowing`, or `consuming`
+before the argument's type.
+
+```swift
+func someFunction(a: inout A, b: consuming B, c: C) { ... }
+```
+
+#### In-Out Parameters
+
+By default, function arguments in Swift are passed by value:
+Any changes made within the function are not visible in the caller.
+To make an in-out parameter instead,
+you apply the `inout` parameter modifier.
+
+```swift
+func someFunction(a: inout Int) {
+    a += 1
+}
+```
+
+When calling a function that includes in-out parameters,
+the in-out argument must be prefixed with an ampersand (`&`)
+to mark that the function call can change the argument's value.
+
+```swift
+var x = 7
+someFunction(a: &x)
+print(x)  // Prints "8"
+```
 
 In-out parameters are passed as follows:
 
@@ -864,9 +921,31 @@ so that it behaves correctly with or without the optimization.
 Within a function, don't access a value that was passed as an in-out argument,
 even if the original value is available in the current scope.
 Accessing the original is a simultaneous access of the value,
-which violates Swift's memory exclusivity guarantee.
+which violates memory exclusivity.
+
+```swift
+var someValue: Int
+func someFunction(a: inout Int) {
+    a += someValue
+}
+
+// Error: This causes a runtime exclusivity violation
+someFunction(a: &someValue)
+```
+
 For the same reason,
 you can't pass the same value to multiple in-out parameters.
+
+```swift
+var someValue: Int
+func someFunction(a: inout Int, b: inout Int) {
+    a += b
+    b += 1
+}
+
+// Error: Cannot pass the same value to multiple in-out parameters
+someFunction(a: &someValue, b: &someValue)
+```
 
 For more information about memory safety and memory exclusivity,
 see <doc:MemorySafety>.
@@ -978,6 +1057,152 @@ see <doc:Functions#In-Out-Parameters>.
   !! return { a += 1 }
   !! ^
   ```
+-->
+
+#### Borrowing and Consuming Parameters
+
+By default, Swift uses a set of rules
+to automatically manage object lifetime across function calls,
+copying values when required.
+The default rules are designed to minimize overhead in most cases ---
+if you want more specific control,
+you can apply the `borrowing` or `consuming` parameter modifier.
+In this case,
+use `copy` to explicitly mark copy operations.
+In addition,
+values of a noncopyable type must be passed as either borrowing or consuming.
+
+Regardless of whether you use the default rules,
+Swift guarantees that object lifetime and
+ownership are correctly managed in all cases.
+These parameter modifiers impact only the relative efficiency
+of particular usage patterns, not correctness.
+
+<!--
+TODO: Describe the default rules.
+Essentially, inits and property setters are consuming,
+and everything else is borrowing.
+Where are copies implicitly inserted?
+-->
+
+The `borrowing` modifier indicates that the function
+does not keep the parameter's value.
+In this case, the caller maintains ownership of the object
+and the responsibility for the object's lifetime.
+Using `borrowing` minimizes overhead when the function
+uses the object only transiently.
+
+```swift
+// `isLessThan` does not keep either argument
+func isLessThan(lhs: borrowing A, rhs: borrowing A) -> Bool {
+    ...
+}
+```
+
+If the function needs to keep the parameter's value
+for example, by storing it in a global variable ---
+you use `copy` to explicitly copy that value.
+
+```swift
+// As above, but this `isLessThan` also wants to record the smallest value
+func isLessThan(lhs: borrowing A, rhs: borrowing A) -> Bool {
+    if lhs < storedValue {
+        storedValue = copy lhs
+    } else if rhs < storedValue {
+        storedValue = copy rhs
+    }
+    return lhs < rhs
+}
+```
+
+Conversely,
+the `consuming` parameter modifier indicates
+that the function takes ownership of the value,
+accepting responsibility for either storing or destroying it
+before the function returns.
+
+```swift
+// `store` keeps its argument, so mark it `consuming`
+func store(a: consuming A) {
+    someGlobalVariable = a
+}
+```
+
+Using `consuming` minimizes overhead when the caller no longer
+needs to use the object after the function call.
+
+```swift
+// Usually, this is the last thing you do with a value
+store(a: value)
+```
+
+If you keep using a copyable object after the function call,
+the compiler automatically makes a copy of that object
+before the function call.
+
+```swift
+// The compiler inserts an implicit copy here
+store(a: someValue)  // This function consumes someValue
+print(someValue)  // This uses the copy of someValue
+```
+
+Unlike `inout`, neither `borrowing` nor
+`consuming` parameters require any special
+notation when you call the function:
+
+```swift
+func someFunction(a: borrowing A, b: consuming B) { ... }
+
+someFunction(a: someA, b: someB)
+```
+
+The explicit use of either `borrowing` or `consuming`
+indicates your intention to more tightly control
+the overhead of runtime ownership management.
+Because copies can cause unexpected runtime ownership
+operations,
+parameters marked with either of these
+modifiers cannot be copied unless you
+use an explicit `copy` keyword:
+
+```swift
+func borrowingFunction1(a: borrowing A) {
+    // Error: Cannot implicitly copy a
+    // This assignment requires a copy because
+    // `a` is only borrowed from the caller.
+    someGlobalVariable = a
+}
+
+func borrowingFunction2(a: borrowing A) {
+    // OK: Explicit copying works
+    someGlobalVariable = copy a
+}
+
+func consumingFunction1(a: consuming A) {
+    // Error: Cannot implicitly copy a
+    // This assignment requires a copy because
+    // of the following `print`
+    someGlobalVariable = a
+    print(a)
+}
+
+func consumingFunction2(a: consuming A) {
+    // OK: Explicit copying works regardless
+    someGlobalVariable = copy a
+    print(a)
+}
+
+func consumingFunction3(a: consuming A) {
+    // OK: No copy needed here because this is the last use
+    someGlobalVariable = a
+}
+```
+
+<!--
+  TODO: `borrowing` and `consuming` keywords with noncopyable argument types
+-->
+<!--
+  TODO: Any change of parameter modifier is ABI-breaking
 -->
 
 ### Special Kinds of Parameters
@@ -1241,13 +1466,25 @@ func <#function name#>(<#parameters#>) throws -> <#return type#> {
 }
 ```
 
+A function that throws a specific error type has the following form:
+
+```swift
+func <#function name#>(<#parameters#>) throws(<#error type#>) -> <#return type#> {
+   <#statements#>
+}
+```
+
 Calls to a throwing function or method must be wrapped in a `try` or `try!` expression
 (that is, in the scope of a `try` or `try!` operator).
 
-The `throws` keyword is part of a function's type,
-and nonthrowing functions are subtypes of throwing functions.
-As a result, you can use a nonthrowing function
-in a context where as a throwing one is expected.
+A function's type includes whether it can throw an error
+and what type of error it throws.
+This subtype relationship means, for example, you can use a nonthrowing function
+in a context where a throwing one is expected.
+For more information about the type of a throwing function,
+see <doc:Types#Function-Type>.
+For examples of working with errors that have explicit types,
+see <doc:ErrorHandling#Specifying-the-Error-Type>.
 
 You can't overload a function based only on whether the function can throw an error.
 That said,
@@ -1358,6 +1595,28 @@ and a throwing method can't satisfy a protocol requirement for a rethrowing meth
 That said, a rethrowing method can override a throwing method,
 and a rethrowing method can satisfy a protocol requirement for a throwing method.
 
+An alternative to rethrowing is throwing a specific error type in generic code.
+For example:
+
+```swift
+func someFunction<E: Error>(callback: () throws(E) -> Void) throws(E) {
+    try callback()
+}
+```
+
+This approach to propagating an error
+preserves type information about the error.
+However, unlike marking a function `rethrows`,
+this approach doesn't prevent the function
+from throwing an error of the same type.
+
+<!--
+TODO: Revisit the comparison between rethrows and throws(E) above,
+since it seems likely that the latter will generally replace the former.
+
+See also rdar://128972373
+-->
+
 ### Asynchronous Functions and Methods
 
 Functions and methods that run asynchronously must be marked with the `async` keyword.
@@ -1436,18 +1695,21 @@ but the new method must preserve its return type and nonreturning behavior.
 > *function-head* → *attributes*_?_ *declaration-modifiers*_?_ **`func`** \
 > *function-name* → *identifier* | *operator*
 >
-> *function-signature* → *parameter-clause* **`async`**_?_ **`throws`**_?_ *function-result*_?_ \
+> *function-signature* → *parameter-clause* **`async`**_?_ *throws-clause*_?_ *function-result*_?_ \
 > *function-signature* → *parameter-clause* **`async`**_?_ **`rethrows`** *function-result*_?_ \
 > *function-result* → **`->`** *attributes*_?_ *type* \
 > *function-body* → *code-block*
 >
-> *parameter-clause* → **`(`** **`)`** | **`(`** *parameter-list* **`)`** \
+> *parameter-clause* → **`(`** **`)`** | **`(`** *parameter-list* **`,`**_?_ **`)`** \
 > *parameter-list* → *parameter* | *parameter* **`,`** *parameter-list* \
-> *parameter* → *external-parameter-name*_?_ *local-parameter-name* *type-annotation* *default-argument-clause*_?_ \
-> *parameter* → *external-parameter-name*_?_ *local-parameter-name* *type-annotation* \
-> *parameter* → *external-parameter-name*_?_ *local-parameter-name* *type-annotation* **`...`** \
+> *parameter* → *external-parameter-name*_?_ *local-parameter-name* *parameter-type-annotation* *default-argument-clause*_?_ \
+> *parameter* → *external-parameter-name*_?_ *local-parameter-name* *parameter-type-annotation* \
+> *parameter* → *external-parameter-name*_?_ *local-parameter-name* *parameter-type-annotation* **`...`**
+>
 > *external-parameter-name* → *identifier* \
 > *local-parameter-name* → *identifier* \
+> *parameter-type-annotation* → **`:`** *attributes*_?_ *parameter-modifier*_?_ *type* \
+> *parameter-modifier* → **`inout`** | **`borrowing`** | **`consuming`**
 > *default-argument-clause* → **`=`** *expression*
 
 <!--
@@ -1539,7 +1801,7 @@ let evenInts: [Number] = [0, 2, 4, 6].map(f)
      }
   -> let f = Number.integer
   -> // f is a function of type (Int) -> Number
-  ---
+
   -> // Apply f to create an array of Number instances with integer values
   -> let evenInts: [Number] = [0, 2, 4, 6].map(f)
   ```
@@ -1630,10 +1892,10 @@ it can't contain any cases that are also marked with the `indirect` modifier.
   !! <REPL Input>:1:10: error: enum case 'c' without associated value cannot be 'indirect'
   !! enum E { indirect case c }
   !!          ^
-  ---
+
   -> enum E1 { indirect case c() }     // This is fine, but probably shouldn't be
   -> enum E2 { indirect case c(Int) }  // This is fine, but probably shouldn't be
-  ---
+
   -> indirect enum E3 { case x }
 -->
 
@@ -1805,21 +2067,6 @@ as described in <doc:Patterns#Enumeration-Case-Pattern>.
   because they behave differently. I'm not sure why we've blended them together,
   especially given that they have distinct syntactic declaration requirements
   and they behave differently.
--->
-
-<!--
-  old-grammar
-  Grammar of an enumeration declaration
-
-  enum-declaration -> attribute-list-OPT ``enum`` enum-name generic-parameter-clause-OPT type-inheritance-clause-OPT enum-body
-  enum-name -> identifier
-  enum-body -> ``{`` declarations-OPT ``}``
-
-  enum-member-declaration -> attribute-list-OPT ``case`` enumerator-list
-  enumerator-list -> enumerator raw-value-assignment-OPT | enumerator raw-value-assignment-OPT ``,`` enumerator-list
-  enumerator -> enumerator-name tuple-type-OPT
-  enumerator-name -> identifier
-  raw-value-assignment -> ``=`` literal
 -->
 
 ## Structure Declaration
@@ -2061,7 +2308,7 @@ as discussed in <doc:Declarations#Extension-Declaration>.
 ## Protocol Declaration
 
 A *protocol declaration* introduces a named protocol type into your program.
-Protocol declarations are declared at global scope
+Protocol declarations are declared
 using the `protocol` keyword and have the following form:
 
 ```swift
@@ -2069,6 +2316,9 @@ protocol <#protocol name#>: <#inherited protocols#> {
    <#protocol member declarations#>
 }
 ```
+
+Protocol declarations can appear at global scope,
+or nested inside a nongeneric type or nongeneric function.
 
 The body of a protocol contains zero or more *protocol member declarations*,
 which describe the conformance requirements that any type adopting the protocol must fulfill.
@@ -2233,7 +2483,7 @@ directly in the protocol in which it's declared.
 The getter and setter requirements can be satisfied by a conforming type in a variety of ways.
 If a property declaration includes both the `get` and `set` keywords,
 a conforming type can implement it with a stored variable property
-or a computed property that's both readable and writeable
+or a computed property that's both readable and writable
 (that is, one that implements both a getter and a setter). However,
 that property declaration can't be implemented as a constant property
 or a read-only computed property. If a property declaration includes
@@ -2343,7 +2593,7 @@ See also <doc:Declarations#Initializer-Declaration>.
 
 > Grammar of a protocol initializer declaration:
 >
-> *protocol-initializer-declaration* → *initializer-head* *generic-parameter-clause*_?_ *parameter-clause* **`throws`**_?_ *generic-where-clause*_?_ \
+> *protocol-initializer-declaration* → *initializer-head* *generic-parameter-clause*_?_ *parameter-clause* *throws-clause*_?_ *generic-where-clause*_?_ \
 > *protocol-initializer-declaration* → *initializer-head* *generic-parameter-clause*_?_ *parameter-clause* **`rethrows`** *generic-where-clause*_?_
 
 ### Protocol Subscript Declaration
@@ -2418,7 +2668,7 @@ protocol SubProtocolB: SomeProtocol where SomeType: Equatable { }
   -> protocol SomeProtocol {
          associatedtype SomeType
      }
-  ---
+
   -> protocol SubProtocolA: SomeProtocol {
          // This syntax produces a warning.
          associatedtype SomeType: Equatable
@@ -2430,7 +2680,7 @@ protocol SubProtocolB: SomeProtocol where SomeType: Equatable { }
   !$ note: 'SomeType' declared here
   !! associatedtype SomeType
   !! ^
-  ---
+
   // This syntax is preferred.
   -> protocol SubProtocolB: SomeProtocol where SomeType: Equatable { }
   ```
@@ -2688,7 +2938,7 @@ see <doc:Initialization#Failable-Initializers>.
 
 > Grammar of an initializer declaration:
 >
-> *initializer-declaration* → *initializer-head* *generic-parameter-clause*_?_ *parameter-clause* **`async`**_?_ **`throws`**_?_ *generic-where-clause*_?_ *initializer-body* \
+> *initializer-declaration* → *initializer-head* *generic-parameter-clause*_?_ *parameter-clause* **`async`**_?_ *throws-clause*_?_ *generic-where-clause*_?_ *initializer-body* \
 > *initializer-declaration* → *initializer-head* *generic-parameter-clause*_?_ *parameter-clause* **`async`**_?_ **`rethrows`** *generic-where-clause*_?_ *initializer-body* \
 > *initializer-head* → *attributes*_?_ *declaration-modifiers*_?_ **`init`** \
 > *initializer-head* → *attributes*_?_ *declaration-modifiers*_?_ **`init`** **`?`** \
@@ -2860,7 +3110,7 @@ extension String: TitledLoggable {
              print(self)
          }
      }
-  ---
+
      protocol TitledLoggable: Loggable {
          static var logTitle: String { get }
      }
@@ -2869,7 +3119,7 @@ extension String: TitledLoggable {
              print("\(Self.logTitle): \(self)")
          }
      }
-  ---
+
      struct Pair<T>: CustomStringConvertible {
          let first: T
          let second: T
@@ -2877,14 +3127,14 @@ extension String: TitledLoggable {
              return "(\(first), \(second))"
          }
      }
-  ---
+
      extension Pair: Loggable where T: Loggable { }
      extension Pair: TitledLoggable where T: TitledLoggable {
          static var logTitle: String {
              return "Pair of '\(T.logTitle)'"
          }
      }
-  ---
+
      extension String: TitledLoggable {
         static var logTitle: String {
            return "String"
@@ -2905,7 +3155,7 @@ the specialized version containing the title string is used.
 ```swift
 let oneAndTwo = Pair(first: "one", second: "two")
 oneAndTwo.log()
-// Prints "Pair of 'String': (one, two)"
+// Prints "Pair of 'String': (one, two)".
 ```
 
 <!--
@@ -2931,7 +3181,7 @@ func doSomething<T: Loggable>(with x: T) {
     x.log()
 }
 doSomething(with: oneAndTwo)
-// Prints "(one, two)"
+// Prints "(one, two)".
 ```
 
 <!--
@@ -2970,7 +3220,7 @@ even if the extensions' requirements are mutually exclusive.
 This restriction is demonstrated in the example below.
 Two extension declarations attempt to add conditional conformance
 to the `Serializable` protocol,
-one for for arrays with `Int` elements,
+one for arrays with `Int` elements,
 and one for arrays with `String` elements.
 
 ```swift
@@ -2988,7 +3238,7 @@ extension Array: Serializable where Element == String {
         // implementation
     }
 }
-// Error: redundant conformance of 'Array<Element>' to protocol 'Serializable'
+// Error: Redundant conformance of 'Array<Element>' to protocol 'Serializable'.
 ```
 
 <!--
@@ -2998,7 +3248,7 @@ extension Array: Serializable where Element == String {
   -> protocol Serializable {
         func serialize() -> Any
      }
-  ---
+
      extension Array: Serializable where Element == Int {
          func serialize() -> Any {
              // implementation
@@ -3011,7 +3261,7 @@ extension Array: Serializable where Element == String {
   >>         return 0
   ->     }
      }
-  // Error: redundant conformance of 'Array<Element>' to protocol 'Serializable'
+  // Error: Redundant conformance of 'Array<Element>' to protocol 'Serializable'.
   !$ error: conflicting conformance of 'Array<Element>' to protocol 'Serializable'; there cannot be more than one conformance, even with different conditional bounds
   !! extension Array: Serializable where Element == String {
   !! ^
@@ -3045,7 +3295,7 @@ extension Array: Serializable where Element: SerializableInArray {
   -> protocol SerializableInArray { }
      extension Int: SerializableInArray { }
      extension String: SerializableInArray { }
-  ---
+
   -> extension Array: Serializable where Element: SerializableInArray {
          func serialize() -> Any {
              // implementation
@@ -3100,14 +3350,14 @@ extension Array: MarkedLoggable where Element: MarkedLoggable { }
   -> protocol MarkedLoggable: Loggable {
         func markAndLog()
      }
-  ---
+
      extension MarkedLoggable {
         func markAndLog() {
            print("----------")
            log()
         }
      }
-  ---
+
      extension Array: Loggable where Element: Loggable { }
      extension Array: TitledLoggable where Element: TitledLoggable {
         static var logTitle: String {
@@ -3126,7 +3376,7 @@ resulting in an error:
 ```swift
 extension Array: Loggable where Element: TitledLoggable { }
 extension Array: Loggable where Element: MarkedLoggable { }
-// Error: redundant conformance of 'Array<Element>' to protocol 'Loggable'
+// Error: Redundant conformance of 'Array<Element>' to protocol 'Loggable'.
 ```
 
 <!--
@@ -3138,7 +3388,7 @@ extension Array: Loggable where Element: MarkedLoggable { }
   >> protocol TitledLoggable : Loggable { }
   -> extension Array: Loggable where Element: TitledLoggable { }
      extension Array: Loggable where Element: MarkedLoggable { }
-  // Error: redundant conformance of 'Array<Element>' to protocol 'Loggable'
+  // Error: Redundant conformance of 'Array<Element>' to protocol 'Loggable'.
   !$ error: conflicting conformance of 'Array<Element>' to protocol 'Loggable'; there cannot be more than one conformance, even with different conditional bounds
   !! extension Array: Loggable where Element: MarkedLoggable { }
   !! ^
@@ -3257,7 +3507,7 @@ That said, if you provide a setter clause, you must also provide a getter clause
 
 The *setter name* and enclosing parentheses are optional.
 If you provide a setter name, it's used as the name of the parameter to the setter.
-If you don't provide a setter name, the default parameter name to the setter is `value`.
+If you don't provide a setter name, the default parameter name to the setter is `newValue`.
 The type of the parameter to the setter is the same as the *return type*.
 
 You can overload a subscript declaration in the type in which it's declared,
@@ -3327,15 +3577,19 @@ macro <#name#> = <#macro implementation#>
 
 The *macro implementation* is another macro,
 and indicates the location of the code that performs this macro's expansion.
+The code that performs macro expansion is a separate Swift program,
+that uses the [SwiftSyntax][] module to interact with Swift code.
 Call the `externalMacro(module:type:)` macro from the Swift standard library,
 passing in the name of a type that contains the macro's implementation,
 and the name of the module that contains that type.
+
+[SwiftSyntax]: https://github.com/swiftlang/swift-syntax
 
 Macros can be overloaded,
 following the same model used by functions.
 A macro declaration appears only at file scope.
 
-For more information, see <doc:Macros>.
+For an overview of macros in Swift, see <doc:Macros>.
 
 > Grammar of a macro declaration:
 >
@@ -3344,10 +3598,6 @@ For more information, see <doc:Macros>.
 > *macro-signature* → *parameter-clause* *macro-function-signature-result*_?_ \
 > *macro-function-signature-result* → **`->`** *type* \
 > *macro-definition* → **`=`** *expression*
-
-<!--
-TODO TR: Confirm that the 'where' clause goes after the equals sign.
--->
 
 ## Operator Declaration
 
@@ -3465,7 +3715,7 @@ binds more tightly to its operands.
 > can't be used next to each other without grouping parentheses.
 
 Swift defines numerous precedence groups to go along
-with the operators provided by the standard library.
+with the operators provided by the Swift standard library.
 For example, the addition (`+`) and subtraction (`-`) operators
 belong to the `AdditionPrecedence` group,
 and the multiplication (`*`) and division (`/`) operators
@@ -3497,7 +3747,7 @@ The *assignment* of a precedence group specifies the precedence of an operator
 when used in an operation that includes optional chaining.
 When set to `true`, an operator in the corresponding precedence group
 uses the same grouping rules during optional chaining
-as the assignment operators from the standard library.
+as the assignment operators from the Swift standard library.
 Otherwise, when set to `false` or omitted,
 operators in the precedence group follows the same optional chaining rules
 as operators that don't perform assignment.
@@ -3664,6 +3914,18 @@ Access control is discussed in detail in <doc:AccessControl>.
   Declarations marked with the `public` access-level modifier can also be accessed (but not subclassed)
   by code in a module that imports the module that contains that declaration.
 
+- term `package`:
+  Apply this modifier to a declaration
+  to indicate that the declaration can be accessed
+  only by code in the same package as the declaration.
+  A package is a unit of code distribution
+  that you define in the build system you're using.
+  When the build system compiles code,
+  it specifies the package name
+  by passing the `-package-name` flag to the Swift compiler.
+  Two modules are part of the same package
+  if the build system specifies the same package name when building them.
+
 - term `internal`:
   Apply this modifier to a declaration to indicate the declaration can be accessed
   only by code in the same module as the declaration.
@@ -3679,17 +3941,25 @@ Access control is discussed in detail in <doc:AccessControl>.
   only by code within the declaration's immediate enclosing scope.
 
 For the purpose of access control,
-extensions to the same type that are in the same file
-share an access-control scope.
-If the type they extend is also in the same file,
-they share the type's access-control scope.
-Private members declared in the type's declaration
-can be accessed from extensions,
-and private members declared in one extension
-can be accessed from other extensions and from the type's declaration.
+extensions behave as follows:
+
+- If there are multiple extensions in the same file,
+  and those extensions all extend the same type,
+  then all of those extensions have the same access-control scope.
+  The extensions and the type they extend can be in different files.
+
+- If there are extensions in the same file as the type they extend,
+  the extensions have the same access-control scope as the type they extend.
+
+- Private members declared in a type's declaration
+  can be accessed from extensions to that type.
+  Private members declared in one extension
+  can be accessed from other extensions
+  and from the extended type's declaration.
 
 Each access-level modifier above optionally accepts a single argument,
-which consists of the `set` keyword enclosed in parentheses (for example, `private(set)`).
+which consists of the `set` keyword enclosed in parentheses ---
+for example, `private(set)`.
 Use this form of an access-level modifier when you want to specify an access level
 for the setter of a variable or subscript that's less than or equal
 to the access level of the variable or subscript itself,
@@ -3706,18 +3976,13 @@ as discussed in <doc:AccessControl#Getters-and-Setters>.
 > *access-level-modifier* → **`private`** | **`private`** **`(`** **`set`** **`)`** \
 > *access-level-modifier* → **`fileprivate`** | **`fileprivate`** **`(`** **`set`** **`)`** \
 > *access-level-modifier* → **`internal`** | **`internal`** **`(`** **`set`** **`)`** \
+> *access-level-modifier* → **`package`** | **`package`** **`(`** **`set`** **`)`** \
 > *access-level-modifier* → **`public`** | **`public`** **`(`** **`set`** **`)`** \
 > *access-level-modifier* → **`open`** | **`open`** **`(`** **`set`** **`)`**
 >
 > *mutation-modifier* → **`mutating`** | **`nonmutating`**
 >
 > *actor-isolation-modifier* → **`nonisolated`**
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

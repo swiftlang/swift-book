@@ -346,9 +346,9 @@ class LinearCongruentialGenerator: RandomNumberGenerator {
 }
 let generator = LinearCongruentialGenerator()
 print("Here's a random number: \(generator.random())")
-// Prints "Here's a random number: 0.3746499199817101"
+// Prints "Here's a random number: 0.3746499199817101".
 print("And another one: \(generator.random())")
-// Prints "And another one: 0.729023776863283"
+// Prints "And another one: 0.729023776863283".
 ```
 
 <!--
@@ -597,7 +597,7 @@ see <doc:Initialization#Required-Initializers>.
 
 > Note: You don't need to mark protocol initializer implementations with the `required` modifier
 > on classes that are marked with the `final` modifier,
-> because final classes can't subclassed.
+> because final classes can't be subclassed.
 > For more about the `final` modifier, see <doc:Inheritance#Preventing-Overrides>.
 
 <!--
@@ -646,13 +646,13 @@ class SomeSubClass: SomeSuperClass, SomeProtocol {
   -> protocol SomeProtocol {
         init()
      }
-  ---
+
   -> class SomeSuperClass {
         init() {
            // initializer implementation goes here
         }
      }
-  ---
+
   -> class SomeSubClass: SomeSuperClass, SomeProtocol {
         // "required" from SomeProtocol conformance; "override" from SomeSuperClass
         required override init() {
@@ -752,6 +752,65 @@ a nonfailable initializer or an implicitly unwrapped failable initializer.
   ```
 -->
 
+## Protocols that Have Only Semantic Requirements
+
+All of the example protocols above require some methods or properties,
+but a protocol declaration doesn't have to include any requirements.
+You can also use a protocol to describe *semantic* requirements ---
+that is, requirements about how values of those types behave
+and about operations that they support.
+<!--
+Avoiding the term "marker protocol",
+which more specifically refers to @_marker on a protocol.
+-->
+The Swift standard library defines several protocols
+that don't have any required methods or properties:
+
+- [`Sendable`][] for values that can be shared across concurrency domains,
+  as discussed in <doc:Concurrency#Sendable-Types>.
+- [`Copyable`][] for values that Swift can copy
+  when you pass them to a function,
+  as discussed in <doc:Declarations#Borrowing-and-Consuming-Parameters>.
+- [`BitwiseCopyable`][] for values that can be copied, bit-by-bit.
+
+[`BitwiseCopyable`]: https://developer.apple.com/documentation/swift/bitwisecopyable
+[`Copyable`]: https://developer.apple.com/documentation/swift/copyable
+[`Sendable`]: https://developer.apple.com/documentation/swift/sendable
+
+<!--
+These link definitions are also used in the section below,
+Implicit Conformance to a Protocol.
+-->
+
+For information about these protocols' requirements,
+see the overview in their documentation.
+
+You use the same syntax to adopt these protocols
+as you do to adopt other protocols.
+The only difference is that you don't include
+method or property declarations that implement the protocol's requirements.
+For example:
+
+```swift
+struct MyStruct: Copyable {
+    var counter = 12
+}
+
+extension MyStruct: BitwiseCopyable { }
+```
+
+The code above defines a new structure.
+Because `Copyable` has only semantic requirements,
+there isn't any code in the structure declaration to adopt the protocol.
+Similarly, because `BitwiseCopyable` has only semantic requirements,
+the extension that adopts that protocol has an empty body.
+
+You usually don't need to write conformance to these protocols ---
+instead, Swift implicitly adds the conformance for you,
+as described in <doc:Protocols#Implicit-Conformance-to-a-Protocol>.
+
+<!-- TODO: Mention why you might define your own empty protocols. -->
+
 ## Protocols as Types
 
 Protocols don't actually implement any functionality themselves.
@@ -796,7 +855,6 @@ For information about opaque types, and boxed protocol types,
 see <doc:OpaqueTypes>.
 
 <!--
-
 Performance impact from SE-0335:
 
 Existential types are also significantly more expensive than using concrete types.
@@ -808,7 +866,6 @@ In addition to heap allocation and reference counting,
 code using existential types incurs pointer indirection and dynamic method dispatch
 that cannot be optimized away.
 -->
-
 
 ## Delegation
 
@@ -823,271 +880,146 @@ Delegation can be used to respond to a particular action,
 or to retrieve data from an external source without needing to know
 the underlying type of that source.
 
-The example below defines two protocols for use with dice-based board games:
+The example below defines a dice game
+and a nested protocol for a delegate
+that tracks the game's progress:
 
 ```swift
-protocol DiceGame {
-    var dice: Dice { get }
-    func play()
-}
-protocol DiceGameDelegate: AnyObject {
-    func gameDidStart(_ game: DiceGame)
-    func game(_ game: DiceGame, didStartNewTurnWithDiceRoll diceRoll: Int)
-    func gameDidEnd(_ game: DiceGame)
+class DiceGame {
+    let sides: Int
+    let generator = LinearCongruentialGenerator()
+    weak var delegate: Delegate?
+
+    init(sides: Int) {
+        self.sides = sides
+    }
+
+    func roll() -> Int {
+        return Int(generator.random() * Double(sides)) + 1
+    }
+
+    func play(rounds: Int) {
+        delegate?.gameDidStart(self)
+        for round in 1...rounds {
+            let player1 = roll()
+            let player2 = roll()
+            if player1 == player2 {
+                delegate?.game(self, didEndRound: round, winner: nil)
+            } else if player1 > player2 {
+                delegate?.game(self, didEndRound: round, winner: 1)
+            } else {
+                delegate?.game(self, didEndRound: round, winner: 2)
+            }
+        }
+        delegate?.gameDidEnd(self)
+    }
+
+    protocol Delegate: AnyObject {
+        func gameDidStart(_ game: DiceGame)
+        func game(_ game: DiceGame, didEndRound round: Int, winner: Int?)
+        func gameDidEnd(_ game: DiceGame)
+    }
 }
 ```
 
-<!--
-  - test: `protocols`
+The `DiceGame` class implements a game where
+each player takes a turn rolling dice,
+and the player who rolls the highest number wins the round.
+It uses a linear congruential generator
+from the example earlier in the chapter,
+to generate random numbers for dice rolls.
 
-  ```swifttest
-  -> protocol DiceGame {
-        var dice: Dice { get }
-        func play()
-     }
-  -> protocol DiceGameDelegate: AnyObject {
-        func gameDidStart(_ game: DiceGame)
-        func game(_ game: DiceGame, didStartNewTurnWithDiceRoll diceRoll: Int)
-        func gameDidEnd(_ game: DiceGame)
-     }
-  ```
--->
+The `DiceGame.Delegate` protocol can be adopted
+to track the progress of a dice game.
+Because the `DiceGame.Delegate` protocol
+is always used in the context of a dice game,
+it's nested inside of the `DiceGame` class.
+Protocols can be nested
+inside of type declarations like structures and classes,
+as long as the outer declaration isn't generic.
+For information about nesting types, see <doc:NestedTypes>.
 
-The `DiceGame` protocol is a protocol that can be adopted
-by any game that involves dice.
-
-The `DiceGameDelegate` protocol can be adopted
-to track the progress of a `DiceGame`.
 To prevent strong reference cycles,
 delegates are declared as weak references.
 For information about weak references,
 see <doc:AutomaticReferenceCounting#Strong-Reference-Cycles-Between-Class-Instances>.
 Marking the protocol as class-only
-lets the `SnakesAndLadders` class later in this chapter
+lets the `DiceGame` class
 declare that its delegate must use a weak reference.
 A class-only protocol
 is marked by its inheritance from `AnyObject`,
 as discussed in <doc:Protocols#Class-Only-Protocols>.
 
-Here's a version of the *Snakes and Ladders* game originally introduced in <doc:ControlFlow>.
-This version is adapted to use a `Dice` instance for its dice-rolls;
-to adopt the `DiceGame` protocol;
-and to notify a `DiceGameDelegate` about its progress:
-
-```swift
-class SnakesAndLadders: DiceGame {
-    let finalSquare = 25
-    let dice = Dice(sides: 6, generator: LinearCongruentialGenerator())
-    var square = 0
-    var board: [Int]
-    init() {
-        board = Array(repeating: 0, count: finalSquare + 1)
-        board[03] = +08; board[06] = +11; board[09] = +09; board[10] = +02
-        board[14] = -10; board[19] = -11; board[22] = -02; board[24] = -08
-    }
-    weak var delegate: DiceGameDelegate?
-    func play() {
-        square = 0
-        delegate?.gameDidStart(self)
-        gameLoop: while square != finalSquare {
-            let diceRoll = dice.roll()
-            delegate?.game(self, didStartNewTurnWithDiceRoll: diceRoll)
-            switch square + diceRoll {
-            case finalSquare:
-                break gameLoop
-            case let newSquare where newSquare > finalSquare:
-                continue gameLoop
-            default:
-                square += diceRoll
-                square += board[square]
-            }
-        }
-        delegate?.gameDidEnd(self)
-    }
-}
-```
-
-<!--
-  - test: `protocols`
-
-  ```swifttest
-  -> class SnakesAndLadders: DiceGame {
-        let finalSquare = 25
-        let dice = Dice(sides: 6, generator: LinearCongruentialGenerator())
-        var square = 0
-        var board: [Int]
-        init() {
-           board = Array(repeating: 0, count: finalSquare + 1)
-           board[03] = +08; board[06] = +11; board[09] = +09; board[10] = +02
-           board[14] = -10; board[19] = -11; board[22] = -02; board[24] = -08
-        }
-        weak var delegate: DiceGameDelegate?
-        func play() {
-           square = 0
-           delegate?.gameDidStart(self)
-           gameLoop: while square != finalSquare {
-              let diceRoll = dice.roll()
-              delegate?.game(self, didStartNewTurnWithDiceRoll: diceRoll)
-              switch square + diceRoll {
-                 case finalSquare:
-                    break gameLoop
-                 case let newSquare where newSquare > finalSquare:
-                    continue gameLoop
-                 default:
-                    square += diceRoll
-                    square += board[square]
-              }
-           }
-           delegate?.gameDidEnd(self)
-        }
-     }
-  ```
--->
-
-For a description of the *Snakes and Ladders* gameplay,
-see <doc:ControlFlow#Break>.
-
-This version of the game is wrapped up as a class called `SnakesAndLadders`,
-which adopts the `DiceGame` protocol.
-It provides a gettable `dice` property and a `play()` method
-in order to conform to the protocol.
-(The `dice` property is declared as a constant property
-because it doesn't need to change after initialization,
-and the protocol only requires that it must be gettable.)
-
-The *Snakes and Ladders* game board setup takes place within
-the class's `init()` initializer.
-All game logic is moved into the protocol's `play` method,
-which uses the protocol's required `dice` property to provide its dice roll values.
-
-Note that the `delegate` property is defined as an *optional* `DiceGameDelegate`,
-because a delegate isn't required in order to play the game.
-Because it's of an optional type,
-the `delegate` property is automatically set to an initial value of `nil`.
-Thereafter, the game instantiator has the option to set the property to a suitable delegate.
-Because the `DiceGameDelegate` protocol is class-only, you can declare the
-delegate to be `weak` to prevent reference cycles.
-
-`DiceGameDelegate` provides three methods for tracking the progress of a game.
-These three methods have been incorporated into the game logic within
-the `play()` method above, and are called when
+`DiceGame.Delegate` provides three methods for tracking the progress of a game.
+These three methods are incorporated into the game logic
+in the `play(rounds:)` method above.
+The `DiceGame` class calls its delegate methods when
 a new game starts, a new turn begins, or the game ends.
 
-Because the `delegate` property is an *optional* `DiceGameDelegate`,
-the `play()` method uses optional chaining each time it calls a method on the delegate.
+Because the `delegate` property is an *optional* `DiceGame.Delegate`,
+the `play(rounds:)` method uses optional chaining each time it calls a method on the delegate,
+as discussed in <doc:OptionalChaining>.
 If the `delegate` property is nil,
-these delegate calls fail gracefully and without error.
+these delegate calls are ignored.
 If the `delegate` property is non-nil,
 the delegate methods are called,
-and are passed the `SnakesAndLadders` instance as a parameter.
-
-<!--
-  TODO: add a cross-reference to optional chaining here.
--->
+and are passed the `DiceGame` instance as a parameter.
 
 This next example shows a class called `DiceGameTracker`,
-which adopts the `DiceGameDelegate` protocol:
+which adopts the `DiceGame.Delegate` protocol:
 
 ```swift
-class DiceGameTracker: DiceGameDelegate {
-    var numberOfTurns = 0
+class DiceGameTracker: DiceGame.Delegate {
+    var playerScore1 = 0
+    var playerScore2 = 0
     func gameDidStart(_ game: DiceGame) {
-        numberOfTurns = 0
-        if game is SnakesAndLadders {
-            print("Started a new game of Snakes and Ladders")
-        }
-        print("The game is using a \(game.dice.sides)-sided dice")
+        print("Started a new game")
+        playerScore1 = 0
+        playerScore2 = 0
     }
-    func game(_ game: DiceGame, didStartNewTurnWithDiceRoll diceRoll: Int) {
-        numberOfTurns += 1
-        print("Rolled a \(diceRoll)")
+    func game(_ game: DiceGame, didEndRound round: Int, winner: Int?) {
+        switch winner {
+            case 1:
+                playerScore1 += 1
+                print("Player 1 won round \(round)")
+            case 2: playerScore2 += 1
+                print("Player 2 won round \(round)")
+            default:
+                print("The round was a draw")
+        }
     }
     func gameDidEnd(_ game: DiceGame) {
-        print("The game lasted for \(numberOfTurns) turns")
+        if playerScore1 == playerScore2 {
+            print("The game ended in a draw.")
+        } else if playerScore1 > playerScore2 {
+            print("Player 1 won!")
+        } else {
+            print("Player 2 won!")
+        }
     }
 }
 ```
 
-<!--
-  - test: `protocols`
+The `DiceGameTracker` class implements all three methods
+that are required by the `DiceGame.Delegate` protocol.
+It uses these methods to zero out both players' scores
+at the start of a new game,
+to update their scores at the end of each round,
+and to announce a winner at the end of the game.
 
-  ```swifttest
-  -> class DiceGameTracker: DiceGameDelegate {
-        var numberOfTurns = 0
-        func gameDidStart(_ game: DiceGame) {
-           numberOfTurns = 0
-           if game is SnakesAndLadders {
-              print("Started a new game of Snakes and Ladders")
-           }
-           print("The game is using a \(game.dice.sides)-sided dice")
-        }
-        func game(_ game: DiceGame, didStartNewTurnWithDiceRoll diceRoll: Int) {
-           numberOfTurns += 1
-           print("Rolled a \(diceRoll)")
-        }
-        func gameDidEnd(_ game: DiceGame) {
-           print("The game lasted for \(numberOfTurns) turns")
-        }
-     }
-  ```
--->
-
-`DiceGameTracker` implements all three methods required by `DiceGameDelegate`.
-It uses these methods to keep track of the number of turns a game has taken.
-It resets a `numberOfTurns` property to zero when the game starts,
-increments it each time a new turn begins,
-and prints out the total number of turns once the game has ended.
-
-The implementation of `gameDidStart(_:)` shown above uses the `game` parameter
-to print some introductory information about the game that's about to be played.
-The `game` parameter has a type of `DiceGame`, not `SnakesAndLadders`,
-and so `gameDidStart(_:)` can access and use only methods and properties that
-are implemented as part of the `DiceGame` protocol.
-However, the method is still able to use type casting to
-query the type of the underlying instance.
-In this example, it checks whether `game` is actually
-an instance of `SnakesAndLadders` behind the scenes,
-and prints an appropriate message if so.
-
-The `gameDidStart(_:)` method also accesses the `dice` property of the passed `game` parameter.
-Because `game` is known to conform to the `DiceGame` protocol,
-it's guaranteed to have a `dice` property,
-and so the `gameDidStart(_:)` method is able to access and print the dice's `sides` property,
-regardless of what kind of game is being played.
-
-Here's how `DiceGameTracker` looks in action:
+Here's how `DiceGame` and `DiceGameTracker` look in action:
 
 ```swift
 let tracker = DiceGameTracker()
-let game = SnakesAndLadders()
+let game = DiceGame(sides: 6)
 game.delegate = tracker
-game.play()
-// Started a new game of Snakes and Ladders
-// The game is using a 6-sided dice
-// Rolled a 3
-// Rolled a 5
-// Rolled a 4
-// Rolled a 5
-// The game lasted for 4 turns
+game.play(rounds: 3)
+// Started a new game
+// Player 2 won round 1
+// Player 2 won round 2
+// Player 1 won round 3
+// Player 2 won!
 ```
-
-<!--
-  - test: `protocols`
-
-  ```swifttest
-  -> let tracker = DiceGameTracker()
-  -> let game = SnakesAndLadders()
-  -> game.delegate = tracker
-  -> game.play()
-  </ Started a new game of Snakes and Ladders
-  </ The game is using a 6-sided dice
-  </ Rolled a 3
-  </ Rolled a 5
-  </ Rolled a 4
-  </ Rolled a 5
-  </ The game lasted for 4 turns
-  ```
--->
 
 ## Adding Protocol Conformance with an Extension
 
@@ -1159,7 +1091,7 @@ Any `Dice` instance can now be treated as `TextRepresentable`:
 ```swift
 let d12 = Dice(sides: 12, generator: LinearCongruentialGenerator())
 print(d12.textualDescription)
-// Prints "A 12-sided dice"
+// Prints "A 12-sided dice".
 ```
 
 <!--
@@ -1182,7 +1114,7 @@ extension SnakesAndLadders: TextRepresentable {
     }
 }
 print(game.textualDescription)
-// Prints "A game of Snakes and Ladders with 25 squares"
+// Prints "A game of Snakes and Ladders with 25 squares".
 ```
 
 <!--
@@ -1223,7 +1155,7 @@ extension Array: TextRepresentable where Element: TextRepresentable {
 }
 let myDice = [d6, d12]
 print(myDice.textualDescription)
-// Prints "[A 6-sided dice, A 12-sided dice]"
+// Prints "[A 6-sided dice, A 12-sided dice]".
 ```
 
 <!--
@@ -1278,7 +1210,7 @@ Instances of `Hamster` can now be used wherever `TextRepresentable` is the requi
 let simonTheHamster = Hamster(name: "Simon")
 let somethingTextRepresentable: TextRepresentable = simonTheHamster
 print(somethingTextRepresentable.textualDescription)
-// Prints "A hamster named Simon"
+// Prints "A hamster named Simon".
 ```
 
 <!--
@@ -1367,7 +1299,7 @@ if twoThreeFour == anotherTwoThreeFour {
   -> struct Vector3D: Equatable {
         var x = 0.0, y = 0.0, z = 0.0
      }
-  ---
+
   -> let twoThreeFour = Vector3D(x: 2.0, y: 3.0, z: 4.0)
   -> let anotherTwoThreeFour = Vector3D(x: 2.0, y: 3.0, z: 4.0)
   -> if twoThreeFour == anotherTwoThreeFour {
@@ -1424,10 +1356,10 @@ var levels = [SkillLevel.intermediate, SkillLevel.beginner,
 for level in levels.sorted() {
     print(level)
 }
-// Prints "beginner"
-// Prints "intermediate"
-// Prints "expert(stars: 3)"
-// Prints "expert(stars: 5)"
+// Prints "beginner".
+// Prints "intermediate".
+// Prints "expert(stars: 3)".
+// Prints "expert(stars: 5)".
 ```
 
 <!--
@@ -1494,6 +1426,96 @@ for level in levels.sorted() {
   !!                 ^
   ```
 -->
+
+## Implicit Conformance to a Protocol
+
+Some protocols are so common that you would write them
+almost every time you declare a new type.
+For the following protocols,
+Swift automatically infers the conformance
+when you define a type that implements the protocol's requirements,
+so you don't have to write them yourself:
+
+- [`Copyable`][]
+- [`Sendable`][]
+- [`BitwiseCopyable`][]
+
+<!--
+The definitions for the links in this list
+are in the section above, Protocols That Have Semantic Requirements.
+-->
+
+You can still write the conformance explicitly,
+but it doesn't change how your code behaves.
+To suppress an implicit conformance,
+write a tilde (`~`) before the protocol name in the conformance list:
+
+```swift
+struct FileDescriptor: ~Sendable {
+    let rawValue: Int
+}
+```
+
+<!--
+The example above is based on a Swift System API.
+https://github.com/apple/swift-system/blob/main/Sources/System/FileDescriptor.swift
+
+See also this PR that adds Sendable conformance to FileDescriptor:
+https://github.com/apple/swift-system/pull/112
+-->
+
+The code above shows part of a wrapper around POSIX file descriptors.
+The `FileDescriptor` structure
+satisfies all of the requirements of the `Sendable` protocol,
+which normally makes it sendable.
+However,
+writing `~Sendable` suppresses this implicit conformance.
+Even though file descriptors use integers
+to identify and interact with open files,
+and integer values are sendable,
+making it nonsendable can help avoid certain kinds of bugs.
+
+Another way to suppress implicit conformance
+is with an extension that you mark as unavailable:
+
+```swift
+@available(*, unavailable)
+extension FileDescriptor: Sendable { }
+```
+
+<!--
+  - test: `suppressing-implied-sendable-conformance`
+
+  -> struct FileDescriptor {
+  ->     let rawValue: CInt
+  -> }
+
+  -> @available(*, unavailable)
+  -> extension FileDescriptor: Sendable { }
+  >> let nonsendable: Sendable = FileDescriptor(rawValue: 10)
+  !$ warning: conformance of 'FileDescriptor' to 'Sendable' is unavailable; this is an error in Swift 6
+  !! let nonsendable: Sendable = FileDescriptor(rawValue: 10)
+  !! ^
+  !$ note: conformance of 'FileDescriptor' to 'Sendable' has been explicitly marked unavailable here
+  !! extension FileDescriptor: Sendable { }
+  !! ^
+-->
+
+When you write `~Sendable` in one place in your code,
+as in the previous example,
+code elsewhere in your program can still
+extend the `FileDescriptor` type to add `Sendable` conformance.
+In contrast,
+the unavailable extension in this example
+suppresses the implicit conformance to `Sendable`
+and also prevents any extensions elsewhere in your code
+from adding `Sendable` conformance to the type.
+
+> Note:
+> In addition to the protocols discussed above,
+> distributed actors implicitly conform to the [`Codable`][] protocol.
+
+[`Codable`]: https://developer.apple.com/documentation/swift/codable
 
 ## Collections of Protocol Types
 
@@ -1859,7 +1881,7 @@ beginConcert(in: seattle)
   -> func beginConcert(in location: Location & Named) {
          print("Hello, \(location.name)!")
      }
-  ---
+
   -> let seattle = City(name: "Seattle", latitude: 47.6, longitude: -122.3)
   -> beginConcert(in: seattle)
   <- Hello, Seattle!
@@ -2404,9 +2426,9 @@ without any additional modification.
 ```swift
 let generator = LinearCongruentialGenerator()
 print("Here's a random number: \(generator.random())")
-// Prints "Here's a random number: 0.3746499199817101"
+// Prints "Here's a random number: 0.3746499199817101".
 print("And here's a random Boolean: \(generator.randomBool())")
-// Prints "And here's a random Boolean: true"
+// Prints "And here's a random Boolean: true".
 ```
 
 <!--
@@ -2512,7 +2534,7 @@ you can define an extension to the `Collection` protocol
 that applies to any collection whose elements conform
 to the `Equatable` protocol.
 By constraining a collection's elements to the `Equatable` protocol,
-a part of the standard library,
+a part of the Swift standard library,
 you can use the `==` and `!=` operators to check for equality and inequality between two elements.
 
 ```swift
@@ -2572,9 +2594,9 @@ and integers conform to `Equatable`,
 
 ```swift
 print(equalNumbers.allEqual())
-// Prints "true"
+// Prints "true".
 print(differentNumbers.allEqual())
-// Prints "false"
+// Prints "false".
 ```
 
 <!--
@@ -2611,12 +2633,6 @@ print(differentNumbers.allEqual())
   Protocol requirements can be marked as @unavailable, but this currently only works if they're also marked as @objc.
   Checking for (and calling) optional implementations via optional binding and closures
 -->
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

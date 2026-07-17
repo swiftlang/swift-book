@@ -439,7 +439,7 @@ they reserve the right to add new enumeration cases,
 and any code that interacts with that enumeration
 *must* be able to handle those future cases without being recompiled.
 Code that's compiled in library evolution mode,
-code in the standard library,
+code in the Swift standard library,
 Swift overlays for Apple frameworks,
 and C and Objective-C code can declare nonfrozen enumerations.
 For information about frozen and nonfrozen enumerations,
@@ -453,13 +453,13 @@ which indicates that the default case should match only enumeration cases
 that are added in the future.
 Swift produces a warning
 if the default case matches
-any enumeration case that's known at compiler time.
+any enumeration case that's known at compile time.
 This future warning informs you that the library author
 added a new case to the enumeration
 that doesn't have a corresponding switch case.
 
 The following example switches over all three existing cases of
-the standard library's [`Mirror.AncestorRepresentation`](https://developer.apple.com/documentation/swift/mirror/ancestorrepresentation)
+the Swift standard library's [`Mirror.AncestorRepresentation`](https://developer.apple.com/documentation/swift/mirror/ancestorrepresentation)
 enumeration.
 If you add additional cases in the future,
 the compiler generates a warning to indicate
@@ -746,6 +746,9 @@ throw <#expression#>
 
 The value of the *expression* must have a type that conforms to
 the `Error` protocol.
+If the `do` statement or function that contains the `throw` statement
+declares the type of errors it throws,
+the value of the *expression* must be an instance of that type.
 
 For an example of how to use a `throw` statement,
 see <doc:ErrorHandling#Propagating-Errors-Using-Throwing-Functions>
@@ -790,10 +793,10 @@ func f(x: Int) {
   print("End of function")
 }
 f(x: 5)
-// Prints "End of if"
-// Prints "Second defer"
-// Prints "End of function"
-// Prints "First defer"
+// Prints "End of if".
+// Prints "Second defer".
+// Prints "End of function".
+// Prints "First defer".
 ```
 
 <!--
@@ -835,9 +838,9 @@ func f() {
     print("End of function")
 }
 f()
-// Prints "End of function"
-// Prints "Second defer"
-// Prints "First defer"
+// Prints "End of function".
+// Prints "Second defer".
+// Prints "First defer".
 ```
 
 <!--
@@ -890,6 +893,46 @@ do {
 }
 ```
 
+A `do` statement can optionally specify the type of error it throws,
+which has the following form:
+
+```swift
+do throws(<#type#>) {
+    try <#expression#>
+} catch <#pattern> {
+    <#statements#>
+} catch {
+    <#statements#>
+}
+```
+
+If the `do` statement includes a `throws` clause,
+the `do` block can throw errors of only the specified *type*.
+The *type* must be
+a concrete type that conforms to the `Error` protocol,
+an opaque type that conforms to the `Error` protocol,
+or the boxed protocol type `any Error`.
+If the `do` statement doesn't specify the type of error it throws,
+Swift infers the error type as follows:
+
+- If every `throws` statement and `try` expression in the `do` code block
+  is nested inside of an exhaustive error-handling mechanism,
+  then Swift infers that the `do` statement is nonthrowing.
+
+- If the `do` code block contains code that throws
+  errors of only a single type
+  outside of exhaustive error handling,
+  other than throwing `Never`,
+  then Swift infers that the `do` statement throws that concrete error type.
+
+- If the `do` code block contains code that throws
+  errors of more than a single type
+  outside of exhaustive error handling,
+  then Swift infers that the `do` statement throws `any Error`.
+
+For more information about working with errors that have explicit types,
+see <doc:ErrorHandling#Specifying-the-Error-Type>.
+
 If any statement in the `do` code block throws an error,
 program control is transferred
 to the first `catch` clause whose pattern matches the error.
@@ -931,7 +974,7 @@ see <doc:ErrorHandling#Handling-Errors>.
 
 > Grammar of a do statement:
 >
-> *do-statement* → **`do`** *code-block* *catch-clauses*_?_ \
+> *do-statement* → **`do`** *throws-clause*_?_ *code-block* *catch-clauses*_?_ \
 > *catch-clauses* → *catch-clause* *catch-clauses*_?_ \
 > *catch-clause* → **`catch`** *catch-pattern-list*_?_ *code-block* \
 > *catch-pattern-list* → *catch-pattern* | *catch-pattern* **`,`** *catch-pattern-list* \
@@ -979,19 +1022,20 @@ conditions listed in the table below.
 | Platform condition | Valid arguments |
 | ------------------ | --------------- |
 | `os()` | `macOS`, `iOS`, `watchOS`, `tvOS`, `visionOS`, `Linux`, `Windows` |
-| `arch()` | `i386`, `x86_64`, `arm`, `arm64` |
+| `arch()` | `arm`, `arm64`, `i386`, `wasm32`, `x86_64`, |
 | `swift()` | `>=` or `<` followed by a version number |
 | `compiler()` | `>=` or `<` followed by a version number |
 | `canImport()` | A module name |
 | `targetEnvironment()` | `simulator`, `macCatalyst` |
 
 <!--
-  For the full list in the compiler, see the values of
+  The lists above match <https://www.swift.org/platform-support/>
+  and include only platforms with *official* support.
+  For the full list of operating systems and architectures,
+  including those with unofficial or experimental support,
+  see the values of
   SupportedConditionalCompilationOSs and SupportedConditionalCompilationArches
   in the file lib/Basic/LangOptions.cpp.
-  Some of the OSes and architectures are listed there
-  because there's experimental work to port Swift to them.
-  We won't list them here until they're officially supported.
   The compiler also accepts pretty much any string --
   for example "#if os(toaster)" compiles just fine,
   but Swift doesn't actually support running on a toaster oven --
@@ -1027,9 +1071,9 @@ print("Compiled in Swift 4.2 mode or later")
 #if compiler(>=5) && swift(<5)
 print("Compiled with the Swift 5 compiler or later in a Swift mode earlier than 5")
 #endif
-// Prints "Compiled with the Swift 5 compiler or later"
-// Prints "Compiled in Swift 4.2 mode or later"
-// Prints "Compiled with the Swift 5 compiler or later in a Swift mode earlier than 5"
+// Prints "Compiled with the Swift 5 compiler or later".
+// Prints "Compiled in Swift 4.2 mode or later".
+// Prints "Compiled with the Swift 5 compiler or later in a Swift mode earlier than 5".
 ```
 
 <!--
@@ -1045,7 +1089,7 @@ print("Compiled with the Swift 5 compiler or later in a Swift mode earlier than 
      #endif
   <- Compiled with the Swift 5 compiler or later
   <- Compiled in Swift 4.2 mode or later
-  // Prints "Compiled with the Swift 5 compiler or later in a Swift mode earlier than 5"
+  // Prints "Compiled with the Swift 5 compiler or later in a Swift mode earlier than 5".
   ```
 -->
 
@@ -1092,7 +1136,7 @@ otherwise, it returns `false`.
   >> #else
   >> #error("Can't import A")
   >> #endif
-  ---
+
   >> #if canImport(canImport_A.B)
   >> #else
   >> #error("Can't import A.B")
@@ -1227,8 +1271,8 @@ see <doc:Expressions#Explicit-Member-Expression>.
 > *platform-condition* → **`canImport`** **`(`** *import-path* **`)`** \
 > *platform-condition* → **`targetEnvironment`** **`(`** *environment* **`)`**
 >
-> *operating-system* → **`macOS`** | **`iOS`** | **`watchOS`** | **`tvOS`** | **`Linux`** | **`Windows`** \
-> *architecture* → **`i386`** | **`x86_64`** | **`arm`** | **`arm64`** \
+> *operating-system* → **`macOS`** | **`iOS`** | **`watchOS`** | **`tvOS`** | **`visionOS`** | **`Linux`** | **`Windows`** \
+> *architecture* → **`arm`** | **`arm64`** | **`i386`** | **`wasm32`** | **`x86_64`** \
 > *swift-version* → *decimal-digits* *swift-version-continuation*_?_ \
 > *swift-version-continuation* → **`.`** *decimal-digits* *swift-version-continuation*_?_ \
 > *environment* → **`simulator`** | **`macCatalyst`**
@@ -1290,8 +1334,8 @@ the `#warning` and `#error` statements emit a diagnostic during compilation.
 This behavior is now provided by
 the [`warning(_:)`][] and [`error(_:)`][] macros in the Swift standard library.
 
-[`warning(_:)`]: http://developer.apple.com/documentation/swift/documentation/swift/warning(_:)
-[`error(_:)`]: http://developer.apple.com/documentation/swift/documentation/swift/error(_:)
+[`warning(_:)`]: https://developer.apple.com/documentation/swift/warning(_:)
+[`error(_:)`]: https://developer.apple.com/documentation/swift/error(_:)
 
 ## Availability Condition
 
@@ -1315,7 +1359,7 @@ The compiler uses the information from the availability condition
 when it verifies that the APIs in that block of code are available.
 
 The availability condition takes a comma-separated list of platform names and versions.
-Use `iOS`, `macOS`, `watchOS`, and `tvOS` for the platform names,
+Use `iOS`, `macOS`, `watchOS`, `tvOS` and `visionOS` for the platform names,
 and include the corresponding version numbers.
 The `*` argument is required and specifies that, on any other platform,
 the body of the code block guarded by the availability condition
@@ -1347,14 +1391,12 @@ It has the same meaning as the `*` argument in an availability condition.
 > *availability-argument* → *platform-name* *platform-version* \
 > *availability-argument* → **`*`**
 >
->
->
 > *platform-name* → **`iOS`** | **`iOSApplicationExtension`** \
 > *platform-name* → **`macOS`** | **`macOSApplicationExtension`** \
 > *platform-name* → **`macCatalyst`** | **`macCatalystApplicationExtension`** \
 > *platform-name* → **`watchOS`** | **`watchOSApplicationExtension`** \
 > *platform-name* → **`tvOS`** | **`tvOSApplicationExtension`** \
-> *platform-name* → **`visionOS`** \
+> *platform-name* → **`visionOS`** | **`visionOSApplicationExtension`** \
 > *platform-version* → *decimal-digits* \
 > *platform-version* → *decimal-digits* **`.`** *decimal-digits* \
 > *platform-version* → *decimal-digits* **`.`** *decimal-digits* **`.`** *decimal-digits*
@@ -1372,7 +1414,8 @@ It has the same meaning as the `*` argument in an availability condition.
   >>               macOS 1, macOSApplicationExtension 1,
   >>               macCatalyst 1, macCatalystApplicationExtension 1,
   >>               watchOS 1, watchOSApplicationExtension 1,
-  >>               tvOS 1, tvOSApplicationExtension 1, *) {
+  >>               tvOS 1, tvOSApplicationExtension 1,
+  >>               visionOS 1, visionOSApplicationExtension 1, *) {
   >>     print("a")
   >> } else {
   >>     print("b")
@@ -1416,12 +1459,6 @@ It has the same meaning as the `*` argument in an availability condition.
   !$                ^
   ```
 -->
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

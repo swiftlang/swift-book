@@ -1,4 +1,6 @@
-# The Swift Programming Language (5.9 beta)
+# The Swift Programming Language (6.4 beta)
+
+Write safe, fast, expressive code with a modern, general-purpose language.
 
 @Metadata {
   @TechnologyRoot
@@ -62,6 +64,12 @@
 - <doc:Patterns>
 - <doc:GenericParametersAndArguments>
 - <doc:SummaryOfTheGrammar>
+
+<!--
+If you add a new chapter to the reference,
+also update bin/publish-book to summarize that chapter's formal grammar
+in the chapter at the end of the book.
+-->
 
 ### Revision History
 

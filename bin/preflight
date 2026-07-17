@@ -39,4 +39,32 @@ then
     exit_status=1
 fi
 
+
+# Avoid committing the the generated beta banner.
+if git grep "<!-- \(BEGIN\|END\) BETA BANNER -->"  TSPL.docc/
+then
+    echo "Error: Remove the generated beta banner before comitting."
+    exit_status=1
+fi
+
+# Confirm cmark is installed.  Normally ERR_EXIT and PIPE_FAIL abort the
+# script for a "command not found" error, but not in this case of piping
+# to a while loop.
+which cmark > /dev/null
+
+echo "Checking links..."
+cmark --to xml TSPL.docc/*/*.md |
+xpath -q -n -e '//link/@destination' |
+sort -u | cut -f2 -d= | grep -v '^"doc:' | sed 's/^"//; s/"$//' |
+while read url
+do
+    if curl --silent --output /dev/null --location --fail --head $url
+    then
+        echo "     $url"
+    else
+        echo "BAD: $url"
+        exit_status=1
+    fi
+done
+
 exit $exit_status

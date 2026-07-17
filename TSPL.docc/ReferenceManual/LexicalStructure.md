@@ -107,8 +107,8 @@ The backticks aren't considered part of the identifier;
 The paragraph above produces a link-resolution warning
 because of a known issue with ` in code voice.
 
-https://github.com/apple/swift-book/issues/71
-https://github.com/apple/swift-markdown/issues/93
+https://github.com/swiftlang/swift-book/issues/71
+https://github.com/swiftlang/swift-markdown/issues/93
 -->
 
 Inside a closure with no explicit parameter names,
@@ -133,8 +133,8 @@ The formal grammar below for 'identifier'
 produces a link-resolution warning
 because of a known issue with ` in code voice.
 
-https://github.com/apple/swift-book/issues/71
-https://github.com/apple/swift-markdown/issues/93
+https://github.com/swiftlang/swift-book/issues/71
+https://github.com/swiftlang/swift-markdown/issues/93
 -->
 
 > Grammar of an identifier:
@@ -162,7 +162,7 @@ https://github.com/apple/swift-markdown/issues/93
 > *identifier-head* → U+90000–U+9FFFD, U+A0000–U+AFFFD, U+B0000–U+BFFFD, or U+C0000–U+CFFFD \
 > *identifier-head* → U+D0000–U+DFFFD or U+E0000–U+EFFFD
 >
-> *identifier-character* → Digit 0 through 9 \
+> *identifier-character* → *decimal-digit* \
 > *identifier-character* → U+0300–U+036F, U+1DC0–U+1DFF, U+20D0–U+20FF, or U+FE20–U+FE2F \
 > *identifier-character* → *identifier-head* \
 > *identifier-characters* → *identifier-character* *identifier-characters*_?_
@@ -247,7 +247,9 @@ so they must be escaped with backticks in that context.
 
 - Keywords used in declarations:
   `associatedtype`,
+  `borrowing`,
   `class`,
+  `consuming`,
   `deinit`,
   `enum`,
   `extension`,
@@ -258,10 +260,11 @@ so they must be escaped with backticks in that context.
   `inout`,
   `internal`,
   `let`,
+  `nonisolated`,
   `open`,
   `operator`,
-  `private`,
   `precedencegroup`,
+  `private`,
   `protocol`,
   `public`,
   `rethrows`,
@@ -291,8 +294,8 @@ so they must be escaped with backticks in that context.
   `in`,
   `repeat`,
   `return`,
-  `throw`,
   `switch`,
+  `throw`,
   `where`,
   and `while`.
 - Keywords used in expressions and types:
@@ -316,15 +319,16 @@ so they must be escaped with backticks in that context.
 - Keywords that begin with a number sign (`#`):
   `#available`,
   `#colorLiteral`,
-  `#elseif`,
   `#else`,
+  `#elseif`,
   `#endif`,
   `#fileLiteral`,
   `#if`,
   `#imageLiteral`,
   `#keyPath`,
   `#selector`,
-  `#sourceLocation`.
+  `#sourceLocation`,
+  `#unavailable`.
 
 > Note:
 > Prior to Swift 5.9,
@@ -369,6 +373,7 @@ so they must be escaped with backticks in that context.
 
 - Keywords reserved in particular contexts:
   `associativity`,
+  `async`,
   `convenience`,
   `didSet`,
   `dynamic`,
@@ -383,6 +388,7 @@ so they must be escaped with backticks in that context.
   `nonmutating`,
   `optional`,
   `override`,
+  `package`,
   `postfix`,
   `precedence`,
   `prefix`,
@@ -494,7 +500,7 @@ in the declaration `let x: Int8 = 42`.
 >
 > *literal* → *numeric-literal* | *string-literal* | *regular-expression-literal* | *boolean-literal* | *nil-literal*
 >
-> *numeric-literal* → **`-`**_?_ *integer-literal* | **`-`**_?_ *floating-point-literal* \
+> *numeric-literal* → *signed-integer-literal* | *signed-floating-point-literal* \
 > *boolean-literal* → **`true`** | **`false`** \
 > *nil-literal* → **`nil`**
 
@@ -546,6 +552,7 @@ as described in <doc:TheBasics#Integers>.
 
 > Grammar of an integer literal:
 >
+> *signed-integer-literal* → **`-`**_?_ *integer-literal*
 > *integer-literal* → *binary-literal* \
 > *integer-literal* → *octal-literal* \
 > *integer-literal* → *decimal-literal* \
@@ -620,6 +627,7 @@ which represents a 32-bit floating-point number.
 
 > Grammar of a floating-point literal:
 >
+> *signed-floating-point-literal* → > **`-`**_?_ *floating-point-literal*
 > *floating-point-literal* → *decimal-literal* *decimal-fraction*_?_ *decimal-exponent*_?_ \
 > *floating-point-literal* → *hexadecimal-literal* *hexadecimal-fraction*_?_ *hexadecimal-exponent*
 >
@@ -794,9 +802,9 @@ that create equivalent string values:
 let string = #"\(x) \ " \u{2603}"#
 let escaped = "\\(x) \\ \" \\u{2603}"
 print(string)
-// Prints "\(x) \ " \u{2603}"
+// Prints "\(x) \ " \u{2603}".
 print(string == escaped)
-// Prints "true"
+// Prints "true".
 ```
 
 <!--
@@ -965,7 +973,7 @@ and `/\d/` matches a single digit.
   of the supported syntax here.
   (Unified dialect/superset of POSIX + PCRE 2 + Oniguruma + .NET)
 
-  https://github.com/apple/swift-experimental-string-processing/blob/main/Sources/_StringProcessing/Regex/Core.swift
+  https://github.com/swiftlang/swift-experimental-string-processing/blob/main/Sources/_StringProcessing/Regex/Core.swift
 
   Regex literals and the DSL take different approaches to captures.
   The literals give you more type safety.
@@ -1245,12 +1253,6 @@ see <doc:AdvancedOperators#Operator-Methods>.
 > *infix-operator* → *operator* \
 > *prefix-operator* → *operator* \
 > *postfix-operator* → *operator*
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

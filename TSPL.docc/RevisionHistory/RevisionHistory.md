@@ -2,7 +2,94 @@
 
 Review the recent changes to this book.
 
-**2023-06-05**
+**2026-07-06**
+
+- Updated for Swift 6.4.
+- Minor corrections and additions throughout.
+
+**2026-03-23**
+
+- Updated for Swift 6.3.
+- Minor corrections and additions throughout.
+
+**2025-12-12**
+
+- Updated for Swift 6.2.3.
+- Added the <doc:Attributes#export> section
+  with information about exporting definitions to client modules.
+
+**2025-11-03**
+
+- Updated for Swift 6.2.1.
+- Added the <doc:GenericParametersAndArguments#Integer-Generic-Parameters> section
+  with information about generic parameters that have a numeric value.
+- Added information to the <doc:TheBasics#Integers>
+  and <doc:TheBasics#Floating-Point-Numbers> sections
+  about choosing between integers and floating-point numbers.
+
+**2025-09-15**
+
+- Updated for Swift 6.2.
+- Added the <doc:TheBasics#Memory-Safety> section
+  with information about issues that Swift helps you prevent.
+- Added the <doc:ControlFlow#Patterns> section
+  with information about the `if case` syntax.
+- Added information about the main actor, isolation, and global actors
+  to the <doc:Concurrency> chapter.
+- Added the <doc:Protocols#Implicit-Conformance-to-a-Protocol> section
+  with information about conforming to common protocols,
+  without writing the conformance explicitly,
+  and suppressing implicit conformance.
+- Added the <doc:Generics#Implicit-Constraints> section
+  with information about generic constraints
+  that require conformance to common protocols.
+
+**2025-03-31**
+
+- Updated for Swift 6.1.
+- Added the <doc:OpaqueTypes#Opaque-Parameter-Types> section
+  with information about using `some` as a lightweight syntax for generics.
+- Added information about the `noasync` argument
+  to the <doc:Attributes#available> section.
+
+**2024-09-23**
+
+- Updated for Swift 6.
+- Added the <doc:Attributes#preconcurrency> section
+  with information about migrating to strict concurrency checking.
+- Added the <doc:ErrorHandling#Specifying-the-Error-Type> section
+  with information about throwing errors of a specific type.
+- Updated the <doc:Expressions#Macro-Expansion-Expression> section,
+  now that any macro can be used as a default value for a parameter.
+- Added information about package-level access
+  to the <doc:AccessControl> chapter.
+
+**2024-03-05**
+
+- Updated for Swift 5.10.
+- Added information about nested protocols
+  to the <doc:Protocols#Delegation> section.
+- Added deprecation information
+  in the <doc:Attributes#UIApplicationMain>
+  and <doc:Attributes#NSApplicationMain> sections.
+
+**2023-12-11**
+
+- Updated for Swift 5.9.2.
+- Added information about the `borrowing` and `consuming` modifiers
+  to the <doc:Declarations#Parameter-Modifiers> section.
+- Added information in <doc:TheBasics#Declaring-Constants-and-Variables>
+  about setting a constant's value after its declaration.
+- Added more information about tasks, task groups, and task cancellation
+  to the <doc:Concurrency> chapter.
+- Added information in the <doc:Macros> chapter
+  about implementing macros in an existing Swift package.
+- Updated the <doc:Attributes#attached> section,
+  now that extension macros have replaced conformance macros.
+- Added the <doc:Attributes#backDeployed> section
+  with information about back deployment.
+
+**2023-09-18**
 
 - Updated for Swift 5.9.
 - Added information about `if` and `switch` expressions
@@ -10,11 +97,17 @@ Review the recent changes to this book.
   and the <doc:Expressions#Conditional-Expression> section.
 - Added the <doc:Macros> chapter,
   with information about generating code at compile time.
+- Expanded the discussion of optionals in <doc:TheBasics>.
+- Added an example of concurrency to <doc:GuidedTour>.
 - Added information about boxed protocol types
   to the <doc:OpaqueTypes> chapter.
-- Updated the <doc:Attributes#Result-Building-Methods> section
-  with information about the `buildPartialBlock(first:)`
-  and `buildPartialBlock(accumulated:next:)` methods.
+- Added information about the `buildPartialBlock(first:)`
+  and `buildPartialBlock(accumulated:next:)` methods
+  to the <doc:Attributes#Result-Transformations> section.
+- Added visionOS to the lists of platforms in
+  <doc:Attributes#available>
+  and <doc:Statements#Conditional-Compilation-Block>.
+- Formatted the formal grammar to use blank lines for grouping.
 
 **2023-03-30**
 
@@ -806,12 +899,6 @@ Review the recent changes to this book.
 - Updated to `..<` rather than `..`
   for the <doc:BasicOperators#Half-Open-Range-Operator>.
 - Added an example of <doc:Generics#Extending-a-Generic-Type>.
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

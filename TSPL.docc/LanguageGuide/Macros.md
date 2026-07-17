@@ -53,7 +53,7 @@ func myFunction() {
 ```
 
 In the first line,
-`#function` calls the [`function`][] macro from the Swift standard library.
+`#function` calls the [`function()`][] macro from the Swift standard library.
 When you compile this code,
 Swift calls that macro's implementation,
 which replaces `#function` with the name of the current function.
@@ -63,7 +63,7 @@ In the second line,
 `#warning` calls the [`warning(_:)`][] macro from the Swift standard library
 to produce a custom compile-time warning.
 
-[`function`]: https://developer.apple.com/documentation/swift/function
+[`function()`]: https://developer.apple.com/documentation/swift/function()
 [`warning(_:)`]: https://developer.apple.com/documentation/swift/warning(_:)
 
 Freestanding macros can produce a value, like `#function` does,
@@ -117,8 +117,14 @@ The macro reads the list of cases in the private enumeration,
 generates the list of constants for each option,
 and adds a conformance to the [`OptionSet`][] protocol.
 
+[`OptionSet`]: https://developer.apple.com/documentation/swift/optionset
+
+<!--
+When the @OptionSet macro comes back, change both links back:
+
 [`@OptionSet`]: https://developer.apple.com/documentation/swift/optionset-swift.macro
 [`OptionSet`]: https://developer.apple.com/documentation/swift/optionset-swift.protocol
+-->
 
 For comparison,
 here's what the expanded version of the `@OptionSet` macro looks like.
@@ -198,7 +204,7 @@ like the names for variables and functions.
 > Macros are always declared as `public`.
 > Because the code that declares a macro
 > is in a different module from code that uses that macro,
-> there isn't anywhere you could apply a non-public macro.
+> there isn't anywhere you could apply a nonpublic macro.
 
 A macro declaration defines the macro's *roles* ---
 the places in source code where that macro can be called,
@@ -211,7 +217,7 @@ including the attributes for its roles:
 
 ```swift
 @attached(member)
-@attached(conformance)
+@attached(extension, conformances: OptionSet)
 public macro OptionSet<RawType>() =
         #externalMacro(module: "SwiftMacros", type: "OptionSetMacro")
 ```
@@ -223,8 +229,9 @@ adds new members to the type you apply it to.
 The `@OptionSet` macro adds an `init(rawValue:)` initializer
 that's required by the `OptionSet` protocol,
 as well as some additional members.
-The second use, `@attached(conformance)`, tells you that `@OptionSet`
-adds one or more protocol conformances.
+The second use, `@attached(extension, conformances: OptionSet)`,
+tells you that `@OptionSet`
+adds conformance to the `OptionSet` protocol.
 The `@OptionSet` macro
 extends the type that you apply the macro to,
 to add conformance to the `OptionSet` protocol.
@@ -232,7 +239,7 @@ to add conformance to the `OptionSet` protocol.
 For a freestanding macro,
 you write the `@freestanding` attribute to specify its role:
 
-```
+```swift
 @freestanding(expression)
 public macro line<T: ExpressibleByIntegerLiteral>() -> T =
         /* ... location of the macro implementation... */
@@ -260,13 +267,13 @@ Here's the full declaration of `@OptionSet`:
 ```swift
 @attached(member, names: named(RawValue), named(rawValue),
         named(`init`), arbitrary)
-@attached(conformance)
+@attached(extension, conformances: OptionSet)
 public macro OptionSet<RawType>() =
         #externalMacro(module: "SwiftMacros", type: "OptionSetMacro")
 ```
 
 In the declaration above,
-the `@attached(member)` macro includes arguments after the `named:` label
+the `@attached(member)` macro includes arguments after the `names:` label
 for each of the symbols that the `@OptionSet` macro generates.
 The macro adds declarations for symbols named
 `RawValue`, `rawValue`, and `init` ---
@@ -309,7 +316,7 @@ Specifically, Swift expands macros in the following way:
 
 To go through the specific steps, consider the following:
 
-```
+```swift
 let magicNumber = #fourCharacterCode("ABCD")
 ```
 
@@ -390,7 +397,7 @@ The implementation of `#fourCharacterCode`
 generates a new AST containing the expanded code.
 Here's what that code returns to the compiler:
 
-![A tree diagram with a sigle node, the integer literal 1145258561.](macro-ast-output)
+![A tree diagram with the integer literal 1145258561 of type UInt32.](macro-ast-output)
 
 When the compiler receives this expansion,
 it replaces the AST element that contains the macro call
@@ -401,12 +408,12 @@ the program is still syntactically valid Swift
 and all the types are correct.
 That produces a final AST that can be compiled as usual:
 
-![A tree diagram, with a constant as the root element.  The constant has a name, magic number, and a value.  The constant's value is the integer literal 1145258561](macro-ast-result)
+![A tree diagram, with a constant as the root element.  The constant has a name, magic number, and a value.  The constant's value is the integer literal 1145258561 of type UInt32.](macro-ast-result)
 
 This AST corresponds to Swift code like this:
 
-```
-let magicNumber = 1145258561
+```swift
+let magicNumber = 1145258561 as UInt32
 ```
 
 In this example, the input source code has only one macro,
@@ -455,10 +462,32 @@ this creates several files,
 including a template for a macro implementation and declaration.
 
 To add macros to an existing project,
-add a target for the macro implementation
-and a target for the macro library.
+edit the beginning of your `Package.swift` file as follows:
+
+- Set a Swift tools version of 5.9 or later in the `swift-tools-version` comment.
+- Import the `CompilerPluginSupport` module.
+- Include macOS 10.15 as a minimum deployment target in the `platforms` list.
+
+The code below shows the beginning of an example `Package.swift` file.
+
+```swift
+// swift-tools-version: 5.9
+
+import PackageDescription
+import CompilerPluginSupport
+
+let package = Package(
+    name: "MyPackage",
+    platforms: [ .iOS(.v17), .macOS(.v13)],
+    // ...
+)
+```
+
+Next, add a target for the macro implementation
+and a target for the macro library
+to your existing `Package.swift` file.
 For example,
-you can add something like the following to your `Package.swift` file,
+you can add something like the following,
 changing the names to match your project:
 
 ```swift
@@ -490,25 +519,25 @@ automatically includes a dependency on SwiftSyntax.
 If you're adding macros to an existing project,
 add a dependency on SwiftSyntax in your `Package.swift` file:
 
-[SwiftSyntax]: http://github.com/apple/swift-syntax/
+[SwiftSyntax]: https://github.com/swiftlang/swift-syntax
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/apple/swift-syntax.git", from: "some-tag"),
+    .package(url: "https://github.com/swiftlang/swift-syntax", from: "509.0.0")
 ],
 ```
 
-Replace the `some-tag` placeholder in the code above
-with the Git tag for the version of SwiftSyntax you want to use.
-
 Depending on your macro's role,
-there's a corresponding protocol from SwiftSystem
+there's a corresponding protocol from SwiftSyntax
 that the macro implementation conforms to.
 For example,
 consider `#fourCharacterCode` from the previous section.
 Here's a structure that implements that macro:
 
 ```swift
+import SwiftSyntax
+import SwiftSyntaxMacros
+
 public struct FourCharacterCode: ExpressionMacro {
     public static func expansion(
         of node: some FreestandingMacroExpansionSyntax,
@@ -527,7 +556,7 @@ public struct FourCharacterCode: ExpressionMacro {
             throw CustomError.message("Invalid four-character code")
         }
 
-        return "\(raw: result)"
+        return "\(raw: result) as UInt32"
     }
 }
 
@@ -540,9 +569,22 @@ private func fourCharacterCode(for characters: String) -> UInt32? {
         guard let asciiValue = character.asciiValue else { return nil }
         result += UInt32(asciiValue)
     }
-    return result.bigEndian
+    return result
 }
 enum CustomError: Error { case message(String) }
+```
+
+If you're adding this macro to an existing Swift Package Manager project,
+add a type that acts as the entry point for the macro target
+and lists the macros that the target defines:
+
+```swift
+import SwiftCompilerPlugin
+
+@main
+struct MyProjectMacros: CompilerPlugin {
+    var providingMacros: [Macro.Type] = [FourCharacterCode.self]
+}
 ```
 
 The `#fourCharacterCode` macro
@@ -550,8 +592,8 @@ is a freestanding macro that produces an expression,
 so the `FourCharacterCode` type that implements it
 conforms to the `ExpressionMacro` protocol.
 The `ExpressionMacro` protocol has one requirement,
-a `expansion(of:in:)` method that expands the AST.
-For the list of macro roles and their corresponding SwiftSystem protocols,
+an `expansion(of:in:)` method that expands the AST.
+For the list of macro roles and their corresponding SwiftSyntax protocols,
 see <doc:Attributes#attached> and <doc:Attributes#freestanding>
 in <doc:Attributes>.
 
@@ -562,13 +604,13 @@ Inside the library, Swift calls `FourCharacterCode.expansion(of:in:)`,
 passing in the AST and the context as arguments to the method.
 The implementation of `expansion(of:in:)`
 finds the string that was passed as an argument to `#fourCharacterCode`
-and calculates the corresponding integer literal value.
+and calculates the corresponding 32-bit unsigned integer literal value.
 
 In the example above,
 the first `guard` block extracts the string literal from the AST,
 assigning that AST element to `literalSegment`.
 The second `guard` block
-calls the private `FourCharacterCode(for:)` function.
+calls the private `fourCharacterCode(for:)` function.
 Both of these blocks throw an error if the macro is used incorrectly ---
 the error message becomes a compiler error
 at the malformed call site.
@@ -590,9 +632,8 @@ so you can use this approach when implementing any kind of macro.
 <!--
 The return-a-string APIs come from here
 
-https://github.com/apple/swift-syntax/blob/main/Sources/SwiftSyntaxBuilder/Syntax%2BStringInterpolation.swift
+https://github.com/swiftlang/swift-syntax/blob/main/Sources/SwiftSyntaxBuilder/Syntax%2BStringInterpolation.swift
 -->
-
 
 <!-- OUTLINE:
 
@@ -608,7 +649,7 @@ https://github.com/apple/swift-syntax/blob/main/Sources/SwiftSyntaxBuilder/Synta
     + Find a node's location in source
 
 - Macro expansion happens in their surrounding context.
-  A macro can affect that environment if it needs to —
+  A macro can affect that environment if it needs to ---
   and a macro that has bugs can interfere with that environment.
   (Give guidance on when you'd do this.  It should be rare.)
 
@@ -684,13 +725,13 @@ let file = BasicMacroExpansionContext.KnownSourceFile(
 let context = BasicMacroExpansionContext(sourceFiles: [source: file])
 
 let transformedSF = source.expand(
-    macros:["fourCharacterCode": FourCC.self],
+    macros:["fourCharacterCode": FourCharacterCode.self],
     in: context
 )
 
 let expectedDescription =
     """
-    let abcd = 1145258561
+    let abcd = 1145258561 as UInt32
     """
 
 precondition(transformedSF.description == expectedDescription)

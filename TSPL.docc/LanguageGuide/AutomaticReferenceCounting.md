@@ -122,7 +122,7 @@ and assign it to one of these three variables:
 
 ```swift
 reference1 = Person(name: "John Appleseed")
-// Prints "John Appleseed is being initialized"
+// Prints "John Appleseed is being initialized".
 ```
 
 <!--
@@ -187,7 +187,7 @@ at which point it's clear that you are no longer using the `Person` instance:
 
 ```swift
 reference3 = nil
-// Prints "John Appleseed is being deinitialized"
+// Prints "John Appleseed is being deinitialized".
 ```
 
 <!--
@@ -249,7 +249,7 @@ class Apartment {
         var apartment: Apartment?
         deinit { print("\(name) is being deinitialized") }
      }
-  ---
+
   -> class Apartment {
         let unit: String
         init(unit: String) { self.unit = unit }
@@ -475,7 +475,7 @@ class Apartment {
         var apartment: Apartment?
         deinit { print("\(name) is being deinitialized") }
      }
-  ---
+
   -> class Apartment {
         let unit: String
         init(unit: String) { self.unit = unit }
@@ -505,10 +505,10 @@ unit4A!.tenant = john
   ```swifttest
   -> var john: Person?
   -> var unit4A: Apartment?
-  ---
+
   -> john = Person(name: "John Appleseed")
   -> unit4A = Apartment(unit: "4A")
-  ---
+
   -> john!.apartment = unit4A
   -> unit4A!.tenant = john
   ```
@@ -526,7 +526,7 @@ there are no more strong references to the `Person` instance:
 
 ```swift
 john = nil
-// Prints "John Appleseed is being deinitialized"
+// Prints "John Appleseed is being deinitialized".
 ```
 
 <!--
@@ -551,7 +551,7 @@ there are no more strong references to the `Apartment` instance:
 
 ```swift
 unit4A = nil
-// Prints "Apartment 4A is being deinitialized"
+// Prints "Apartment 4A is being deinitialized".
 ```
 
 <!--
@@ -673,7 +673,7 @@ class CreditCard {
         }
         deinit { print("\(name) is being deinitialized") }
      }
-  ---
+
   -> class CreditCard {
         let number: UInt64
         unowned let customer: Customer
@@ -746,8 +746,8 @@ and it too is deallocated:
 
 ```swift
 john = nil
-// Prints "John Appleseed is being deinitialized"
-// Prints "Card #1234567890123456 is being deinitialized"
+// Prints "John Appleseed is being deinitialized".
+// Prints "Card #1234567890123456 is being deinitialized".
 ```
 
 <!--
@@ -831,7 +831,7 @@ class Course {
              self.courses = []
          }
      }
-  ---
+
   -> class Course {
          var name: String
          unowned var department: Department
@@ -877,11 +877,11 @@ department.courses = [intro, intermediate, advanced]
 
   ```swifttest
   -> let department = Department(name: "Horticulture")
-  ---
+
   -> let intro = Course(name: "Survey of Plants", in: department)
   -> let intermediate = Course(name: "Growing Common Herbs", in: department)
   -> let advanced = Course(name: "Caring for Tropical Plants", in: department)
-  ---
+
   -> intro.nextCourse = intermediate
   -> intermediate.nextCourse = advanced
   -> department.courses = [intro, intermediate, advanced]
@@ -936,7 +936,7 @@ that other courses might have.
   >> let d = D(value: c! )
   >> print(d.a.x, d.b?.x as Any)
   << 100 Optional(100)
-  ---
+
   >> c = nil
   // Now that the C instance is deallocated, access to d.a is an error.
   // We manually nil out d.b, which is safe because d.b is an Optional and the
@@ -1014,7 +1014,7 @@ class City {
            self.capitalCity = City(name: capitalName, country: self)
         }
      }
-  ---
+
   -> class City {
         let name: String
         unowned let country: Country
@@ -1061,7 +1061,7 @@ without needing to use an exclamation point to unwrap its optional value:
 ```swift
 var country = Country(name: "Canada", capitalName: "Ottawa")
 print("\(country.name)'s capital city is called \(country.capitalCity.name)")
-// Prints "Canada's capital city is called Ottawa"
+// Prints "Canada's capital city is called Ottawa".
 ```
 
 <!--
@@ -1116,7 +1116,6 @@ which provides a simple model for an individual element within an HTML document:
 
 ```swift
 class HTMLElement {
-
     let name: String
     let text: String?
 
@@ -1136,7 +1135,6 @@ class HTMLElement {
     deinit {
         print("\(name) is being deinitialized")
     }
-
 }
 ```
 
@@ -1145,10 +1143,9 @@ class HTMLElement {
 
   ```swifttest
   -> class HTMLElement {
-  ---
         let name: String
         let text: String?
-  ---
+
         lazy var asHTML: () -> String = {
            if let text = self.text {
               return "<\(self.name)>\(text)</\(self.name)>"
@@ -1156,16 +1153,15 @@ class HTMLElement {
               return "<\(self.name) />"
            }
         }
-  ---
+
         init(name: String, text: String? = nil) {
            self.name = name
            self.text = text
         }
-  ---
+
         deinit {
            print("\(name) is being deinitialized")
         }
-  ---
      }
   ```
 -->
@@ -1209,7 +1205,7 @@ heading.asHTML = {
     return "<\(heading.name)>\(heading.text ?? defaultText)</\(heading.name)>"
 }
 print(heading.asHTML())
-// Prints "<h1>some default text</h1>"
+// Prints "<h1>some default text</h1>".
 ```
 
 <!--
@@ -1245,7 +1241,7 @@ Here's how you use the `HTMLElement` class to create and print a new instance:
 ```swift
 var paragraph: HTMLElement? = HTMLElement(name: "p", text: "hello, world")
 print(paragraph!.asHTML())
-// Prints "<p>hello, world</p>"
+// Prints "<p>hello, world</p>".
 ```
 
 <!--
@@ -1406,7 +1402,6 @@ Here's how you write the `HTMLElement` class to avoid the cycle:
 
 ```swift
 class HTMLElement {
-
     let name: String
     let text: String?
 
@@ -1427,7 +1422,6 @@ class HTMLElement {
     deinit {
         print("\(name) is being deinitialized")
     }
-
 }
 ```
 
@@ -1436,10 +1430,9 @@ class HTMLElement {
 
   ```swifttest
   -> class HTMLElement {
-  ---
         let name: String
         let text: String?
-  ---
+
         lazy var asHTML: () -> String = {
               [unowned self] in
            if let text = self.text {
@@ -1448,16 +1441,15 @@ class HTMLElement {
               return "<\(self.name) />"
            }
         }
-  ---
+
         init(name: String, text: String? = nil) {
            self.name = name
            self.text = text
         }
-  ---
+
         deinit {
            print("\(name) is being deinitialized")
         }
-  ---
      }
   ```
 -->
@@ -1472,7 +1464,7 @@ You can create and print an `HTMLElement` instance as before:
 ```swift
 var paragraph: HTMLElement? = HTMLElement(name: "p", text: "hello, world")
 print(paragraph!.asHTML())
-// Prints "<p>hello, world</p>"
+// Prints "<p>hello, world</p>".
 ```
 
 <!--
@@ -1497,7 +1489,7 @@ as can be seen from the printing of its deinitializer message in the example bel
 
 ```swift
 paragraph = nil
-// Prints "p is being deinitialized"
+// Prints "p is being deinitialized".
 ```
 
 <!--
@@ -1511,12 +1503,6 @@ paragraph = nil
 
 For more information about capture lists,
 see <doc:Expressions#Capture-Lists>.
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

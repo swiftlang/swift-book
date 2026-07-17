@@ -70,8 +70,12 @@ and is used throughout this guide when referring to the type of an array.
 
 ### Creating an Empty Array
 
-You can create an empty array of a certain type
-using initializer syntax:
+You can create an empty array in Swift using two approaches.
+If the context already provides type information,
+such as a function argument or an already typed variable or constant,
+you can use an empty array literal,
+which is written as `[]`
+(an empty pair of square brackets):
 
 ```swift
 var someInts: [Int] = []
@@ -89,14 +93,24 @@ print("someInts is of type [Int] with \(someInts.count) items.")
   ```
 -->
 
-Note that the type of the `someInts` variable is inferred to be `[Int]`
-from the type of the initializer.
+Alternatively, you can create an empty array of a certain type
+using explicit initializer syntax,
+by writing the element type in square brackets
+followed by parentheses ---
+for example, `[Int]()` in the following:
 
-Alternatively, if the context already provides type information,
-such as a function argument or an already typed variable or constant,
-you can create an empty array with an empty array literal,
-which is written as `[]`
-(an empty pair of square brackets):
+```swift
+var someInts = [Int]()
+print("someInts is of type [Int] with \(someInts.count) items.")
+// Prints "someInts is of type [Int] with 0 items."
+```
+
+Both approaches produce the same result.
+However,
+an empty array literal is shorter and usually easier to read.
+
+In both cases, you can use the empty array literal (`[]`) to
+reassign an empty array to an existing variable:
 
 ```swift
 someInts.append(3)
@@ -162,7 +176,7 @@ var sixDoubles = threeDoubles + anotherThreeDoubles
   -> var anotherThreeDoubles = Array(repeating: 2.5, count: 3)
   /> anotherThreeDoubles is of type [Double], and equals [\(anotherThreeDoubles[0]), \(anotherThreeDoubles[1]), \(anotherThreeDoubles[2])]
   </ anotherThreeDoubles is of type [Double], and equals [2.5, 2.5, 2.5]
-  ---
+
   -> var sixDoubles = threeDoubles + anotherThreeDoubles
   /> sixDoubles is inferred as [Double], and equals \(sixDoubles)
   </ sixDoubles is inferred as [Double], and equals [0.0, 0.0, 0.0, 2.5, 2.5, 2.5]
@@ -246,6 +260,23 @@ var shoppingList = ["Eggs", "Milk"]
 Because all values in the array literal are of the same type,
 Swift can infer that `[String]` is
 the correct type to use for the `shoppingList` variable.
+
+You can include a comma after last value in an array literal,
+which is known as a *trailing comma*:
+
+```swift
+var shoppingList = [
+    "Eggs",
+    "Milk",
+]
+```
+
+Because the trailing comma makes every line end the same way,
+it's a useful way to write arrays like the one above
+that have one value per line.
+When you change the array,
+you only need to add, remove, or reorder values ---
+you don't have to add or remove commas.
 
 ### Accessing and Modifying an Array
 
@@ -934,7 +965,7 @@ oddDigits.symmetricDifference(singleDigitPrimeNumbers).sorted()
   -> let oddDigits: Set = [1, 3, 5, 7, 9]
   -> let evenDigits: Set = [0, 2, 4, 6, 8]
   -> let singleDigitPrimeNumbers: Set = [2, 3, 5, 7]
-  ---
+
   >> let a =
   -> oddDigits.union(evenDigits).sorted()
   >> assert(a == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
@@ -998,7 +1029,7 @@ farmAnimals.isDisjoint(with: cityAnimals)
   -> let houseAnimals: Set = ["🐶", "🐱"]
   -> let farmAnimals: Set = ["🐮", "🐔", "🐑", "🐶", "🐱"]
   -> let cityAnimals: Set = ["🐦", "🐭"]
-  ---
+
   >> let aa =
   -> houseAnimals.isSubset(of: farmAnimals)
   >> assert(aa == true)
@@ -1170,6 +1201,17 @@ Because all keys in the literal are of the same type as each other,
 and likewise all values are of the same type as each other,
 Swift can infer that `[String: String]` is
 the correct type to use for the `airports` dictionary.
+
+Like array literals,
+dictionary literals can include a trailing comma
+after the last key-value pair:
+
+```swift
+var airports = [
+    "YYZ": "Toronto Pearson",
+    "DUB": "Dublin",
+]
+```
 
 ### Accessing and Modifying a Dictionary
 
@@ -1430,7 +1472,7 @@ for airportName in airports.values {
      }
   </ Airport code: LHR
   </ Airport code: YYZ
-  ---
+
   -> for airportName in airports.values {
         print("Airport name: \(airportName)")
      }
@@ -1458,7 +1500,7 @@ let airportNames = [String](airports.values)
   -> let airportCodes = [String](airports.keys)
   /> airportCodes is [\"\(airportCodes[0])\", \"\(airportCodes[1])\"]
   </ airportCodes is ["LHR", "YYZ"]
-  ---
+
   -> let airportNames = [String](airports.values)
   /> airportNames is [\"\(airportNames[0])\", \"\(airportNames[1])\"]
   </ airportNames is ["London Heathrow", "Toronto Pearson"]
@@ -1468,12 +1510,6 @@ let airportNames = [String](airports.values)
 Swift's `Dictionary` type doesn't have a defined ordering.
 To iterate over the keys or values of a dictionary in a specific order,
 use the `sorted()` method on its `keys` or `values` property.
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

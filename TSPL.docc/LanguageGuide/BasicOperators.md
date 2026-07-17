@@ -506,8 +506,8 @@ with the `<` operator because the `<` operator can't be applied to
 `Bool` values.
 
 ```swift
-("blue", -1) < ("purple", 1)        // OK, evaluates to true
-("blue", false) < ("purple", true)  // Error because < can't compare Boolean values
+("blue", -1) < ("purple", 1)        // OK: Evaluates to true.
+("blue", false) < ("purple", true)  // Error: Can't use < to compare Boolean values.
 ```
 
 <!--
@@ -515,17 +515,17 @@ with the `<` operator because the `<` operator can't be applied to
 
   ```swifttest
   >> _ =
-  -> ("blue", -1) < ("purple", 1)        // OK, evaluates to true
+  -> ("blue", -1) < ("purple", 1)        // OK: Evaluates to true.
   >> _ =
-  -> ("blue", false) < ("purple", true)  // Error because < can't compare Boolean values
+  -> ("blue", false) < ("purple", true)  // Error: Can't use < to compare Boolean values.
   !$ error: type '(String, Bool)' cannot conform to 'Comparable'
-  !! ("blue", false) < ("purple", true)  // Error because < can't compare Boolean values
+  !! ("blue", false) < ("purple", true)  // Error: Can't use < to compare Boolean values.
   !!                 ^
   !$ note: only concrete types such as structs, enums and classes can conform to protocols
-  !! ("blue", false) < ("purple", true)  // Error because < can't compare Boolean values
+  !! ("blue", false) < ("purple", true)  // Error: Can't use < to compare Boolean values.
   !!                 ^
   !$ note: required by referencing operator function '<' on 'Comparable' where 'Self' = '(String, Bool)'
-  !! ("blue", false) < ("purple", true)  // Error because < can't compare Boolean values
+  !! ("blue", false) < ("purple", true)  // Error: Can't use < to compare Boolean values.
   !!                 ^
   ```
 -->
@@ -714,7 +714,7 @@ var colorNameToUse = userDefinedColorName ?? defaultColorName
   ```swifttest
   -> let defaultColorName = "red"
   -> var userDefinedColorName: String?   // defaults to nil
-  ---
+
   -> var colorNameToUse = userDefinedColorName ?? defaultColorName
   /> userDefinedColorName is nil, so colorNameToUse is set to the default of \"\(colorNameToUse)\"
   </ userDefinedColorName is nil, so colorNameToUse is set to the default of "red"
@@ -939,7 +939,7 @@ for name in names[...2] {
      }
   </ Brian
   </ Jack
-  ---
+
   -> for name in names[...2] {
          print(name)
      }
@@ -1037,7 +1037,7 @@ let allowedEntry = false
 if !allowedEntry {
     print("ACCESS DENIED")
 }
-// Prints "ACCESS DENIED"
+// Prints "ACCESS DENIED".
 ```
 
 <!--
@@ -1084,7 +1084,7 @@ if enteredDoorCode && passedRetinaScan {
 } else {
     print("ACCESS DENIED")
 }
-// Prints "ACCESS DENIED"
+// Prints "ACCESS DENIED".
 ```
 
 <!--
@@ -1230,12 +1230,6 @@ The output of the compound expression doesn't change,
 but the overall intention is clearer to the reader.
 Readability is always preferred over brevity;
 use parentheses where they help to make your intentions clear.
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

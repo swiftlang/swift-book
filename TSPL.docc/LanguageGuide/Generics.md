@@ -19,7 +19,7 @@ or indeed an array for any other type that can be created in Swift.
 Similarly, you can create a dictionary to store values of any specified type,
 and there are no limitations on what that type can be.
 
-## The Problem That Generics Solve
+## The Problem that Generics Solve
 
 Here's a standard, nongeneric function called `swapTwoInts(_:_:)`,
 which swaps two `Int` values:
@@ -56,7 +56,7 @@ var someInt = 3
 var anotherInt = 107
 swapTwoInts(&someInt, &anotherInt)
 print("someInt is now \(someInt), and anotherInt is now \(anotherInt)")
-// Prints "someInt is now 107, and anotherInt is now 3"
+// Prints "someInt is now 107, and anotherInt is now 3".
 ```
 
 <!--
@@ -100,7 +100,7 @@ func swapTwoDoubles(_ a: inout Double, _ b: inout Double) {
         a = b
         b = temporaryA
      }
-  ---
+
   -> func swapTwoDoubles(_ a: inout Double, _ b: inout Double) {
         let temporaryA = a
         a = b
@@ -237,7 +237,7 @@ swapTwoValues(&someString, &anotherString)
   -> swapTwoValues(&someInt, &anotherInt)
   /> someInt is now \(someInt), and anotherInt is now \(anotherInt)
   </ someInt is now 107, and anotherInt is now 3
-  ---
+
   -> var someString = "hello"
   -> var anotherString = "world"
   -> swapTwoValues(&someString, &anotherString)
@@ -286,9 +286,21 @@ However, when there isn't a meaningful relationship between them,
 it's traditional to name them using single letters such as `T`, `U`, and `V`,
 such as `T` in the `swapTwoValues(_:_:)` function above.
 
-> Note: Always give type parameters upper camel case names
-> (such as `T` and `MyTypeParameter`)
-> to indicate that they're a placeholder for a *type*, not a value.
+Use upper camel case names for type parameters,
+like `T` and `MyTypeParameter`,
+to indicate that they're a placeholder for a *type*, not a value.
+
+> Note:
+> If you don't need to name a type parameter
+> and its generic type constraints are simple,
+> there's an alternate, lightweight syntax you can use instead,
+> as described in <doc:OpaqueTypes#Opaque-Parameter-Types>.
+<!--
+Comparison between this syntax and the lightweight syntax
+is in the Opaque Types chapter, not here ---
+the reader hasn't learned about constraints yet,
+so it wouldn't make sense to list what is/isn't supported.
+-->
 
 ## Generic Types
 
@@ -660,7 +672,7 @@ let strings = ["cat", "dog", "llama", "parakeet", "terrapin"]
 if let foundIndex = findIndex(ofString: "llama", in: strings) {
     print("The index of llama is \(foundIndex)")
 }
-// Prints "The index of llama is 2"
+// Prints "The index of llama is 2".
 ```
 
 <!--
@@ -1276,19 +1288,19 @@ func allItemsMatch<C1: Container, C2: Container>
   -> func allItemsMatch<C1: Container, C2: Container>
            (_ someContainer: C1, _ anotherContainer: C2) -> Bool
            where C1.Item == C2.Item, C1.Item: Equatable {
-  ---
+
         // Check that both containers contain the same number of items.
         if someContainer.count != anotherContainer.count {
            return false
         }
-  ---
+
         // Check each pair of items to see if they're equivalent.
         for i in 0..<someContainer.count {
            if someContainer[i] != anotherContainer[i] {
               return false
            }
         }
-  ---
+
         // All items match, so return true.
         return true
      }
@@ -1370,9 +1382,9 @@ if allItemsMatch(stackOfStrings, arrayOfStrings) {
   -> stackOfStrings.push("uno")
   -> stackOfStrings.push("dos")
   -> stackOfStrings.push("tres")
-  ---
+
   -> var arrayOfStrings = ["uno", "dos", "tres"]
-  ---
+
   -> if allItemsMatch(stackOfStrings, arrayOfStrings) {
         print("All items match.")
      } else {
@@ -1571,7 +1583,7 @@ extension Container where Item == Double {
     }
 }
 print([1260.0, 1200.0, 98.6, 37.0].average())
-// Prints "648.9"
+// Prints "648.9".
 ```
 
 <!--
@@ -1639,9 +1651,9 @@ extension Container {
 }
 let numbers = [1260, 1200, 98, 37]
 print(numbers.average())
-// Prints "648.75"
+// Prints "648.75".
 print(numbers.endsWith(37))
-// Prints "true"
+// Prints "true".
 ```
 
 <!--
@@ -1733,7 +1745,7 @@ but requires one extension per requirement.
 You can include a generic `where` clause on an associated type.
 For example, suppose you want to make a version of `Container`
 that includes an iterator,
-like what the `Sequence` protocol uses in the standard library.
+like what the `Sequence` protocol uses in the Swift standard library.
 Here's how you write that:
 
 ```swift
@@ -1757,7 +1769,7 @@ protocol Container {
         mutating func append(_ item: Item)
         var count: Int { get }
         subscript(i: Int) -> Item { get }
-  ---
+
         associatedtype Iterator: IteratorProtocol where Iterator.Element == Item
         func makeIterator() -> Iterator
      }
@@ -1781,7 +1793,7 @@ The `makeIterator()` function provides access to a container's iterator.
 
    that accepts a ranged of indexes it its subscript
    and returns a subcontainer ---
-   similar to how ``Collection`` works in the standard library.
+   similar to how ``Collection`` works in the Swift standard library.
 
    .. testcode:: associatedTypes-subcontainer
 
@@ -2237,7 +2249,7 @@ This generic subscript is constrained as follows:
 
 - The generic parameter `Indices` in angle brackets
   has to be a type that conforms to the `Sequence` protocol
-  from the standard library.
+  from the Swift standard library.
 - The subscript takes a single parameter, `indices`,
   which is an instance of that `Indices` type.
 - The generic `where` clause requires
@@ -2250,6 +2262,76 @@ Taken together, these constraints mean that
 the value passed for the `indices` parameter
 is a sequence of integers.
 
+## Implicit Constraints
+
+In addition to constraints you write explicitly,
+many places in your generic code also implicitly require
+conformance to some very common protocols like [`Copyable`][].
+<!-- When SE-0446 is implemented, add Escapable above. -->
+These generic constraints that you don't have to write
+are known as *implicit constraints*.
+For example, both of the following function declarations
+require `MyType` to be copyable:
+
+[`Copyable`]: https://developer.apple.com/documentation/swift/copyable
+
+```swift
+function someFunction<MyType> { ... }
+function someFunction<MyType: Copyable> { ... }
+```
+
+In the code above,
+the first declaration has an implicit constraint,
+and the second version lists the conformance explicitly.
+In most code,
+types also implicitly conform to these common protocols.
+For more information,
+see <doc:Protocols#Implicit-Conformance-to-a-Protocol>.
+
+Because most types in Swift conform to these protocols,
+writing them almost everywhere would be repetitive.
+Instead, by marking only the exceptions,
+you call out the places that omit a common constraint.
+To suppress an implicit constraint,
+write the protocol name with a tilde (`~`) in front of it.
+You can read `~Copyable` as "maybe copyable" ---
+this suppressed constraint allows
+both copyable and noncopyable types in this position.
+Note that `~Copyable` doesn't *require* the type to be noncopyable.
+For example:
+
+```swift
+func f<MyType>(x: inout MyType) {
+    let x1 = x  // The value of x1 is a copy of x's value.
+    let x2 = x  // The value of x2 is a copy of x's value.
+}
+
+func g<AnotherType: ~Copyable>(y: inout AnotherType) {
+    let y1 = y  // The assignment consumes y's value.
+    let y2 = y  // Error: Value consumed more than once.
+}
+```
+
+In the code above,
+the function `f()` implicitly requires `MyType` to be copyable.
+Within the function body,
+the value of `x` is copied to `x1` and `x2` in the assignment.
+In contrast, `g()` suppresses the implicit constraint on `AnotherType`,
+which allows you to pass either a copyable or noncopyable value.
+Within the function body,
+you can't copy the value of `y`
+because `AnotherType` might be noncopyable.
+Assignment consumes the value of `y`
+and it's an error to consume that value more than once.
+Noncopyable values like `y`
+must be passed as in-out, borrowing, or consuming parameters ---
+for more information,
+see <doc:Declarations#Borrowing-and-Consuming-Parameters>.
+
+For details about when generic code
+includes an implicit constraint to a given protocol,
+see the reference for that protocol.
+
 <!--
   TODO: Generic Enumerations
   --------------------------
@@ -2258,12 +2340,6 @@ is a sequence of integers.
 <!--
   TODO: Describe how Optional<Wrapped> works
 -->
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

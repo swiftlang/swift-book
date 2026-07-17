@@ -161,7 +161,7 @@ func sayHelloWorld() -> String {
     return "hello, world"
 }
 print(sayHelloWorld())
-// Prints "hello, world"
+// Prints "hello, world".
 ```
 
 <!--
@@ -393,7 +393,7 @@ they can be accessed with dot syntax to retrieve the minimum and maximum found v
 ```swift
 let bounds = minMax(array: [8, -6, 2, 109, 3, 71])
 print("min is \(bounds.min) and max is \(bounds.max)")
-// Prints "min is -6 and max is 109"
+// Prints "min is -6 and max is 109".
 ```
 
 <!--
@@ -479,7 +479,7 @@ returns an actual tuple value or `nil`:
 if let bounds = minMax(array: [8, -6, 2, 109, 3, 71]) {
     print("min is \(bounds.min) and max is \(bounds.max)")
 }
-// Prints "min is -6 and max is 109"
+// Prints "min is -6 and max is 109".
 ```
 
 <!--
@@ -523,7 +523,7 @@ print(anotherGreeting(for: "Dave"))
      }
   -> print(greeting(for: "Dave"))
   <- Hello, Dave!
-  ---
+
   -> func anotherGreeting(for person: String) -> String {
         return "Hello, " + person + "!"
      }
@@ -560,7 +560,7 @@ property getters can also use an implicit return.
   >> func testFatal() -> Int {
   >>     fatalError("Oh no!")
   >> }
-  ---
+
   // But not this:
   >> func testPrint() -> Int {
   >>     print(13)
@@ -803,10 +803,10 @@ that come after the variadic parameter.
   ```swifttest
   // Labeled, immediately after
   >> func f(_ a: Int..., b: String) {}
-  ---
+
   // Unlabeled, not immediately after
   >> func g(_ a: Int..., b: String, _ c: Int) {}
-  ---
+
   // Multiple
   >> func h(_a: Int..., b: String, _ c: Int..., d: String) {}
   ```
@@ -892,7 +892,7 @@ var someInt = 3
 var anotherInt = 107
 swapTwoInts(&someInt, &anotherInt)
 print("someInt is now \(someInt), and anotherInt is now \(anotherInt)")
-// Prints "someInt is now 107, and anotherInt is now 3"
+// Prints "someInt is now 107, and anotherInt is now 3".
 ```
 
 <!--
@@ -1023,7 +1023,7 @@ You can now call the assigned function with the name `mathFunction`:
 
 ```swift
 print("Result: \(mathFunction(2, 3))")
-// Prints "Result: 5"
+// Prints "Result: 5".
 ```
 
 <!--
@@ -1041,7 +1041,7 @@ in the same way as for nonfunction types:
 ```swift
 mathFunction = multiplyTwoInts
 print("Result: \(mathFunction(2, 3))")
-// Prints "Result: 6"
+// Prints "Result: 6".
 ```
 
 <!--
@@ -1092,7 +1092,7 @@ func printMathResult(_ mathFunction: (Int, Int) -> Int, _ a: Int, _ b: Int) {
     print("Result: \(mathFunction(a, b))")
 }
 printMathResult(addTwoInts, 3, 5)
-// Prints "Result: 8"
+// Prints "Result: 8".
 ```
 
 <!--
@@ -1303,12 +1303,6 @@ print("zero!")
   </ zero!
   ```
 -->
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

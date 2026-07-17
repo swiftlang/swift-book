@@ -378,7 +378,7 @@ by checking its Boolean `isEmpty` property:
 if emptyString.isEmpty {
     print("Nothing to see here")
 }
-// Prints "Nothing to see here"
+// Prints "Nothing to see here".
 ```
 
 <!--
@@ -419,7 +419,7 @@ constantString += " and another Highlander"
   -> var variableString = "Horse"
   -> variableString += " and carriage"
   // variableString is now "Horse and carriage"
-  ---
+
   -> let constantString = "Highlander"
   -> constantString += " and another Highlander"
   !$ error: left side of mutating operator isn't mutable: 'constantString' is a 'let' constant
@@ -525,7 +525,7 @@ as an argument to its initializer:
 let catCharacters: [Character] = ["C", "a", "t", "!", "🐱"]
 let catString = String(catCharacters)
 print(catString)
-// Prints "Cat!🐱"
+// Prints "Cat!🐱".
 ```
 
 <!--
@@ -652,7 +652,7 @@ print(goodStart + end)
   // Prints two lines:
   </ one
   </ twothree
-  ---
+
   -> let goodStart = """
          one
          two
@@ -898,7 +898,7 @@ use the `count` property of the string:
 ```swift
 let unusualMenagerie = "Koala 🐨, Snail 🐌, Penguin 🐧, Dromedary 🐪"
 print("unusualMenagerie has \(unusualMenagerie.count) characters")
-// Prints "unusualMenagerie has 40 characters"
+// Prints "unusualMenagerie has 40 characters".
 ```
 
 <!--
@@ -923,12 +923,12 @@ with a fourth character of `é`, not `e`:
 ```swift
 var word = "cafe"
 print("the number of characters in \(word) is \(word.count)")
-// Prints "the number of characters in cafe is 4"
+// Prints "the number of characters in cafe is 4".
 
 word += "\u{301}"    // COMBINING ACUTE ACCENT, U+0301
 
 print("the number of characters in \(word) is \(word.count)")
-// Prints "the number of characters in café is 4"
+// Prints "the number of characters in café is 4".
 ```
 
 <!--
@@ -938,17 +938,17 @@ print("the number of characters in \(word) is \(word.count)")
   -> var word = "cafe"
   -> print("the number of characters in \(word) is \(word.count)")
   <- the number of characters in cafe is 4
-  ---
+
   -> word += "\u{301}"    // COMBINING ACUTE ACCENT, U+0301
-  ---
+
   -> print("the number of characters in \(word) is \(word.count)")
   <- the number of characters in café is 4
   ```
 -->
 
 > Note: Extended grapheme clusters can be composed of multiple Unicode scalars.
-> This means that different characters—
-> and different representations of the same character—
+> This means that different characters ---
+> and different representations of the same character ---
 > can require different amounts of memory to store.
 > Because of this, characters in Swift don't each take up
 > the same amount of memory within a string's representation.
@@ -1074,7 +1074,7 @@ indices of individual characters in a string.
 for index in greeting.indices {
     print("\(greeting[index]) ", terminator: "")
 }
-// Prints "G u t e n   T a g ! "
+// Prints "G u t e n   T a g ! ".
 ```
 
 <!--
@@ -1086,7 +1086,7 @@ for index in greeting.indices {
      }
   >> print("")
   << G u t e n   T a g !
-  // Prints "G u t e n   T a g ! "
+  // Prints "G u t e n   T a g ! ".
   ```
 -->
 
@@ -1124,7 +1124,7 @@ welcome.insert(contentsOf: " there", at: welcome.index(before: welcome.endIndex)
   -> welcome.insert("!", at: welcome.endIndex)
   /> welcome now equals \"\(welcome)\"
   </ welcome now equals "hello!"
-  ---
+
   -> welcome.insert(contentsOf: " there", at: welcome.index(before: welcome.endIndex))
   /> welcome now equals \"\(welcome)\"
   </ welcome now equals "hello there!"
@@ -1152,7 +1152,7 @@ welcome.removeSubrange(range)
   -> welcome.remove(at: welcome.index(before: welcome.endIndex))
   /> welcome now equals \"\(welcome)\"
   </ welcome now equals "hello there"
-  ---
+
   -> let range = welcome.index(welcome.endIndex, offsetBy: -6)..<welcome.endIndex
   -> welcome.removeSubrange(range)
   /> welcome now equals \"\(welcome)\"
@@ -1161,7 +1161,7 @@ welcome.removeSubrange(range)
 -->
 
 <!--
-  TODO: Find and Replace section, once the standard library supports finding substrings
+  TODO: Find and Replace section, once the Swift standard library supports finding substrings
 -->
 
 > Note: You can use the `insert(_:at:)`, `insert(contentsOf:at:)`,
@@ -1206,7 +1206,7 @@ let newString = String(beginning)
   -> let beginning = greeting[..<index]
   /> beginning is \"\(beginning)\"
   </ beginning is "Hello"
-  ---
+
   // Convert the result to a String for long-term storage.
   -> let newString = String(beginning)
   ```
@@ -1273,7 +1273,7 @@ let sameQuotation = "We're a lot alike, you and I."
 if quotation == sameQuotation {
     print("These two strings are considered equal")
 }
-// Prints "These two strings are considered equal"
+// Prints "These two strings are considered equal".
 ```
 
 <!--
@@ -1341,7 +1341,7 @@ let combinedEAcuteQuestion = "Voulez-vous un caf\u{65}\u{301}?"
 if eAcuteQuestion == combinedEAcuteQuestion {
     print("These two strings are considered equal")
 }
-// Prints "These two strings are considered equal"
+// Prints "These two strings are considered equal".
 ```
 
 <!--
@@ -1350,10 +1350,10 @@ if eAcuteQuestion == combinedEAcuteQuestion {
   ```swifttest
   // "Voulez-vous un café?" using LATIN SMALL LETTER E WITH ACUTE
   -> let eAcuteQuestion = "Voulez-vous un caf\u{E9}?"
-  ---
+
   // "Voulez-vous un café?" using LATIN SMALL LETTER E and COMBINING ACUTE ACCENT
   -> let combinedEAcuteQuestion = "Voulez-vous un caf\u{65}\u{301}?"
-  ---
+
   -> if eAcuteQuestion == combinedEAcuteQuestion {
         print("These two strings are considered equal")
      }
@@ -1385,10 +1385,10 @@ if latinCapitalLetterA != cyrillicCapitalLetterA {
   ```swifttest
   -> let latinCapitalLetterA: Character = "\u{41}"
   >> assert(latinCapitalLetterA == "A")
-  ---
+
   -> let cyrillicCapitalLetterA: Character = "\u{0410}"
   >> assert(cyrillicCapitalLetterA == "А")
-  ---
+
   -> if latinCapitalLetterA != cyrillicCapitalLetterA {
         print("These two characters aren't equivalent.")
      }
@@ -1500,7 +1500,7 @@ for scene in romeoAndJuliet {
     }
 }
 print("There are \(act1SceneCount) scenes in Act 1")
-// Prints "There are 5 scenes in Act 1"
+// Prints "There are 5 scenes in Act 1".
 ```
 
 <!--
@@ -1532,7 +1532,7 @@ for scene in romeoAndJuliet {
     }
 }
 print("\(mansionCount) mansion scenes; \(cellCount) cell scenes")
-// Prints "6 mansion scenes; 2 cell scenes"
+// Prints "6 mansion scenes; 2 cell scenes".
 ```
 
 <!--
@@ -1614,7 +1614,7 @@ for codeUnit in dogString.utf8 {
     print("\(codeUnit) ", terminator: "")
 }
 print("")
-// Prints "68 111 103 226 128 188 240 159 144 182 "
+// Prints "68 111 103 226 128 188 240 159 144 182 ".
 ```
 
 <!--
@@ -1626,7 +1626,7 @@ print("")
      }
   -> print("")
   << 68 111 103 226 128 188 240 159 144 182
-  // Prints "68 111 103 226 128 188 240 159 144 182 "
+  // Prints "68 111 103 226 128 188 240 159 144 182 ".
   ```
 -->
 
@@ -1668,7 +1668,7 @@ for codeUnit in dogString.utf16 {
     print("\(codeUnit) ", terminator: "")
 }
 print("")
-// Prints "68 111 103 8252 55357 56374 "
+// Prints "68 111 103 8252 55357 56374 ".
 ```
 
 <!--
@@ -1680,7 +1680,7 @@ print("")
      }
   -> print("")
   << 68 111 103 8252 55357 56374
-  // Prints "68 111 103 8252 55357 56374 "
+  // Prints "68 111 103 8252 55357 56374 ".
   ```
 -->
 
@@ -1722,7 +1722,7 @@ for scalar in dogString.unicodeScalars {
     print("\(scalar.value) ", terminator: "")
 }
 print("")
-// Prints "68 111 103 8252 128054 "
+// Prints "68 111 103 8252 128054 ".
 ```
 
 <!--
@@ -1734,7 +1734,7 @@ print("")
      }
   -> print("")
   << 68 111 103 8252 128054
-  // Prints "68 111 103 8252 128054 "
+  // Prints "68 111 103 8252 128054 ".
   ```
 -->
 
@@ -1784,12 +1784,6 @@ for scalar in dogString.unicodeScalars {
   </ 🐶
   ```
 -->
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

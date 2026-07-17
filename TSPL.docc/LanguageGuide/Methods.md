@@ -174,7 +174,7 @@ let somePoint = Point(x: 4.0, y: 5.0)
 if somePoint.isToTheRightOf(x: 1.0) {
     print("This point is to the right of the line where x == 1.0")
 }
-// Prints "This point is to the right of the line where x == 1.0"
+// Prints "This point is to the right of the line where x == 1.0".
 ```
 
 <!--
@@ -230,7 +230,7 @@ struct Point {
 var somePoint = Point(x: 1.0, y: 1.0)
 somePoint.moveBy(x: 2.0, y: 3.0)
 print("The point is now at (\(somePoint.x), \(somePoint.y))")
-// Prints "The point is now at (3.0, 4.0)"
+// Prints "The point is now at (3.0, 4.0)".
 ```
 
 <!--
@@ -488,15 +488,15 @@ struct LevelTracker {
   -> struct LevelTracker {
         static var highestUnlockedLevel = 1
         var currentLevel = 1
-  ---
+
   ->    static func unlock(_ level: Int) {
            if level > highestUnlockedLevel { highestUnlockedLevel = level }
         }
-  ---
+
   ->    static func isUnlocked(_ level: Int) -> Bool {
            return level <= highestUnlockedLevel
         }
-  ---
+
   ->    @discardableResult
         mutating func advance(to level: Int) -> Bool {
            if LevelTracker.isUnlocked(level) {
@@ -592,7 +592,7 @@ and see what happens when the player completes level one:
 var player = Player(name: "Argyrios")
 player.complete(level: 1)
 print("highest unlocked level is now \(LevelTracker.highestUnlockedLevel)")
-// Prints "highest unlocked level is now 2"
+// Prints "highest unlocked level is now 2".
 ```
 
 <!--
@@ -617,7 +617,7 @@ if player.tracker.advance(to: 6) {
 } else {
     print("level 6 hasn't yet been unlocked")
 }
-// Prints "level 6 hasn't yet been unlocked"
+// Prints "level 6 hasn't yet been unlocked".
 ```
 
 <!--
@@ -649,12 +649,6 @@ if player.tracker.advance(to: 6) {
   TODO: selector-style methods can be referenced as foo.bar:bas:
   (see Doug's comments from the 2014-03-12 release notes)
 -->
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

@@ -4,8 +4,9 @@ Group code that executes together, without creating a named function.
 
 *Closures* are self-contained blocks of functionality
 that can be passed around and used in your code.
-Closures in Swift are similar to blocks in C and Objective-C
-and to lambdas in other programming languages.
+Closures in Swift are similar
+to closures, anonymous functions, lambdas, and blocks
+in other programming languages.
 
 Closures can capture and store references to any constants and variables
 from the context in which they're defined.
@@ -373,15 +374,15 @@ someFunctionThatTakesAClosure() {
   -> func someFunctionThatTakesAClosure(closure: () -> Void) {
         // function body goes here
      }
-  ---
+
   -> // Here's how you call this function without using a trailing closure:
-  ---
+
   -> someFunctionThatTakesAClosure(closure: {
         // closure's body goes here
      })
-  ---
+
   -> // Here's how you call this function with a trailing closure instead:
-  ---
+
   -> someFunctionThatTakesAClosure() {
         // trailing closure's body goes here
      }
@@ -871,7 +872,7 @@ incrementByTen()
   -> alsoIncrementByTen()
   /> returns a value of \(r5)
   </ returns a value of 50
-  ---
+
   >> let r6 =
   -> incrementByTen()
   /> returns a value of \(r6)
@@ -963,11 +964,11 @@ class SomeClass {
 let instance = SomeClass()
 instance.doSomething()
 print(instance.x)
-// Prints "200"
+// Prints "200".
 
 completionHandlers.first?()
 print(instance.x)
-// Prints "100"
+// Prints "100".
 ```
 
 <!--
@@ -977,7 +978,7 @@ print(instance.x)
   -> func someFunctionWithNonescapingClosure(closure: () -> Void) {
          closure()
      }
-  ---
+
   -> class SomeClass {
          var x = 10
          func doSomething() {
@@ -985,12 +986,12 @@ print(instance.x)
              someFunctionWithNonescapingClosure { x = 200 }
          }
      }
-  ---
+
   -> let instance = SomeClass()
   -> instance.doSomething()
   -> print(instance.x)
   <- 200
-  ---
+
   -> completionHandlers.first?()
   -> print(instance.x)
   <- 100
@@ -1045,7 +1046,7 @@ as discussed in <doc:ClassesAndStructures#Structures-and-Enumerations-Are-Value-
 struct SomeStruct {
     var x = 10
     mutating func doSomething() {
-        someFunctionWithNonescapingClosure { x = 200 }  // Ok
+        someFunctionWithNonescapingClosure { x = 200 }  // OK
         someFunctionWithEscapingClosure { x = 100 }     // Error
     }
 }
@@ -1065,7 +1066,7 @@ struct SomeStruct {
   -> struct SomeStruct {
          var x = 10
          mutating func doSomething() {
-             someFunctionWithNonescapingClosure { x = 200 }  // Ok
+             someFunctionWithNonescapingClosure { x = 200 }  // OK
              someFunctionWithEscapingClosure { x = 100 }     // Error
          }
      }
@@ -1096,7 +1097,7 @@ a mutable reference to `self` for structures.
   >>         someFunctionWithNonescapingClosure { x = 200 }
   >>     }
   >> }
-  ---
+
   >> completionHandlers = []
   >> var instance3 = SomeStruct()
   >> instance3.doSomething()
@@ -1115,7 +1116,7 @@ a mutable reference to `self` for structures.
   >>         someFunctionWithEscapingClosure { print(x) }  // OK
   >>     }
   >> }
-  ---
+
   >> completionHandlers = []
   >> var s = S()
   >> s.doSomething()
@@ -1153,16 +1154,16 @@ The code below shows how a closure delays evaluation.
 ```swift
 var customersInLine = ["Chris", "Alex", "Ewa", "Barry", "Daniella"]
 print(customersInLine.count)
-// Prints "5"
+// Prints "5".
 
 let customerProvider = { customersInLine.remove(at: 0) }
 print(customersInLine.count)
-// Prints "5"
+// Prints "5".
 
 print("Now serving \(customerProvider())!")
 // Prints "Now serving Chris!"
 print(customersInLine.count)
-// Prints "4"
+// Prints "4".
 ```
 
 <!--
@@ -1172,11 +1173,11 @@ print(customersInLine.count)
   -> var customersInLine = ["Chris", "Alex", "Ewa", "Barry", "Daniella"]
   -> print(customersInLine.count)
   <- 5
-  ---
+
   -> let customerProvider = { customersInLine.remove(at: 0) }
   -> print(customersInLine.count)
   <- 5
-  ---
+
   -> print("Now serving \(customerProvider())!")
   <- Now serving Chris!
   -> print(customersInLine.count)
@@ -1310,7 +1311,7 @@ for customerProvider in customerProviders {
      }
   -> collectCustomerProviders(customersInLine.remove(at: 0))
   -> collectCustomerProviders(customersInLine.remove(at: 0))
-  ---
+
   -> print("Collected \(customerProviders.count) closures.")
   <- Collected 2 closures.
   -> for customerProvider in customerProviders {
@@ -1331,12 +1332,6 @@ which means the closures in the array can be executed after the function returns
 As a result,
 the value of the `customerProvider` argument
 must be allowed to escape the function's scope.
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

@@ -162,9 +162,9 @@ Here, the deinitializer simply returns all of the player's coins to the bank:
 ```swift
 var playerOne: Player? = Player(coins: 100)
 print("A new player has joined the game with \(playerOne!.coinsInPurse) coins")
-// Prints "A new player has joined the game with 100 coins"
+// Prints "A new player has joined the game with 100 coins".
 print("There are now \(Bank.coinsInBank) coins left in the bank")
-// Prints "There are now 9900 coins left in the bank"
+// Prints "There are now 9900 coins left in the bank".
 ```
 
 <!--
@@ -191,9 +191,9 @@ and whenever its `win(coins:)` method is called:
 ```swift
 playerOne!.win(coins: 2_000)
 print("PlayerOne won 2000 coins & now has \(playerOne!.coinsInPurse) coins")
-// Prints "PlayerOne won 2000 coins & now has 2100 coins"
+// Prints "PlayerOne won 2000 coins & now has 2100 coins".
 print("The bank now only has \(Bank.coinsInBank) coins left")
-// Prints "The bank now only has 7900 coins left"
+// Prints "The bank now only has 7900 coins left".
 ```
 
 <!--
@@ -215,9 +215,9 @@ and the bank has only 7,900 coins left.
 ```swift
 playerOne = nil
 print("PlayerOne has left the game")
-// Prints "PlayerOne has left the game"
+// Prints "PlayerOne has left the game".
 print("The bank now has \(Bank.coinsInBank) coins")
-// Prints "The bank now has 10000 coins"
+// Prints "The bank now has 10000 coins".
 ```
 
 <!--
@@ -241,12 +241,6 @@ No other properties or variables are still referring to the `Player` instance,
 and so it's deallocated in order to free up its memory.
 Just before this happens, its deinitializer is called automatically,
 and its coins are returned to the bank.
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

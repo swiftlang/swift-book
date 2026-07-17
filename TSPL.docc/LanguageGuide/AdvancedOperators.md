@@ -701,7 +701,7 @@ extension Vector2D {
   -> struct Vector2D {
         var x = 0.0, y = 0.0
      }
-  ---
+
   -> extension Vector2D {
          static func + (left: Vector2D, right: Vector2D) -> Vector2D {
             return Vector2D(x: left.x + right.x, y: left.y + right.y)
@@ -905,14 +905,14 @@ By default, custom classes and structures don't have an implementation of
 the *equivalence operators*,
 known as the *equal to* operator (`==`) and *not equal to* operator (`!=`).
 You usually implement the `==` operator,
-and use the standard library's default implementation of the `!=` operator
+and use the Swift standard library's default implementation of the `!=` operator
 that negates the result of the `==` operator.
 There are two ways to implement the `==` operator:
 You can implement it yourself,
 or for many types, you can ask Swift to synthesize
 an implementation for you.
 In both cases,
-you add conformance to the standard library's `Equatable` protocol.
+you add conformance to the Swift standard library's `Equatable` protocol.
 
 You provide an implementation of the `==` operator
 in the same way as you implement other infix operators:
@@ -1028,7 +1028,7 @@ let afterDoubling = +++toBeDoubled
            return vector
         }
      }
-  ---
+
   -> var toBeDoubled = Vector2D(x: 1.0, y: 4.0)
   -> let afterDoubling = +++toBeDoubled
   /> toBeDoubled now has values of (\(toBeDoubled.x), \(toBeDoubled.y))
@@ -1224,7 +1224,7 @@ let manualDrawing = Line(elements: [
      Stars(length: 2),
 ])
 print(manualDrawing.draw())
-// Prints "***Hello RAVI PATEL!**"
+// Prints "***Hello RAVI PATEL!**".
 ```
 
 <!--
@@ -1332,11 +1332,11 @@ func makeGreeting(for name: String? = nil) -> Drawable {
 }
 let genericGreeting = makeGreeting()
 print(genericGreeting.draw())
-// Prints "***Hello WORLD!**"
+// Prints "***Hello WORLD!**".
 
 let personalGreeting = makeGreeting(for: "Ravi Patel")
 print(personalGreeting.draw())
-// Prints "***Hello RAVI PATEL!**"
+// Prints "***Hello RAVI PATEL!**".
 ```
 
 <!--
@@ -1349,7 +1349,7 @@ print(personalGreeting.draw())
   -> func caps(@DrawingBuilder content: () -> Drawable) -> Drawable {
          return AllCaps(content: content())
      }
-  ---
+
   -> func makeGreeting(for name: String? = nil) -> Drawable {
          let greeting = draw {
              Stars(length: 3)
@@ -1369,7 +1369,7 @@ print(personalGreeting.draw())
   -> let genericGreeting = makeGreeting()
   -> print(genericGreeting.draw())
   <- ***Hello WORLD!**
-  ---
+
   -> let personalGreeting = makeGreeting(for: "Ravi Patel")
   -> print(personalGreeting.draw())
   <- ***Hello RAVI PATEL!**
@@ -1488,7 +1488,7 @@ see <doc:Attributes#resultBuilder>.
    only if there's an implementation of the operator for that type.
    You use ``Self`` to refer to the type that will conform to the protocol,
    just like you do in other protocol requirements.
-   For example, the standard library defines the ``Equatable`` protocol
+   For example, the Swift standard library defines the ``Equatable`` protocol
    which requires the ``==`` operator:
 
    .. testcode:: protocolOperator
@@ -1539,7 +1539,7 @@ see <doc:Attributes#resultBuilder>.
          // static func * (scale: Double, vector: Self) -> Self
          static func *** (scale: Double, vector: Vector2D) -> Vector2D
      }
-  ---
+
   -> extension Double {
          static func *** (scale: Double, vector: Vector2D) -> Vector2D {
              return Vector2D(x: scale * vector.x, y: scale * vector.y)
@@ -1560,12 +1560,6 @@ see <doc:Attributes#resultBuilder>.
 <!--
   TODO: generic operators
 -->
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

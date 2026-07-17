@@ -240,13 +240,13 @@ manager.data.append("Some more data")
   >>       print("the DataImporter instance for the importer property has now been created")
   >>    }
      }
-  ---
+
   -> class DataManager {
         lazy var importer = DataImporter()
         var data: [String] = []
         // the DataManager class would provide data management functionality here
      }
-  ---
+
   -> let manager = DataManager()
   -> manager.data.append("Some data")
   -> manager.data.append("Some more data")
@@ -282,7 +282,7 @@ such as when its `filename` property is queried:
 ```swift
 print(manager.importer.filename)
 // the DataImporter instance for the importer property has now been created
-// Prints "data.txt"
+// Prints "data.txt".
 ```
 
 <!--
@@ -361,7 +361,7 @@ let initialSquareCenter = square.center
 // initialSquareCenter is at (5.0, 5.0)
 square.center = Point(x: 15.0, y: 15.0)
 print("square.origin is now at (\(square.origin.x), \(square.origin.y))")
-// Prints "square.origin is now at (10.0, 10.0)"
+// Prints "square.origin is now at (10.0, 10.0)".
 ```
 
 <!--
@@ -488,7 +488,7 @@ struct AlternativeRect {
 
 If the entire body of a getter is a single expression,
 the getter implicitly returns that expression.
-Here's an another version of the `Rect` structure
+Here's another version of the `Rect` structure
 that takes advantage of this shorthand notation
 and the shorthand notation for setters:
 
@@ -577,7 +577,7 @@ struct Cuboid {
 }
 let fourByFiveByTwo = Cuboid(width: 4.0, height: 5.0, depth: 2.0)
 print("the volume of fourByFiveByTwo is \(fourByFiveByTwo.volume)")
-// Prints "the volume of fourByFiveByTwo is 40.0"
+// Prints "the volume of fourByFiveByTwo is 40.0".
 ```
 
 <!--
@@ -736,8 +736,8 @@ the new value that you assign replaces the one that was just set.
 > Note: The `willSet` and `didSet` observers of superclass properties
 > are called when a property is set in a subclass initializer,
 > after the superclass initializer has been called.
-> They aren't called while a class is setting its own properties,
-> before the superclass initializer has been called.
+> They aren't called while a class is setting its own properties
+> in the body of the initializer.
 >
 > For more information about initializer delegation,
 > see <doc:Initialization#Initializer-Delegation-for-Value-Types>
@@ -1004,15 +1004,15 @@ struct SmallRectangle {
 
 var rectangle = SmallRectangle()
 print(rectangle.height)
-// Prints "0"
+// Prints "0".
 
 rectangle.height = 10
 print(rectangle.height)
-// Prints "10"
+// Prints "10".
 
 rectangle.height = 24
 print(rectangle.height)
-// Prints "12"
+// Prints "12".
 ```
 
 <!--
@@ -1023,15 +1023,15 @@ print(rectangle.height)
   ->     @TwelveOrLess var height: Int
   ->     @TwelveOrLess var width: Int
   -> }
-  ---
+
   -> var rectangle = SmallRectangle()
   -> print(rectangle.height)
   <- 0
-  ---
+
   -> rectangle.height = 10
   -> print(rectangle.height)
   <- 10
-  ---
+
   -> rectangle.height = 24
   -> print(rectangle.height)
   <- 12
@@ -1149,12 +1149,12 @@ struct SmallNumber {
   -> struct SmallNumber {
          private var maximum: Int
          private var number: Int
-  ---
+
          var wrappedValue: Int {
              get { return number }
              set { number = min(newValue, maximum) }
          }
-  ---
+
          init() {
              maximum = 12
              number = 0
@@ -1200,7 +1200,7 @@ struct ZeroRectangle {
 
 var zeroRectangle = ZeroRectangle()
 print(zeroRectangle.height, zeroRectangle.width)
-// Prints "0 0"
+// Prints "0 0".
 ```
 
 <!--
@@ -1211,7 +1211,7 @@ print(zeroRectangle.height, zeroRectangle.width)
   ->     @SmallNumber var height: Int
   ->     @SmallNumber var width: Int
   -> }
-  ---
+
   -> var zeroRectangle = ZeroRectangle()
   -> print(zeroRectangle.height, zeroRectangle.width)
   <- 0 0
@@ -1263,7 +1263,7 @@ struct UnitRectangle {
 
 var unitRectangle = UnitRectangle()
 print(unitRectangle.height, unitRectangle.width)
-// Prints "1 1"
+// Prints "1 1".
 ```
 
 <!--
@@ -1274,7 +1274,7 @@ print(unitRectangle.height, unitRectangle.width)
   ->     @SmallNumber var height: Int = 1
   ->     @SmallNumber var width: Int = 1
   -> }
-  ---
+
   -> var unitRectangle = UnitRectangle()
   -> print(unitRectangle.height, unitRectangle.width)
   <- 1 1
@@ -1323,12 +1323,12 @@ struct NarrowRectangle {
 
 var narrowRectangle = NarrowRectangle()
 print(narrowRectangle.height, narrowRectangle.width)
-// Prints "2 3"
+// Prints "2 3".
 
 narrowRectangle.height = 100
 narrowRectangle.width = 100
 print(narrowRectangle.height, narrowRectangle.width)
-// Prints "5 4"
+// Prints "5 4".
 ```
 
 <!--
@@ -1339,11 +1339,11 @@ print(narrowRectangle.height, narrowRectangle.width)
   ->     @SmallNumber(wrappedValue: 2, maximum: 5) var height: Int
   ->     @SmallNumber(wrappedValue: 3, maximum: 4) var width: Int
   -> }
-  ---
+
   -> var narrowRectangle = NarrowRectangle()
   -> print(narrowRectangle.height, narrowRectangle.width)
   <- 2 3
-  ---
+
   -> narrowRectangle.height = 100
   -> narrowRectangle.width = 100
   -> print(narrowRectangle.height, narrowRectangle.width)
@@ -1403,11 +1403,11 @@ struct MixedRectangle {
 
 var mixedRectangle = MixedRectangle()
 print(mixedRectangle.height)
-// Prints "1"
+// Prints "1".
 
 mixedRectangle.height = 20
 print(mixedRectangle.height)
-// Prints "12"
+// Prints "12".
 ```
 
 <!--
@@ -1418,11 +1418,11 @@ print(mixedRectangle.height)
   ->     @SmallNumber var height: Int = 1
   ->     @SmallNumber(maximum: 9) var width: Int = 2
   -> }
-  ---
+
   -> var mixedRectangle = MixedRectangle()
   -> print(mixedRectangle.height)
   <- 1
-  ---
+
   -> mixedRectangle.height = 20
   -> print(mixedRectangle.height)
   <- 12
@@ -1485,11 +1485,11 @@ var someStructure = SomeStructure()
 
 someStructure.someNumber = 4
 print(someStructure.$someNumber)
-// Prints "false"
+// Prints "false".
 
 someStructure.someNumber = 55
 print(someStructure.$someNumber)
-// Prints "true"
+// Prints "true".
 ```
 
 <!--
@@ -1500,7 +1500,7 @@ print(someStructure.$someNumber)
   -> struct SmallNumber {
          private var number: Int
          private(set) var projectedValue: Bool
-  ---
+
          var wrappedValue: Int {
              get { return number }
              set {
@@ -1513,7 +1513,7 @@ print(someStructure.$someNumber)
                  }
              }
          }
-  ---
+
          init() {
              self.number = 0
              self.projectedValue = false
@@ -1523,11 +1523,11 @@ print(someStructure.$someNumber)
   ->     @SmallNumber var someNumber: Int
   -> }
   -> var someStructure = SomeStructure()
-  ---
+
   -> someStructure.someNumber = 4
   -> print(someStructure.$someNumber)
   <- false
-  ---
+
   -> someStructure.someNumber = 55
   -> print(someStructure.$someNumber)
   <- true
@@ -1588,11 +1588,11 @@ struct SizedRectangle {
   -> enum Size {
          case small, large
      }
-  ---
+
   -> struct SizedRectangle {
   ->     @SmallNumber var height: Int
   ->     @SmallNumber var width: Int
-  ---
+
          mutating func resize(to size: Size) -> Bool {
              switch size {
                  case .small:
@@ -1705,11 +1705,11 @@ func someFunction() {
   ```swifttest
   -> func someFunction() {
   ->     @SmallNumber var myNumber: Int = 0
-  ---
+
          myNumber = 10
          // now myNumber is 10
   >>     print(myNumber)
-  ---
+
          myNumber = 24
          // now myNumber is 12
   >>     print(myNumber)
@@ -1883,9 +1883,9 @@ SomeStructure.storedTypeProperty = "Another value."
 print(SomeStructure.storedTypeProperty)
 // Prints "Another value."
 print(SomeEnumeration.computedTypeProperty)
-// Prints "6"
+// Prints "6".
 print(SomeClass.computedTypeProperty)
-// Prints "27"
+// Prints "27".
 ```
 
 <!--
@@ -2018,9 +2018,9 @@ is updated to equal `7`:
 ```swift
 leftChannel.currentLevel = 7
 print(leftChannel.currentLevel)
-// Prints "7"
+// Prints "7".
 print(AudioChannel.maxInputLevelForAllChannels)
-// Prints "7"
+// Prints "7".
 ```
 
 <!--
@@ -2043,9 +2043,9 @@ and the `maxInputLevelForAllChannels` type property is updated to equal `10`:
 ```swift
 rightChannel.currentLevel = 11
 print(rightChannel.currentLevel)
-// Prints "10"
+// Prints "10".
 print(AudioChannel.maxInputLevelForAllChannels)
-// Prints "10"
+// Prints "10".
 ```
 
 <!--
@@ -2059,12 +2059,6 @@ print(AudioChannel.maxInputLevelForAllChannels)
   <- 10
   ```
 -->
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

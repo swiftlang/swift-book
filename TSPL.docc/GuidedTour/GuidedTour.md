@@ -25,11 +25,10 @@ print("Hello, world!")
   ```
 -->
 
-If you have written code in C or Objective-C,
-this syntax looks familiar to you ---
+This syntax should look familiar if you know another language ---
 in Swift, this line of code is a complete program.
 You don't need to import a separate library for functionality like
-input/output or string handling.
+outputting text or handling strings.
 Code written at global scope is used
 as the entry point for the program,
 so you don't need a `main()` function.
@@ -191,11 +190,6 @@ let quotation = """
   ```
 -->
 
-<!--
-  Can't show an example of indentation in the triple-quoted string above.
-  <rdar://problem/49129068> Swift code formatting damages indentation
--->
-
 Create arrays and dictionaries using brackets (`[]`),
 and access their elements by writing
 the index or key in brackets.
@@ -256,7 +250,7 @@ occupations["Jayne"] = "Public Relations"
   ```swifttest
   -> var fruits = ["strawberries", "limes", "tangerines"]
   -> fruits[1] = "grapes"
-  ---
+
   -> var occupations = [
          "Malcolm": "Captain",
          "Kaylee": "Mechanic",
@@ -272,7 +266,7 @@ Arrays automatically grow as you add elements.
 ```swift
 fruits.append("blueberries")
 print(fruits)
-// Prints "["strawberries", "grapes", "tangerines", "blueberries"]"
+// Prints "["strawberries", "grapes", "tangerines", "blueberries"]".
 ```
 
 <!--
@@ -318,7 +312,7 @@ let emptyDictionary: [String: Float] = [:]
   ```swifttest
   -> let emptyArray: [String] = []
   -> let emptyDictionary: [String: Float] = [:]
-  ---
+
   -> let anotherEmptyArray = [String]()
   -> let emptyDictionary = [String: Float]()
   ```
@@ -343,7 +337,7 @@ for score in individualScores {
     }
 }
 print(teamScore)
-// Prints "11"
+// Prints "11".
 ```
 
 <!--
@@ -394,7 +388,7 @@ let scoreDecoration = if teamScore > 10 {
     ""
 }
 print("Score:", teamScore, scoreDecoration)
-// Prints "Score: 11 🎉"
+// Prints "Score: 11 🎉".
 ```
 
 You can use `if` and `let` together
@@ -417,13 +411,14 @@ to mark the value as optional.
 ```swift
 var optionalString: String? = "Hello"
 print(optionalString == nil)
-// Prints "false"
+// Prints "false".
 
 var optionalName: String? = "John Appleseed"
 var greeting = "Hello!"
 if let name = optionalName {
     greeting = "Hello, \(name)"
 }
+print(greeting)
 ```
 
 <!--
@@ -433,7 +428,7 @@ if let name = optionalName {
   -> var optionalString: String? = "Hello"
   -> print(optionalString == nil)
   <- false
-  ---
+
   -> var optionalName: String? = "John Appleseed"
   -> var greeting = "Hello!"
   -> if let name = optionalName {
@@ -594,7 +589,7 @@ for (_, numbers) in interestingNumbers {
     }
 }
 print(largest)
-// Prints "25"
+// Prints "25".
 ```
 
 <!--
@@ -639,14 +634,14 @@ while n < 100 {
     n *= 2
 }
 print(n)
-// Prints "128"
+// Prints "128".
 
 var m = 2
 repeat {
     m *= 2
 } while m < 100
 print(m)
-// Prints "128"
+// Prints "128".
 ```
 
 <!--
@@ -659,7 +654,7 @@ print(m)
      }
   -> print(n)
   <- 128
-  ---
+
   -> var m = 2
   -> repeat {
          m *= 2
@@ -672,7 +667,7 @@ print(m)
 > Experiment:
 > Change the condition from `m < 100` to `m < 0`
 > to see how `while` and `repeat`-`while` behave differently
-> when the loop condition is already true.
+> when the loop condition is already false.
 
 You can keep an index in a loop
 by using `..<` to make a range of indexes.
@@ -683,7 +678,7 @@ for i in 0..<4 {
     total += i
 }
 print(total)
-// Prints "6"
+// Prints "6".
 ```
 
 <!--
@@ -801,9 +796,9 @@ func calculateStatistics(scores: [Int]) -> (min: Int, max: Int, sum: Int) {
 }
 let statistics = calculateStatistics(scores: [5, 3, 100, 3, 9])
 print(statistics.sum)
-// Prints "120"
+// Prints "120".
 print(statistics.2)
-// Prints "120"
+// Prints "120".
 ```
 
 <!--
@@ -991,7 +986,7 @@ of their only statement.
 ```swift
 let mappedNumbers = numbers.map({ number in 3 * number })
 print(mappedNumbers)
-// Prints "[60, 57, 21, 36]"
+// Prints "[60, 57, 21, 36]".
 ```
 
 <!--
@@ -1014,7 +1009,7 @@ you can omit the parentheses entirely.
 ```swift
 let sortedNumbers = numbers.sorted { $0 > $1 }
 print(sortedNumbers)
-// Prints "[20, 19, 12, 7]"
+// Prints "[20, 19, 12, 7]".
 ```
 
 <!--
@@ -1133,11 +1128,11 @@ class NamedShape {
   -> class NamedShape {
          var numberOfSides: Int = 0
          var name: String
-  ---
+
          init(name: String) {
             self.name = name
          }
-  ---
+
          func simpleDescription() -> String {
             return "A shape with \(numberOfSides) sides."
          }
@@ -1203,17 +1198,17 @@ test.simpleDescription()
   ```swifttest
   -> class Square: NamedShape {
          var sideLength: Double
-  ---
+
          init(sideLength: Double, name: String) {
              self.sideLength = sideLength
              super.init(name: name)
              numberOfSides = 4
          }
-  ---
+
          func area() -> Double {
              return sideLength * sideLength
          }
-  ---
+
          override func simpleDescription() -> String {
              return "A square with sides of length \(sideLength)."
          }
@@ -1265,10 +1260,10 @@ class EquilateralTriangle: NamedShape {
 }
 var triangle = EquilateralTriangle(sideLength: 3.1, name: "a triangle")
 print(triangle.perimeter)
-// Prints "9.3"
+// Prints "9.3".
 triangle.perimeter = 9.9
 print(triangle.sideLength)
-// Prints "3.3000000000000003"
+// Prints "3.3000000000000003".
 ```
 
 <!--
@@ -1277,13 +1272,13 @@ print(triangle.sideLength)
   ```swifttest
   -> class EquilateralTriangle: NamedShape {
          var sideLength: Double = 0.0
-  ---
+
          init(sideLength: Double, name: String) {
              self.sideLength = sideLength
              super.init(name: name)
              numberOfSides = 3
          }
-  ---
+
          var perimeter: Double {
              get {
                   return 3.0 * sideLength
@@ -1292,7 +1287,7 @@ print(triangle.sideLength)
                  sideLength = newValue / 3.0
              }
          }
-  ---
+
          override func simpleDescription() -> String {
              return "An equilateral triangle with sides of length \(sideLength)."
          }
@@ -1353,12 +1348,12 @@ class TriangleAndSquare {
 }
 var triangleAndSquare = TriangleAndSquare(size: 10, name: "another test shape")
 print(triangleAndSquare.square.sideLength)
-// Prints "10.0"
+// Prints "10.0".
 print(triangleAndSquare.triangle.sideLength)
-// Prints "10.0"
+// Prints "10.0".
 triangleAndSquare.square = Square(sideLength: 50, name: "larger square")
 print(triangleAndSquare.triangle.sideLength)
-// Prints "50.0"
+// Prints "50.0".
 ```
 
 <!--
@@ -1472,7 +1467,7 @@ let aceRawValue = ace.rawValue
          case ace = 1
          case two, three, four, five, six, seven, eight, nine, ten
          case jack, queen, king
-  ---
+
          func simpleDescription() -> String {
              switch self {
                  case .ace:
@@ -1563,7 +1558,7 @@ let heartsDescription = hearts.simpleDescription()
   ```swifttest
   -> enum Suit {
          case spades, hearts, diamonds, clubs
-  ---
+
          func simpleDescription() -> String {
              switch self {
                  case .spades:
@@ -1625,7 +1620,7 @@ or it responds with a description of what went wrong.
   The server response is a simple way to essentially re-implement Optional
   while sidestepping the fact that I'm doing so.
 
-  "Out of cheese" is a reference to a Terry Pratchet book,
+  "Out of cheese" is a reference to a Terry Pratchett book,
   which features a computer named Hex.
   Hex's other error messages include:
 
@@ -1680,10 +1675,10 @@ case let .failure(message):
          case result(String, String)
          case failure(String)
      }
-  ---
+
   -> let success = ServerResponse.result("6:00 am", "8:09 pm")
   -> let failure = ServerResponse.failure("Out of cheese.")
-  ---
+
   -> switch success {
          case let .result(sunrise, sunset):
              print("Sunrise is at \(sunrise) and sunset is at \(sunset).")
@@ -1827,7 +1822,7 @@ without waiting for them to return.
 Task {
     await connectUser(to: "primary")
 }
-// Prints "Hello Guest, user ID 97"
+// Prints "Hello Guest, user ID 97".
 ```
 
 <!--
@@ -1839,6 +1834,75 @@ Task {
      }
   >> import Darwin; sleep(1)  // Pause for task to run
   <- Hello Guest, user ID 97
+  ```
+-->
+
+Use task groups to structure concurrent code.
+
+```swift
+let userIDs = await withTaskGroup(of: Int.self) { group in
+    for server in ["primary", "secondary", "development"] {
+        group.addTask {
+            return await fetchUserID(from: server)
+        }
+    }
+
+    var results: [Int] = []
+    for await result in group {
+        results.append(result)
+    }
+    return results
+}
+```
+
+Actors are similar to classes,
+except they ensure that different asynchronous functions
+can safely interact with an instance of the same actor at the same time.
+
+```swift
+actor ServerConnection {
+    var server: String = "primary"
+    private var activeUsers: [Int] = []
+    func connect() async -> Int {
+        let userID = await fetchUserID(from: server)
+        // ... communicate with server ...
+        activeUsers.append(userID)
+        return userID
+    }
+}
+```
+
+<!--
+  - test: `guided-tour`
+
+  ```swifttest
+  -> actor Oven {
+         var contents: [String] = []
+         func bake(_ food: String) -> String {
+             contents.append(food)
+             // ... wait for food to bake ...
+             return contents.removeLast()
+         }
+     }
+  ```
+-->
+
+When you call a method on an actor or access one of its properties,
+you mark that code with `await`
+to indicate that it might have to wait for other code
+that's already running on the actor to finish.
+
+```swift
+let server = ServerConnection()
+let userID = await server.connect()
+```
+
+<!--
+  - test: `guided-tour`
+
+  ```swifttest
+  -> let oven = Oven()
+  -> let biscuits = await oven.bake("biscuits")
   ```
 -->
 
@@ -1913,7 +1977,7 @@ let bDescription = b.simpleDescription
   -> let aDescription = a.simpleDescription
   >> print(aDescription)
   << A very simple class.  Now 100% adjusted.
-  ---
+
   -> struct SimpleStructure: ExampleProtocol {
           var simpleDescription: String = "A simple structure"
           mutating func adjust() {
@@ -1956,7 +2020,7 @@ extension Int: ExampleProtocol {
     }
  }
 print(7.simpleDescription)
-// Prints "The number 7"
+// Prints "The number 7".
 ```
 
 <!--
@@ -2097,7 +2161,7 @@ do {
 } catch {
     print(error)
 }
-// Prints "Job sent"
+// Prints "Job sent".
 ```
 
 <!--
@@ -2156,7 +2220,7 @@ do {
 } catch {
     print(error)
 }
-// Prints "Job sent"
+// Prints "Job sent".
 ```
 
 <!--
@@ -2231,7 +2295,7 @@ if fridgeContains("banana") {
     print("Found a banana")
 }
 print(fridgeIsOpen)
-// Prints "false"
+// Prints "false".
 ```
 
 <!--
@@ -2240,13 +2304,13 @@ print(fridgeIsOpen)
   ```swifttest
   -> var fridgeIsOpen = false
   -> let fridgeContent = ["milk", "eggs", "leftovers"]
-  ---
+
   -> func fridgeContains(_ food: String) -> Bool {
          fridgeIsOpen = true
          defer {
              fridgeIsOpen = false
          }
-  ---
+
          let result = fridgeContent.contains(food)
          return result
      }
@@ -2390,12 +2454,6 @@ func printEach<each T>(_ t: repeat each T) {
 
 printEach(1, "hello", true)
 ```
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

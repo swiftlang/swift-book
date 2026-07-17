@@ -50,7 +50,7 @@ print("We're number \(one)!")
   ```swifttest
   // A write access to the memory where one is stored.
   -> var one = 1
-  ---
+
   // A read access from the memory where one is stored.
   -> print("We're number \(one)!")
   << We're number 1!
@@ -138,7 +138,7 @@ Specifically,
 a conflict occurs if you have two accesses
 that meet all of the following conditions:
 
-- At least one is a write access or a nonatomic access.
+- The accesses aren't both reads, and aren't both atomic.
 - They access the same location in memory.
 - Their durations overlap.
 
@@ -152,14 +152,19 @@ for example, a variable, constant, or property.
 The duration of a memory access
 is either instantaneous or long-term.
 
-An operation is *atomic*
-if it uses only C atomic operations;
+An access is *atomic* if
+it's a call to an atomic operation on [`Atomic`] or [`AtomicLazyReference`],
+or if it uses only C atomic operations;
 otherwise it's nonatomic.
-For a list of those functions, see the `stdatomic(3)` man page.
+For a list of C atomic functions, see the `stdatomic(3)` man page.
+
+[`Atomic`]: https://developer.apple.com/documentation/synchronization/atomic
+[`AtomicLazyReference`]: https://developer.apple.com/documentation/synchronization/atomiclazyreference
 
 <!--
-  Using these functions from Swift requires some shimming -- for example:
-  https://github.com/apple/swift-se-0282-experimental/tree/master/Sources/_AtomicsShims
+  Using the C atomic functions from Swift
+  requires some shimming that's out of scope for TSPL - for example:
+  https://github.com/apple/swift-atomics/tree/main/Sources/_AtomicsShims
 -->
 
 An access is *instantaneous*
@@ -178,7 +183,7 @@ func oneMore(than number: Int) -> Int {
 var myNumber = 1
 myNumber = oneMore(than: myNumber)
 print(myNumber)
-// Prints "2"
+// Prints "2".
 ```
 
 <!--
@@ -188,7 +193,7 @@ print(myNumber)
   -> func oneMore(than number: Int) -> Int {
          return number + 1
      }
-  ---
+
   -> var myNumber = 1
   -> myNumber = oneMore(than: myNumber)
   -> print(myNumber)
@@ -238,7 +243,7 @@ func increment(_ number: inout Int) {
 }
 
 increment(&stepSize)
-// Error: conflicting accesses to stepSize
+// Error: Conflicting accesses to stepSize.
 ```
 
 <!--
@@ -246,13 +251,13 @@ increment(&stepSize)
 
   ```swifttest
   -> var stepSize = 1
-  ---
+
   -> func increment(_ number: inout Int) {
          number += stepSize
      }
-  ---
+
   -> increment(&stepSize)
-  // Error: conflicting accesses to stepSize
+  // Error: Conflicting accesses to stepSize.
   xx Simultaneous accesses to 0x10e8667d8, but modification requires exclusive access.
   xx Previous access (a modification) started at  (0x10e86b032).
   xx Current access (a read) started at:
@@ -297,7 +302,7 @@ stepSize = copyOfStepSize
   // Make an explicit copy.
   -> var copyOfStepSize = stepSize
   -> increment(&copyOfStepSize)
-  ---
+
   // Update the original.
   -> stepSize = copyOfStepSize
   /> stepSize is now \(stepSize)
@@ -329,7 +334,7 @@ var playerOneScore = 42
 var playerTwoScore = 30
 balance(&playerOneScore, &playerTwoScore)  // OK
 balance(&playerOneScore, &playerOneScore)
-// Error: conflicting accesses to playerOneScore
+// Error: Conflicting accesses to playerOneScore.
 ```
 
 <!--
@@ -345,7 +350,7 @@ balance(&playerOneScore, &playerOneScore)
   -> var playerTwoScore = 30
   -> balance(&playerOneScore, &playerTwoScore)  // OK
   -> balance(&playerOneScore, &playerOneScore)
-  // Error: conflicting accesses to playerOneScore
+  // Error: Conflicting accesses to playerOneScore.
   !$ error: inout arguments are not allowed to alias each other
   !! balance(&playerOneScore, &playerOneScore)
   !!                          ^~~~~~~~~~~~~~~
@@ -468,7 +473,7 @@ oscar.shareHealth(with: &maria)  // OK
              balance(&teammate.health, &health)
          }
      }
-  ---
+
   -> var oscar = Player(name: "Oscar", health: 10, energy: 10)
   -> var maria = Player(name: "Maria", health: 5, energy: 10)
   -> oscar.shareHealth(with: &maria)  // OK
@@ -497,7 +502,7 @@ there's a conflict:
 
 ```swift
 oscar.shareHealth(with: &oscar)
-// Error: conflicting accesses to oscar
+// Error: Conflicting accesses to oscar.
 ```
 
 <!--
@@ -505,7 +510,7 @@ oscar.shareHealth(with: &oscar)
 
   ```swifttest
   -> oscar.shareHealth(with: &oscar)
-  // Error: conflicting accesses to oscar
+  // Error: Conflicting accesses to oscar.
   !$ error: inout arguments are not allowed to alias each other
   !! oscar.shareHealth(with: &oscar)
   !!                         ^~~~~~
@@ -551,7 +556,7 @@ produces a conflict:
 ```swift
 var playerInformation = (health: 10, energy: 20)
 balance(&playerInformation.health, &playerInformation.energy)
-// Error: conflicting access to properties of playerInformation
+// Error: Conflicting access to properties of playerInformation.
 ```
 
 <!--
@@ -565,7 +570,7 @@ balance(&playerInformation.health, &playerInformation.energy)
   >> }
   -> var playerInformation = (health: 10, energy: 20)
   -> balance(&playerInformation.health, &playerInformation.energy)
-  // Error: conflicting access to properties of playerInformation
+  // Error: Conflicting access to properties of playerInformation.
   xx Simultaneous accesses to 0x10794d848, but modification requires exclusive access.
   xx Previous access (a modification) started at  (0x107952037).
   xx Current access (a modification) started at:
@@ -741,12 +746,6 @@ it doesn't allow the access.
   However, the copying approach has a negative impact
   on performance and memory usage.
 -->
-
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
 
 <!--
 This source file is part of the Swift.org open source project

@@ -1,4 +1,4 @@
-# Opaque and Boxed Types
+# Opaque and Boxed Protocol Types
 
 Hide implementation details about a value's type.
 
@@ -23,7 +23,7 @@ Boxed protocol types don't preserve type identity ---
 the value's specific type isn't known until runtime,
 and it can change over time as different values are stored.
 
-## The Problem That Opaque Types Solve
+## The Problem that Opaque Types Solve
 
 For example,
 suppose you're writing a module that draws ASCII art shapes.
@@ -60,7 +60,7 @@ print(smallTriangle.draw())
   -> protocol Shape {
          func draw() -> String
      }
-  ---
+
   -> struct Triangle: Shape {
         var size: Int
         func draw() -> String {
@@ -121,8 +121,8 @@ print(flippedTriangle.draw())
 
 This approach to defining a `JoinedShape<T: Shape, U: Shape>` structure
 that joins two shapes together vertically, like the code below shows,
-results in types like `JoinedShape<FlippedShape<Triangle>, Triangle>`
-from joining a flipped triangle with another triangle.
+results in types like `JoinedShape<Triangle, FlippedShape<Triangle>>`
+from joining a triangle with a flipped triangle.
 
 ```swift
 struct JoinedShape<T: Shape, U: Shape>: Shape {
@@ -257,7 +257,7 @@ print(trapezoid.draw())
              return result.joined(separator: "\n")
          }
      }
-  ---
+
   -> func makeTrapezoid() -> some Shape {
          let top = Triangle(size: 2)
          let middle = Square(size: 2)
@@ -336,7 +336,7 @@ print(opaqueJoinedTriangles.draw())
   -> func join<T: Shape, U: Shape>(_ top: T, _ bottom: U) -> some Shape {
          JoinedShape(top: top, bottom: bottom)
      }
-  ---
+
   -> let opaqueJoinedTriangles = join(smallTriangle, flip(smallTriangle))
   -> print(opaqueJoinedTriangles.draw())
   </ *
@@ -350,7 +350,7 @@ print(opaqueJoinedTriangles.draw())
 
 The value of `opaqueJoinedTriangles` in this example
 is the same as `joinedTriangles` in the generics example
-in the <doc:OpaqueTypes#The-Problem-That-Opaque-Types-Solve> section earlier in this chapter.
+in the <doc:OpaqueTypes#The-Problem-that-Opaque-Types-Solve> section earlier in this chapter.
 However, unlike the value in that example,
 `flip(_:)` and `join(_:_:)` wrap the underlying types
 that the generic shape operations return
@@ -373,9 +373,9 @@ that includes a special case for squares:
 ```swift
 func invalidFlip<T: Shape>(_ shape: T) -> some Shape {
     if shape is Square {
-        return shape // Error: return types don't match
+        return shape // Error: Return types don't match.
     }
-    return FlippedShape(shape: shape) // Error: return types don't match
+    return FlippedShape(shape: shape) // Error: Return types don't match.
 }
 ```
 
@@ -395,18 +395,18 @@ func invalidFlip<T: Shape>(_ shape: T) -> some Shape {
   >> }
   -> func invalidFlip<T: Shape>(_ shape: T) -> some Shape {
          if shape is Square {
-             return shape // Error: return types don't match
+             return shape // Error: Return types don't match.
          }
-         return FlippedShape(shape: shape) // Error: return types don't match
+         return FlippedShape(shape: shape) // Error: Return types don't match.
      }
   !$ error: function declares an opaque return type 'some Shape', but the return statements in its body do not have matching underlying types
   !! func invalidFlip<T: Shape>(_ shape: T) -> some Shape {
   !!      ^                                    ~~~~~~~~~~
   !$ note: return statement has underlying type 'T'
-  !! return shape // Error: return types don't match
+  !! return shape // Error: Return types don't match.
   !! ^
   !$ note: return statement has underlying type 'FlippedShape<T>'
-  !! return FlippedShape(shape: shape) // Error: return types don't match
+  !! return FlippedShape(shape: shape) // Error: Return types don't match.
   !! ^
   ```
 -->
@@ -485,7 +485,7 @@ func `repeat`<T: Shape>(shape: T, count: Int) -> some Collection {
 In this case,
 the underlying type of the return value
 varies depending on `T`:
-Whatever shape is passed it,
+Whatever shape is passed in,
 `repeat(shape:count:)` creates and returns an array of that shape.
 Nevertheless,
 the return value always has the same underlying type of `[T]`,
@@ -616,7 +616,7 @@ For example:
 if let downcastTriangle = vertical.shapes[0] as? Triangle {
     print(downcastTriangle.size)
 }
-// Prints "5"
+// Prints "5".
 ```
 
 For more information, see <doc:TypeCasting#Downcasting>.
@@ -833,7 +833,7 @@ func makeProtocolContainer<T, C: Container>(item: T) -> C {
   -> func makeProtocolContainer<T>(item: T) -> Container {
          return [item]
      }
-  ---
+
   // Error: Not enough information to infer C.
   -> func makeProtocolContainer<T, C: Container>(item: T) -> C {
          return [item]
@@ -860,7 +860,7 @@ func makeOpaqueContainer<T>(item: T) -> some Container {
 let opaqueContainer = makeOpaqueContainer(item: 12)
 let twelve = opaqueContainer[0]
 print(type(of: twelve))
-// Prints "Int"
+// Prints "Int".
 ```
 
 <!--
@@ -921,11 +921,66 @@ which means that the type of `twelve` is also inferred to be `Int`.
   }
 -->
 
-> Beta Software:
->
-> This documentation contains preliminary information about an API or technology in development. This information is subject to change, and software implemented according to this documentation should be tested with final operating system software.
->
-> Learn more about using [Apple's beta software](https://developer.apple.com/support/beta-software/).
+
+## Opaque Parameter Types
+
+In addition to writing `some` to return an opaque type,
+you can also write `some` in the type for a parameter
+to a function, subscript, or initializer.
+However, when you write `some` in a parameter type
+that's just a shorter syntax for generics, not an opaque type.
+For example,
+both of the functions below are equivalent:
+
+```swift
+func drawTwiceGeneric<SomeShape: Shape>(_ shape: SomeShape) -> String {
+    let drawn = shape.draw()
+    return drawn + "\n" + drawn
+}
+
+func drawTwiceSome(_ shape: some Shape) -> String {
+    let drawn = shape.draw()
+    return drawn + "\n" + drawn
+}
+```
+
+The `drawTwiceGeneric(_:)` function
+declares a generic type parameter named `SomeShape`,
+with a constraint that requires `SomeShape` to conform to the `Shape` protocol.
+The `drawTwiceSome(_:)` function
+uses the type `some Shape` for its argument.
+This creates a new, unnamed generic type parameter for the function
+with a constraint that requires the type to conform to the `Shape` protocol.
+Because the generic type doesn't have a name,
+you can't refer to that type elsewhere in the function.
+
+If you write `some` before more than one parameter's type,
+each of the generic types are independent.
+For example:
+
+```swift
+func combine(shape s1: some Shape, with s2: some Shape) -> String {
+    return s1.draw() + "\n" + s2.draw()
+}
+
+combine(smallTriangle, trapezoid)
+```
+
+In the `combine(shape:with:)` function,
+the types of the first and second parameter
+must both conform to the `Shape` protocol,
+but there's no constraint that requires them to be the same type.
+When you call `combine(shape:with)`,
+you can pass two different shapes ---
+in this case, one triangle and one trapezoid.
+
+Unlike the syntax for named generic type parameters,
+described in <doc:Generics> chapter,
+this lightweight syntax can't include
+a generic `where` clause or any same-type (`==`) constraints.
+In addition,
+using the lightweight syntax for very complex constraints
+can be hard to read.
 
 <!--
 This source file is part of the Swift.org open source project
@@ -936,4 +991,3 @@ Licensed under Apache License v2.0 with Runtime Library Exception
 See https://swift.org/LICENSE.txt for license information
 See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 -->
-
