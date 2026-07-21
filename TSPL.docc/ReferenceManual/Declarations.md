@@ -2459,12 +2459,6 @@ protocol SomeRefinedProtocol: SomeBaseClass {
   ```
 -->
 
-This is more restrictive than using `AnyObject`
-because it limits conformance to a specific class hierarchy
-rather than to any class type.
-For more information,
-see <doc:Protocols#Class-Only-Protocols>.
-
 Protocols are named types, and thus they can appear in all the same places
 in your code as other named types, as discussed in <doc:Protocols#Protocols-as-Types>.
 However,
