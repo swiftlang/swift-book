@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 330" width="1000" height="330" role="img" aria-label="Timeline with three lanes: Thread, and two calls to takeDamage(_:from:) against the same Player — one from Vane, one from Rowan. Vane's call finds isAlive true, subtracts from health, and suspends at its only await. While she is suspended, Rowan's call reenters. Its own isAlive check now reads false, because Vane already subtracted from health, so Rowan's call returns immediately with no credit, never reaching its own subtract or an await. Only Vane resumes and reports landing the killing blow.">
+
+  <rect x="0.75" y="0.75" width="998.5" height="328.5" rx="14" fill="#101214" stroke="#24272A" stroke-width="1.5"/>
+
+  <!-- Legend -->
+  <g font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="#8B9096">
+    <rect x="120" y="22" width="16" height="16" rx="3" fill="#5C6166"/>
+    <text x="144" y="34">Running — holds the thread</text>
+
+    <rect x="400" y="22" width="16" height="16" rx="3" fill="url(#hatch-neutral)"/>
+    <text x="424" y="34">Suspended — off-thread work</text>
+
+    <rect x="680" y="22" width="16" height="16" rx="3" fill="#3A3E42" stroke="#24272A" stroke-width="1.2"/>
+    <text x="704" y="34">Thread free</text>
+  </g>
+
+  <!-- Panel title -->
+  <text x="40" y="110" font-family="Instrument Sans, ui-sans-serif, sans-serif" font-weight="600" font-size="16" fill="#2BB6A3">Player</text>
+
+  <!-- Full-height guides at every state transition, faint -->
+  <g stroke="#1B1D1F" stroke-width="1">
+    <line x1="276" y1="110" x2="276" y2="290"/>
+    <line x1="366" y1="110" x2="366" y2="290"/>
+    <line x1="504" y1="110" x2="504" y2="290"/>
+    <line x1="580" y1="110" x2="580" y2="290"/>
+  </g>
+
+  <!-- ===== Thread lane ===== -->
+  <text x="40" y="140" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="#C6CACD">Thread</text>
+  <rect x="200" y="124" width="760" height="24" rx="5" fill="#3A3E42" stroke="#24272A" stroke-width="1.2"/>
+  <rect x="200" y="124" width="76" height="24" rx="4" fill="#E2703A"/>
+  <rect x="314" y="124" width="52" height="24" rx="4" fill="#4C97DD"/>
+  <rect x="504" y="124" width="76" height="24" rx="4" fill="#E2703A"/>
+
+  <!-- ===== gap 1: Vane's ticks ===== -->
+  <line x1="276" y1="148" x2="276" y2="172" stroke="#2BB6A3" stroke-width="1.6"/>
+  <text x="336" y="166" font-family="IBM Plex Mono, ui-monospace, monospace" font-weight="600" font-size="9.5" fill="#2BB6A3">isAlive ✓, subtracts</text>
+  <line x1="504" y1="148" x2="504" y2="172" stroke="#8B9096" stroke-width="1"/>
+  <text x="510" y="166" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="9.5" fill="#8B9096">credits Vane</text>
+
+  <!-- ===== Call 1 lane: takeDamage(_:from:) "Vane" ===== -->
+  <text x="40" y="191" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="#E2703A">takeDamage(_:from:)</text>
+  <text x="40" y="204" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#5C6166">"Vane"</text>
+  <rect x="200" y="172" width="760" height="30" rx="6" fill="#16181A"/>
+  <rect x="200" y="172" width="76" height="30" rx="4" fill="#E2703A"/>
+  <rect x="276" y="172" width="228" height="30" fill="url(#hatch-coral)"/>
+  <rect x="504" y="172" width="76" height="30" rx="4" fill="#E2703A"/>
+  <text x="590" y="191" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#8B9096">done</text>
+
+  <!-- ===== Call 2 lane: takeDamage(_:from:) "Rowan" ===== -->
+  <text x="40" y="245" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="#4C97DD">takeDamage(_:from:)</text>
+  <text x="40" y="258" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#5C6166">"Rowan"</text>
+  <rect x="200" y="226" width="760" height="30" rx="6" fill="#16181A"/>
+  <rect x="314" y="226" width="52" height="30" rx="4" fill="#4C97DD"/>
+  <text x="400" y="245" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#8B9096">done</text>
+
+  <!-- ===== gap 2: Rowan's tick — her own isAlive check now reads false ===== -->
+  <line x1="366" y1="202" x2="366" y2="226" stroke="#2BB6A3" stroke-width="1.6"/>
+  <text x="380" y="220" font-family="IBM Plex Mono, ui-monospace, monospace" font-weight="600" font-size="9.5" fill="#2BB6A3">isAlive ✗, no credit</text>
+
+  <!-- Axis -->
+  <line x1="200" y1="290" x2="954" y2="290" stroke="#3A3E42" stroke-width="1.2" marker-end="url(#axisArrow)"/>
+  <text x="960" y="294" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11" fill="#5C6166">time</text>
+
+  <!-- ===== Emphasis, drawn last so nothing clips it ===== -->
+
+  <!-- Reentry moment -->
+  <line x1="314" y1="90" x2="314" y2="216" stroke="#4C97DD" stroke-width="2.5"/>
+  <polygon points="306,216 322,216 314,226" fill="#4C97DD"/>
+  <rect x="223" y="62" width="182" height="24" rx="12" fill="#4C97DD"/>
+  <text x="314" y="78" text-anchor="middle" font-family="IBM Plex Mono, ui-monospace, monospace" font-weight="600" font-size="11.5" fill="#08090A">↩ Rowan reenters</text>
+
+  <defs>
+    <marker id="axisArrow" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#3A3E42"/>
+    </marker>
+
+    <pattern id="hatch-coral" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="7" height="7" fill="#E2703A" fill-opacity="0.16"/>
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#E2703A" stroke-width="2.4"/>
+    </pattern>
+    <pattern id="hatch-neutral" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="7" height="7" fill="#8B9096" fill-opacity="0.18"/>
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#8B9096" stroke-width="2.4"/>
+    </pattern>
+  </defs>
+</svg>

@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1150 360" width="1150" height="360" role="img" aria-label="Timeline with four lanes: the Lock, and three calls to price(for:) — two for ACME and one for MSFT. The first ACME call holds the lock through its own network fetch. The second ACME call blocks, then gets a cache hit. The MSFT call blocks behind both of them despite sharing no data with ACME, and only then runs its own fetch.">
+
+  <rect x="0.75" y="0.75" width="1148.5" height="358.5" rx="14" fill="#101214" stroke="#24272A" stroke-width="1.5"/>
+
+  <!-- Legend -->
+  <g font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="#8B9096">
+    <rect x="100" y="22" width="16" height="16" rx="3" fill="#5C6166"/>
+    <text x="124" y="34">Running</text>
+
+    <rect x="330" y="22" width="16" height="16" rx="3" fill="url(#hatch-neutral)"/>
+    <text x="354" y="34">Suspended — still holds it</text>
+
+    <rect x="620" y="22" width="16" height="16" rx="3" fill="none" stroke="#8B9096" stroke-width="1.6" stroke-dasharray="3.5 3"/>
+    <text x="644" y="34">Blocked — waiting</text>
+
+    <rect x="870" y="22" width="16" height="16" rx="3" fill="#3A3E42" stroke="#24272A" stroke-width="1.2"/>
+    <text x="894" y="34">Lock free</text>
+  </g>
+
+  <!-- Full-height guides -->
+  <g stroke="#1B1D1F" stroke-width="1">
+    <line x1="270" y1="90" x2="270" y2="330"/>
+    <line x1="310" y1="90" x2="310" y2="330"/>
+    <line x1="560" y1="90" x2="560" y2="330"/>
+    <line x1="700" y1="90" x2="700" y2="330"/>
+    <line x1="930" y1="90" x2="930" y2="330"/>
+  </g>
+  <!-- Panel title -->
+  <text x="40" y="90" font-family="Instrument Sans, ui-sans-serif, sans-serif" font-weight="600" font-size="16" fill="#D9A441">PriceCache</text>
+
+  <!-- ===== Lock lane ===== -->
+  <text x="40" y="120" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="#C6CACD">Lock</text>
+  <rect x="200" y="104" width="850" height="24" rx="5" fill="#3A3E42" stroke="#24272A" stroke-width="1.2"/>
+  <rect x="200" y="104" width="415" height="24" rx="4" fill="#E2703A"/>
+  <rect x="615" y="104" width="45" height="24" rx="4" fill="#4C97DD"/>
+  <rect x="660" y="104" width="320" height="24" rx="4" fill="#A879E0"/>
+
+  <!-- ===== gap 1: Call 1's ticks ===== -->
+  <text x="206" y="146" font-family="IBM Plex Mono, ui-monospace, monospace" font-weight="600" font-size="9.5" fill="#2BB6A3">① misses, awaits fetch</text>
+  <text x="621" y="146" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="9.5" fill="#8B9096">④ releases → Call 2</text>
+
+  <!-- ===== Call 1 lane: price(for:) "ACME" (first) ===== -->
+  <text x="40" y="171" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="#E2703A">price(for:)</text>
+  <text x="40" y="184" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#5C6166">"ACME"</text>
+  <rect x="200" y="152" width="850" height="30" rx="6" fill="#16181A"/>
+  <rect x="200" y="152" width="70" height="30" rx="4" fill="#E2703A"/>
+  <rect x="270" y="152" width="290" height="30" fill="url(#hatch-coral)"/>
+  <rect x="560" y="152" width="55" height="30" rx="4" fill="#E2703A"/>
+  <text x="625" y="171" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#8B9096">done</text>
+
+  <!-- ===== gap 2: Call 2's ticks ===== -->
+  <text x="316" y="200" font-family="IBM Plex Mono, ui-monospace, monospace" font-weight="600" font-size="9.5" fill="#4C97DD">② blocks</text>
+  <text x="666" y="200" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="9.5" fill="#4C97DD">⑤ cache hit, releases</text>
+
+  <!-- ===== Call 2 lane: price(for:) "ACME" (second) ===== -->
+  <text x="40" y="225" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="#4C97DD">price(for:)</text>
+  <text x="40" y="238" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#5C6166">"ACME"</text>
+  <rect x="200" y="206" width="850" height="30" rx="6" fill="#16181A"/>
+  <rect x="310" y="206" width="305" height="30" rx="6" fill="#4C97DD" fill-opacity="0.07" stroke="#4C97DD" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <rect x="615" y="206" width="45" height="30" rx="4" fill="#4C97DD"/>
+  <text x="670" y="225" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#8B9096">done</text>
+
+  <!-- ===== gap 3: Call 3's ticks ===== -->
+  <text x="351" y="254" font-family="IBM Plex Mono, ui-monospace, monospace" font-weight="600" font-size="9.5" fill="#A879E0">③ blocks — unrelated!</text>
+  <text x="666" y="254" font-family="IBM Plex Mono, ui-monospace, monospace" font-weight="600" font-size="9.5" fill="#2BB6A3">⑥ acquires, misses, fetches</text>
+  <text x="936" y="254" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="9.5" fill="#8B9096">⑦ resolves, releases — free</text>
+
+  <!-- ===== Call 3 lane: price(for:) "MSFT" ===== -->
+  <text x="40" y="279" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="#A879E0">price(for:)</text>
+  <text x="40" y="292" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#5C6166">"MSFT"</text>
+  <rect x="200" y="260" width="850" height="30" rx="6" fill="#16181A"/>
+  <rect x="345" y="260" width="315" height="30" rx="6" fill="#A879E0" fill-opacity="0.07" stroke="#A879E0" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <rect x="660" y="260" width="40" height="30" rx="4" fill="#A879E0"/>
+  <rect x="700" y="260" width="230" height="30" fill="url(#hatch-violet)"/>
+  <rect x="930" y="260" width="50" height="30" rx="4" fill="#A879E0"/>
+  <text x="990" y="279" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#8B9096">done</text>
+
+  <!-- MSFT-blocked span, drawn after lanes so it isn't clipped -->
+  <line x1="345" y1="300" x2="660" y2="300" stroke="#D9A441" stroke-width="1.4"/>
+  <line x1="345" y1="295" x2="345" y2="305" stroke="#D9A441" stroke-width="1.4"/>
+  <line x1="660" y1="295" x2="660" y2="305" stroke="#D9A441" stroke-width="1.4"/>
+  <text x="502" y="316" text-anchor="middle" font-family="Source Sans 3, sans-serif" font-size="11.5" fill="#D9A441">⚠ MSFT waits for ACME — the lock can't tell them apart</text>
+
+  <!-- Call 1 → Call 2 handoff, lightly emphasized — drawn last so it isn't clipped by the opaque lane rects it crosses -->
+  <line x1="615" y1="90" x2="615" y2="330" stroke="#4C97DD" stroke-width="1.4"/>
+
+  <!-- Axis -->
+  <line x1="200" y1="330" x2="1044" y2="330" stroke="#3A3E42" stroke-width="1.2"/>
+  <polygon points="1044,324 1044,336 1054,330" fill="#3A3E42"/>
+  <text x="1060" y="334" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11" fill="#5C6166">time</text>
+
+  <defs>
+    <pattern id="hatch-coral" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="7" height="7" fill="#E2703A" fill-opacity="0.16"/>
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#E2703A" stroke-width="2.4"/>
+    </pattern>
+    <pattern id="hatch-violet" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="7" height="7" fill="#A879E0" fill-opacity="0.16"/>
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#A879E0" stroke-width="2.4"/>
+    </pattern>
+    <pattern id="hatch-neutral" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="7" height="7" fill="#8B9096" fill-opacity="0.18"/>
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#8B9096" stroke-width="2.4"/>
+    </pattern>
+  </defs>
+</svg>

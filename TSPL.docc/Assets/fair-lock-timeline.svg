@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1150 340" width="1150" height="340" role="img" aria-label="Timeline with four lanes: the Lock, and three callers A, B, and C. A acquires the lock immediately. B and C both arrive while A holds it and queue in order. When A releases, the lock goes to B, not C, because B queued first. When B releases, it goes to C in turn.">
+
+  <rect x="0.75" y="0.75" width="1148.5" height="338.5" rx="14" fill="#101214" stroke="#24272A" stroke-width="1.5"/>
+
+  <!-- Legend -->
+  <g font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="#8B9096">
+    <rect x="150" y="22" width="16" height="16" rx="3" fill="#5C6166"/>
+    <text x="174" y="34">Running — holds the lock</text>
+
+    <rect x="430" y="22" width="16" height="16" rx="3" fill="url(#hatch-neutral)"/>
+    <text x="454" y="34">Suspended — queued</text>
+
+    <rect x="680" y="22" width="16" height="16" rx="3" fill="#3A3E42" stroke="#24272A" stroke-width="1.2"/>
+    <text x="704" y="34">Lock free</text>
+  </g>
+
+  <!-- Full-height guides at every state transition, faint -->
+  <g stroke="#1B1D1F" stroke-width="1">
+    <line x1="275" y1="90" x2="275" y2="310"/>
+    <line x1="300" y1="90" x2="300" y2="310"/>
+    <line x1="950" y1="90" x2="950" y2="310"/>
+  </g>
+  <!-- C's handoff, lightly emphasized -->
+  <line x1="700" y1="90" x2="700" y2="310" stroke="#A879E0" stroke-width="1.4"/>
+
+  <!-- Panel title -->
+  <text x="40" y="90" font-family="Instrument Sans, ui-sans-serif, sans-serif" font-weight="600" font-size="16" fill="#2BB6A3">AsyncMutex</text>
+
+  <!-- ===== Lock lane ===== -->
+  <text x="40" y="120" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="#C6CACD">Lock</text>
+  <rect x="200" y="104" width="850" height="24" rx="5" fill="#3A3E42" stroke="#24272A" stroke-width="1.2"/>
+  <rect x="200" y="104" width="250" height="24" rx="4" fill="#E2703A"/>
+  <rect x="450" y="104" width="250" height="24" rx="4" fill="#4C97DD"/>
+  <rect x="700" y="104" width="250" height="24" rx="4" fill="#A879E0"/>
+
+  <!-- ===== gap 1: A's ticks ===== -->
+  <text x="206" y="146" font-family="IBM Plex Mono, ui-monospace, monospace" font-weight="600" font-size="9.5" fill="#E2703A">① A acquires</text>
+
+  <!-- ===== A lane: criticalWork("A") ===== -->
+  <text x="40" y="171" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="#E2703A">criticalWork(_:)</text>
+  <text x="40" y="184" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#5C6166">"A"</text>
+  <rect x="200" y="152" width="850" height="30" rx="6" fill="#16181A"/>
+  <rect x="200" y="152" width="250" height="30" rx="4" fill="#E2703A"/>
+  <text x="460" y="171" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#8B9096">done</text>
+
+  <!-- ===== gap 2: B's ticks ===== -->
+  <text x="296" y="200" font-family="IBM Plex Mono, ui-monospace, monospace" font-weight="600" font-size="9.5" fill="#4C97DD">② queues</text>
+  <text x="706" y="200" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="9.5" fill="#4C97DD">⑤ releases → C</text>
+
+  <!-- ===== B lane: criticalWork("B") ===== -->
+  <text x="40" y="225" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="#4C97DD">criticalWork(_:)</text>
+  <text x="40" y="238" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#5C6166">"B"</text>
+  <rect x="200" y="206" width="850" height="30" rx="6" fill="#16181A"/>
+  <rect x="275" y="206" width="15" height="30" rx="3" fill="#4C97DD"/>
+  <rect x="290" y="206" width="160" height="30" fill="url(#hatch-blue)"/>
+  <rect x="450" y="206" width="250" height="30" rx="4" fill="#4C97DD"/>
+  <text x="710" y="225" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#8B9096">done</text>
+
+  <!-- ===== gap 3: C's ticks ===== -->
+  <text x="321" y="254" font-family="IBM Plex Mono, ui-monospace, monospace" font-weight="600" font-size="9.5" fill="#A879E0">③ queues</text>
+  <text x="956" y="254" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="9.5" fill="#A879E0">⑥ releases — free</text>
+
+  <!-- ===== C lane: criticalWork("C") ===== -->
+  <text x="40" y="279" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="#A879E0">criticalWork(_:)</text>
+  <text x="40" y="292" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#5C6166">"C"</text>
+  <rect x="200" y="260" width="850" height="30" rx="6" fill="#16181A"/>
+  <rect x="300" y="260" width="15" height="30" rx="3" fill="#A879E0"/>
+  <rect x="315" y="260" width="385" height="30" fill="url(#hatch-violet)"/>
+  <rect x="700" y="260" width="250" height="30" rx="4" fill="#A879E0"/>
+  <text x="960" y="279" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#8B9096">done</text>
+
+  <!-- Axis -->
+  <line x1="200" y1="310" x2="1044" y2="310" stroke="#3A3E42" stroke-width="1.2"/>
+  <polygon points="1044,304 1044,316 1054,310" fill="#3A3E42"/>
+  <text x="1060" y="314" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11" fill="#5C6166">time</text>
+
+  <!-- Emphasis: the one loud moment, drawn last so it paints on top of every lane -->
+  <line x1="450" y1="72" x2="450" y2="198" stroke="#4C97DD" stroke-width="2.5"/>
+  <polygon points="442,198 458,198 450,207" fill="#4C97DD"/>
+  <rect x="343" y="44" width="214" height="24" rx="12" fill="#4C97DD"/>
+  <text x="450" y="60" text-anchor="middle" font-family="IBM Plex Mono, ui-monospace, monospace" font-weight="600" font-size="11.5" fill="#08090A">④ FIFO — B, not C</text>
+
+  <defs>
+    <pattern id="hatch-blue" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="7" height="7" fill="#4C97DD" fill-opacity="0.16"/>
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#4C97DD" stroke-width="2.4"/>
+    </pattern>
+    <pattern id="hatch-violet" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="7" height="7" fill="#A879E0" fill-opacity="0.16"/>
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#A879E0" stroke-width="2.4"/>
+    </pattern>
+    <pattern id="hatch-neutral" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="7" height="7" fill="#8B9096" fill-opacity="0.18"/>
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#8B9096" stroke-width="2.4"/>
+    </pattern>
+  </defs>
+</svg>
