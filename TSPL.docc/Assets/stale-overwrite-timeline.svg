@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1070 300" width="1070" height="300" role="img" aria-label="Timeline with three lanes: Thread, the first call to price(for: ACME), and the second call to price(for: ACME). The second call's fetch resolves first and writes the correct price, but the first call's slower fetch resolves afterward and overwrites it with a stale price.">
+
+  <rect x="0.75" y="0.75" width="1068.5" height="298.5" rx="14" fill="#101214" stroke="#24272A" stroke-width="1.5"/>
+
+  <!-- Legend -->
+  <g font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="#8B9096">
+    <rect x="140" y="22" width="16" height="16" rx="3" fill="#5C6166"/>
+    <text x="164" y="34">Running — holds the thread</text>
+
+    <rect x="420" y="22" width="16" height="16" rx="3" fill="url(#hatch-neutral)"/>
+    <text x="444" y="34">Suspended — off-thread work</text>
+
+    <rect x="700" y="22" width="16" height="16" rx="3" fill="#3A3E42" stroke="#24272A" stroke-width="1.2"/>
+    <text x="724" y="34">Thread free</text>
+  </g>
+
+  <!-- Full-height guides at every state transition, faint -->
+  <g stroke="#1B1D1F" stroke-width="1">
+    <line x1="276" y1="90" x2="276" y2="256"/>
+    <line x1="390" y1="90" x2="390" y2="256"/>
+    <line x1="504" y1="90" x2="504" y2="256"/>
+    <line x1="580" y1="90" x2="580" y2="256"/>
+    <line x1="656" y1="90" x2="656" y2="256"/>
+  </g>
+
+  <!-- Panel title -->
+  <text x="40" y="90" font-family="Instrument Sans, ui-sans-serif, sans-serif" font-weight="600" font-size="16" fill="#D9A441">PriceCache</text>
+
+  <!-- ===== Thread lane ===== -->
+  <text x="40" y="120" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="#C6CACD">Thread</text>
+  <rect x="200" y="104" width="810" height="24" rx="5" fill="#3A3E42" stroke="#24272A" stroke-width="1.2"/>
+  <rect x="200" y="104" width="76" height="24" rx="4" fill="#E2703A"/>
+  <rect x="314" y="104" width="76" height="24" rx="4" fill="#4C97DD"/>
+  <rect x="504" y="104" width="76" height="24" rx="4" fill="#4C97DD"/>
+  <rect x="656" y="104" width="76" height="24" rx="4" fill="#E2703A"/>
+
+  <!-- ===== gap 1: first call's ticks ===== -->
+  <text x="206" y="146" font-family="IBM Plex Mono, ui-monospace, monospace" font-weight="600" font-size="9.5" fill="#E2703A">① miss, fetches</text>
+  <line x1="656" y1="128" x2="656" y2="152" stroke="#D9A441" stroke-width="1.6"/>
+  <text x="662" y="146" font-family="IBM Plex Mono, ui-monospace, monospace" font-weight="600" font-size="9.5" fill="#D9A441">④ writes 100.0 ⚠</text>
+
+  <!-- ===== Call 1 lane: price(for:) "ACME" ===== -->
+  <text x="40" y="171" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="#E2703A">price(for:)</text>
+  <text x="40" y="184" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#5C6166">"ACME"</text>
+  <rect x="200" y="152" width="810" height="30" rx="6" fill="#16181A"/>
+  <rect x="200" y="152" width="76" height="30" rx="4" fill="#E2703A"/>
+  <rect x="276" y="152" width="380" height="30" fill="url(#hatch-coral)"/>
+  <rect x="656" y="152" width="76" height="30" rx="4" fill="#E2703A"/>
+  <text x="742" y="171" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#8B9096">done</text>
+
+  <!-- ===== gap 2: second call's ticks ===== -->
+  <line x1="504" y1="182" x2="504" y2="206" stroke="#4C97DD" stroke-width="1.6"/>
+  <text x="510" y="200" font-family="IBM Plex Mono, ui-monospace, monospace" font-weight="600" font-size="9.5" fill="#4C97DD">③ writes 105.0</text>
+
+  <!-- ===== Call 2 lane: price(for:) "ACME" ===== -->
+  <text x="40" y="225" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="#4C97DD">price(for:)</text>
+  <text x="40" y="238" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#5C6166">"ACME"</text>
+  <rect x="200" y="206" width="810" height="30" rx="6" fill="#16181A"/>
+  <rect x="314" y="206" width="76" height="30" rx="4" fill="#4C97DD"/>
+  <rect x="390" y="206" width="114" height="30" fill="url(#hatch-blue)"/>
+  <rect x="504" y="206" width="76" height="30" rx="4" fill="#4C97DD"/>
+  <text x="590" y="225" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10.5" fill="#8B9096">done</text>
+
+  <!-- Stale-overwrite span -->
+  <line x1="518" y1="243" x2="670" y2="243" stroke="#D9A441" stroke-width="1.4"/>
+  <line x1="518" y1="238" x2="518" y2="248" stroke="#D9A441" stroke-width="1.4"/>
+  <line x1="670" y1="238" x2="670" y2="248" stroke="#D9A441" stroke-width="1.4"/>
+  <text x="594" y="252" text-anchor="middle" font-family="Source Sans 3, sans-serif" font-size="11.5" fill="#D9A441">⚠ 100.0 overwrites 105.0</text>
+
+  <!-- Axis -->
+  <line x1="200" y1="270" x2="1004" y2="270" stroke="#3A3E42" stroke-width="1.2" marker-end="url(#axisArrow)"/>
+  <text x="1010" y="274" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11" fill="#5C6166">time</text>
+
+  <!-- Emphasis: reentry -->
+  <line x1="314" y1="72" x2="314" y2="200" stroke="#4C97DD" stroke-width="2.5"/>
+  <polygon points="306,200 322,200 314,209" fill="#4C97DD"/>
+  <rect x="223" y="44" width="182" height="24" rx="12" fill="#4C97DD"/>
+  <text x="314" y="60" text-anchor="middle" font-family="IBM Plex Mono, ui-monospace, monospace" font-weight="600" font-size="11.5" fill="#08090A">② ↩ Call 2 reenters</text>
+
+  <defs>
+    <marker id="axisArrow" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#3A3E42"/>
+    </marker>
+
+    <pattern id="hatch-coral" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="7" height="7" fill="#E2703A" fill-opacity="0.16"/>
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#E2703A" stroke-width="2.4"/>
+    </pattern>
+    <pattern id="hatch-blue" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="7" height="7" fill="#4C97DD" fill-opacity="0.16"/>
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#4C97DD" stroke-width="2.4"/>
+    </pattern>
+    <pattern id="hatch-neutral" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="7" height="7" fill="#8B9096" fill-opacity="0.18"/>
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#8B9096" stroke-width="2.4"/>
+    </pattern>
+  </defs>
+</svg>
