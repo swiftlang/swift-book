@@ -3615,7 +3615,7 @@ For an overview of macros in Swift, see <doc:Macros>.
 
 > Grammar of a macro declaration:
 >
-> *macro-declaration* → *macro-head* *identifier* *generic-parameter-clause*_?_ *macro-signature* *macro-definition*_?_ *generic-where-clause* \
+> *macro-declaration* → *macro-head* *identifier* *generic-parameter-clause*_?_ *macro-signature* *macro-definition*_?_ *generic-where-clause*_?_ \
 > *macro-head* → *attributes*_?_ *declaration-modifiers*_?_ **`macro`** \
 > *macro-signature* → *parameter-clause* *macro-function-signature-result*_?_ \
 > *macro-function-signature-result* → **`->`** *type* \
