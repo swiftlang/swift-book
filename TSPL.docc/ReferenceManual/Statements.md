@@ -1297,6 +1297,7 @@ The *file path* changes the value of `#file`, `#fileID`, and `#filePath`,
 and is a string literal.
 The specified string becomes the value of `#filePath`,
 and the last path component of the string is used by the value of `#fileID`.
+
 > Note:
 > Prior to Swift 5.9,
 > `#column`,
