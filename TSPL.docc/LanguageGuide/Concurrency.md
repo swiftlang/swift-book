@@ -941,6 +941,26 @@ let handle = Task {
 let result = await handle.value
 ```
 
+Awaiting a task's `value` doesn't tie
+the cancellation of the waiting task to the task it's waiting for.
+If the code that's awaiting `value` is canceled,
+it stays suspended until the unstructured task finishes,
+and that task keeps running.
+To pass cancellation on,
+cancel the task yourself from a cancellation handler:
+
+```swift
+let result = await withTaskCancellationHandler {
+    await handle.value
+} onCancel: {
+    handle.cancel()
+}
+```
+
+Because an unstructured task has no parent,
+canceling it this way also affects
+every other place that's waiting for the same task.
+
 For more information about managing detached tasks,
 see [`Task`](https://developer.apple.com/documentation/swift/task).
 
