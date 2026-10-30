@@ -565,8 +565,8 @@ Type properties are discussed in <doc:Properties#Type-Properties>.
 >
 > *willSet-didSet-block* → **`{`** *willSet-clause* *didSet-clause*_?_ **`}`** \
 > *willSet-didSet-block* → **`{`** *didSet-clause* *willSet-clause*_?_ **`}`** \
-> *willSet-clause* → *attributes*_?_ **`willSet`** *setter-name*_?_ *code-block* \
-> *didSet-clause* → *attributes*_?_ **`didSet`** *setter-name*_?_ *code-block*
+> *willSet-clause* → *attributes*_?_ *mutation-modifier*_?_ **`willSet`** *setter-name*_?_ *code-block* \
+> *didSet-clause* → *attributes*_?_ *mutation-modifier*_?_ **`didSet`** *setter-name*_?_ *code-block*
 
 <!--
   NOTE: Type annotations are required for computed properties -- the
