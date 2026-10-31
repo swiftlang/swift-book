@@ -1373,6 +1373,121 @@ if you try to add concurrent code to this function,
 introducing a possible suspension point,
 you'll get a compile-time error instead of introducing a bug.
 
+## Actor Reentrancy
+
+An actor allows only one piece of code to run on it at a time.
+However, that guarantee doesn't extend across a potential suspension point.
+When a method on an actor reaches an `await`,
+the actor is free to run other work ---
+including another call to the same method ---
+before the original call resumes.
+This behavior is called *reentrancy*,
+and it's the default for every actor in Swift.
+
+Reentrancy keeps actors responsive.
+If an actor couldn't run other code while one of its methods was suspended,
+a single slow operation would block
+every other piece of code that needs to talk to that actor,
+and two actors that await each other could deadlock.
+
+The tradeoff is that
+you can't assume an actor's state stays the same across an `await`.
+For example, consider an actor that downloads and caches images:
+
+```swift
+actor ImageLoader {
+    private var cache: [String: Image] = [:]
+
+    func image(for id: String) async throws -> Image {
+        if let cached = cache[id] {
+            return cached
+        }
+
+        print("Downloading image \(id).")
+        let image = try await downloadImage(for: id)
+        cache[id] = image
+        print("Cached image \(id).")
+        return image
+    }
+}
+```
+
+If two calls ask for the same `id` close together,
+the first call checks `cache`, finds nothing,
+and suspends while it downloads the image.
+Because the actor is reentrant,
+the second call can run during that suspension.
+It also finds nothing in `cache` ---
+the first call hasn't written the image yet ---
+so it starts a second download of the same image:
+
+```swift
+let loader = ImageLoader()
+async let first = loader.image(for: "1234")
+async let second = loader.image(for: "1234")
+_ = try await (first, second)
+// Prints "Downloading image 1234."
+// Prints "Downloading image 1234."
+// Prints "Cached image 1234."
+// Prints "Cached image 1234."
+```
+
+Reading and writing `cache` is still safe:
+Reentrancy changes only the order in which calls interleave
+between suspension points;
+it never lets two calls access the actor's state at the same time.
+The problem is code that reads state, awaits,
+and then acts on what it read before the `await`.
+
+As a general rule,
+don't assume that state you read before an `await` is still valid after it.
+
+To avoid this problem,
+either check that state again after the `await`,
+or make a consistent change to the state synchronously before you suspend ---
+for example, by recording that a download is already in progress,
+so a call that reenters the actor finds that record
+and waits for the same result.
+Here's a version of `ImageLoader` that does that:
+
+```swift
+actor ImageLoader {
+    private var cache: [String: Task<Image, Error>] = [:]
+
+    func image(for id: String) async throws -> Image {
+        if let task = cache[id] {
+            return try await task.value
+        }
+
+        let task = Task {
+            print("Downloading image \(id).")
+            return try await downloadImage(for: id)
+        }
+        cache[id] = task
+        return try await task.value
+    }
+}
+```
+
+Instead of storing finished images,
+`cache` now stores the task that downloads each image.
+The method creates that task and stores it in `cache`
+before its first `await`,
+so a call that reenters the actor for the same `id`
+finds the existing task and waits for its result
+instead of starting another download.
+The same two calls now download the image only once:
+
+```swift
+let loader = ImageLoader()
+async let first = loader.image(for: "1234")
+async let second = loader.image(for: "1234")
+_ = try await (first, second)
+// Prints "Downloading image 1234."
+```
+
+For a detailed look at common reentrancy problems and how to avoid them,
+see [Managing Actor Reentrancy](https://docs.swift.org/latest/documentation/swift/managing-actor-reentrancy).
 
 ## Global Actors
 
