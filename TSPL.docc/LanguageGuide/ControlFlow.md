@@ -2167,6 +2167,7 @@ If you write more than one `defer` block in the same scope,
 the first one you specify is the last one to run.
 
 ```swift
+var score = 1
 if score < 10 {
     defer {
         print(score)
@@ -2181,9 +2182,10 @@ if score < 10 {
 ```
 
 <!--
-  - test: `defer-with-if`
+  - test: `defer-multiple`
 
   ```swifttest
+  -> var score = 1
   -> if score < 10 {
   ->     defer {
   ->         print(score)
@@ -2193,6 +2195,7 @@ if score < 10 {
   ->     }
   ->     score += 5
   -> }
+  <- The score is:
   <- 6
   ```
 -->
