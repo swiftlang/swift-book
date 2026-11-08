@@ -959,7 +959,7 @@ let result = await withTaskCancellationHandler {
 
 Because an unstructured task has no parent,
 canceling it this way also affects
-every other place that's waiting for the same task.
+any other code that's waiting for the same task.
 
 For more information about managing detached tasks,
 see [`Task`](https://developer.apple.com/documentation/swift/task).
