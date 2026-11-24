@@ -238,7 +238,7 @@ For example:
 ```swift
 var stepSize = 1
 
-func increment(_ number: inout Int) {
+@MainActor func increment(_ number: inout Int) {
     number += stepSize
 }
 
