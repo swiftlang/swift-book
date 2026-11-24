@@ -252,7 +252,7 @@ increment(&stepSize)
   ```swifttest
   -> var stepSize = 1
 
-  -> func increment(_ number: inout Int) {
+  -> @MainActor func increment(_ number: inout Int) {
          number += stepSize
      }
 
@@ -296,7 +296,7 @@ stepSize = copyOfStepSize
 
   ```swifttest
   >> var stepSize = 1
-  >> func increment(_ number: inout Int) {
+  >> @MainActor func increment(_ number: inout Int) {
   >>     number += stepSize
   >> }
   // Make an explicit copy.
