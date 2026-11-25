@@ -450,6 +450,15 @@ This is the end of the first multiline comment. */
 Nested multiline comments enable you to comment out large blocks of code quickly and easily,
 even if the code already contains multiline comments.
 
+You write a documentation comment with three forward-slashes (`///`)
+or by starting a multiline comment with `/**`.
+Documentation tools such as DocC can use these comments
+to generate API reference pages.
+For more information about writing documentation comments,
+see [Writing Symbol Documentation in Your Source Files][docc-writing-symbol-docs].
+
+[docc-writing-symbol-docs]: https://www.swift.org/documentation/docc/writing-symbol-documentation-in-your-source-files
+
 ## Semicolons
 
 Unlike many other languages,
